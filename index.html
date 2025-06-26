@@ -204,15 +204,14 @@
         .info-line {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 25px;
+            margin-bottom: 10px;
         }
 
         /* Styly pro sekce s "Vyplní zákazník" a "Vyplní Selský Dvůr" */
         .form-section {
             /* Rámeček sekce */
             /* Vnitřní odsazení */
-            margin-bottom: 25px;
-            /* Mezera pod sekcí */
+             /* Mezera pod sekcí */
         }
 
         /* Zajištění, aby readonly inputy měly stejný vzhled */
@@ -402,7 +401,7 @@
                 <h2 class="accordion-header">
                     <button class="accordion-button rounded    bg-white fw-semibold " type="button"
                         data-bs-toggle="collapse" data-bs-target="#collapseOne">
-                        <span class="material-symbols-outlined pe-1 text-danger">hotel</span>Volba ubytování
+                        <span class="material-symbols-outlined pe-1">hotel</span>Ubytování
                     </button>
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse show">
@@ -411,7 +410,7 @@
                             <table class="table mb-3">
                                 <thead>
                                     <tr>
-                                        <th>Zvolte apartmán</th>
+                                        <th>Apartmán</th>
                                         <th>Termín</th>
                                         <th>Obsazené postele</th>
                                         <th>Neobsazené postele</th>
@@ -451,9 +450,9 @@
                                 </tbody>
                             </table>
                             <button type="submit"
-                                class="btn btn-white text-primary border-primary m-2">Vypočítej</button>
-                            <button type="submit" class="btn btn-white text-danger border-danger m-2"
-                                data-bs-toggle="modal" data-bs-target="#priceModal">Zobrazit ceník</button>
+                                class="btn btn-white text-dark border-dark m-2">Vypočítej</button>
+                            <button type="submit" class="btn btn-white border-dark   m-2"
+                                data-bs-toggle="modal" data-bs-target="#priceModal">Ceník ubytování</button>
 
                         </form>
 
@@ -464,8 +463,7 @@
                 <h2 class="accordion-header">
                     <button class="accordion-button rounded  bg-white fw-semibold" type="button"
                         data-bs-toggle="collapse" data-bs-target="#collapseTwo">
-                        <span class="material-symbols-outlined text-primary pe-1">calculate</span> Kalkulace ubytování
-                    </button>
+                        <span class="material-symbols-outlined  pe-1">calculate</span> Rozpis                    </button>
                 </h2>
                 <div id="collapseTwo" class="accordion-collapse collapse">
                     <div class="accordion-body">
@@ -477,7 +475,7 @@
                 <h2 class="accordion-header  text-white">
                     <button class="accordion-button  rounded  bg-white fw-semibold " type="button"
                         data-bs-toggle="collapse" data-bs-target="#collapseThree">
-                        <span class="material-symbols-outlined pe-1">send</span>Objednávka ubytování
+                        <span class="material-symbols-outlined pe-1">send</span>Objednávka 
                     </button>
                 </h2>
                 <div id="collapseThree" class="accordion-collapse collapse d-none">
@@ -637,7 +635,7 @@
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="priceModalLabel">Ceník</h5>
+                        <h5 class="modal-title" id="priceModalLabel">Ceník ubytovaní</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -878,166 +876,221 @@
             showSection('#collapseTwo');
             showSection('#collapseThree');
             fillReservationFormData();
-        }
+        }function calculatePrice() {
+  // --- načtení vstupních hodnot ---
+  const dateRange    = $('#daterange').val().split(' - ');
+  const dateFrom     = new Date(dateRange[0].split('.').reverse().join('-'));
+  const dateTo       = new Date(dateRange[1].split('.').reverse().join('-'));
+  let people          = parseInt($('#peopleA').val(), 10);
+  const pets          = parseInt($('#petsA').val(), 10);
+  const diffTime      = dateTo - dateFrom;
+  const diffNights    = Math.ceil(diffTime / (1000*60*60*24));
+  if (diffTime <= 0)  { alert('Datum odjezdu nesprávné'); return; }
+  if (diffNights < 1) { alert('Min. počet nocí je 1.'); return; }
 
-        function calculatePrice() {
-            // --- původní calculatePrice těsně copy/paste ---
-            const dateRange = $('#daterange').val().split(' - ');
-            const dateFrom = new Date(dateRange[0].split('.').reverse().join('-'));
-            const dateTo = new Date(dateRange[1].split('.').reverse().join('-'));
-            let people = parseInt($('#peopleA').val(), 10);
-            const pets = parseInt($('#petsA').val(), 10);
-            const diffTime = dateTo - dateFrom;
-            const diffNights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            if (diffTime <= 0) { alert('Datum odjezdu...'); return; }
-            if (diffNights < 1) { alert('Min. počet nocí je 1.'); return; }
-            // ceny
-            const apt = $('#apartmentSelect').val();
-            const capacity = apt === 'A' ? 11 : 6;
-            const showPetColumn = pets > 0;
-            const standardPrice = 550, weekendPrice = 650,
-                unusedBedPrice = 300, holidayPrice = 650, silvestrPrice = 650;
-            let totalPrice = 0, breakdown = `
-  <table class="table">
-    <thead>
+  // --- cenové konstanty ---
+  const apt            = $('#apartmentSelect').val();
+  const capacity       = apt === 'A' ? 11 : 6;
+  const showPetColumn  = pets > 0;
+  const standardPrice  = 550;
+  const weekendPrice   = 650;
+  const unusedBedPrice = 300;
+  const holidayPrice   = 650;
+  const silvestrPrice  = 650;
+
+  // --- Silvestr detekce ---
+  const isSilvestr     = dateFrom <= new Date(dateFrom.getFullYear(),11,31)
+                      && dateTo   >= new Date(dateFrom.getFullYear(),11,31);
+  let silvestrNights   = 0;
+
+  // --- ikony pro typ ceny ---
+  const iconMap = {
+    'Normální':   'bed',
+    'Víkend':     'weekend',
+    'Svátek':     'event',
+    'Silvestr':   'celebration'
+  };
+
+  let totalPrice = 0;
+
+  // --- hlavička tabulky ---
+  let breakdown = `
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Noc</th>
+          <th>Typ </th>
+          <th>Obsazené postele</th>
+          <th>Neobsazené postele</th>
+          ${showPetColumn  ? '<th>Pes</th>' : ''}
+          ${diffNights===1 ? '<th>Příplatek 30 %</th>' : ''}
+          <th>Celkem za noc</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  for (let d = new Date(dateFrom); d < dateTo; d.setDate(d.getDate()+1)) {
+    const day          = new Date(d);
+    const dateStr      = `${String(day.getDate()).padStart(2,'0')}.` +
+                         `${String(day.getMonth()+1).padStart(2,'0')}.${day.getFullYear()}`;
+    const weekday      = day.toLocaleDateString('cs-CZ',{ weekday:'long' });
+    const isHolidayDay = holidays.find(h =>
+      h.date === `${String(day.getMonth()+1).padStart(2,'0')}-${String(day.getDate()).padStart(2,'0')}`
+    );
+    const isWeekendDay = [5,6].includes(day.getDay());
+
+    // 1) typ ceny a cena obsazených lůžek
+    let priceType, occupiedBedsPrice;
+    if (isSilvestr && silvestrNights < 4) {
+      priceType = 'Silvestr';
+      occupiedBedsPrice = silvestrPrice * people;
+      silvestrNights++;
+    } else if (isHolidayDay) {
+      priceType = `Svátek: ${isHolidayDay.title}`;
+      occupiedBedsPrice = holidayPrice * people;
+    } else if (isWeekendDay) {
+      priceType = 'Víkend';
+      occupiedBedsPrice = weekendPrice * people;
+    } else {
+      priceType = 'Normální';
+      occupiedBedsPrice = standardPrice * people;
+    }
+
+    // 2) neobsazená lůžka
+    const unoccBeds      = Math.max(capacity - people,0);
+    const unoccBedsPrice = unusedBedPrice * unoccBeds;
+
+    // 3) poplatek za psa
+    const petCharge = pets > 0 ? pets * 300 : 0;
+
+    // 4) případný příplatek za jednu noc
+    let dayPrice  = occupiedBedsPrice + unoccBedsPrice + petCharge;
+    let surcharge  = 0;
+    if (diffNights === 1) {
+      surcharge = dayPrice * 0.3;
+      dayPrice += surcharge;
+    }
+
+    // buňka Datum s tooltipem (den + svátek/Silvestr)
+    const dateTooltip = isHolidayDay
+      ? `${weekday}, Svátek: ${isHolidayDay.title}`
+      : (priceType.startsWith('Silvestr') ? `${weekday}, Silvestr` : weekday);
+    const dateCell = `
+      <td>
+        <span data-bs-toggle="tooltip"
+              data-bs-custom-class="white-tooltip"
+              title="${dateTooltip}">
+          ${dateStr}
+        </span>
+      </td>`;
+
+    // buňka Typ ceny jako piktogram s tooltipem
+    const ico = iconMap[ priceType.split(':')[0] ] || 'paid';
+    const iconCell = `
+      <td>
+        <span class="material-symbols-outlined price-icon"
+              data-bs-toggle="tooltip"
+              title="${priceType.split(':')[0]}">
+          ${ico}
+        </span>
+      </td>`;
+
+    // buňka Obsazené postele: počet, tooltip=rozpis výpočtu
+    const occupiedTooltip = `${people}×${(occupiedBedsPrice/people).toLocaleString()} = ${occupiedBedsPrice.toLocaleString()} CZK`;
+    const occupiedCell = `
+      <td>
+        <span data-bs-toggle="tooltip"
+              data-bs-custom-class="white-tooltip"
+              title="${occupiedTooltip}">
+          ${people}
+        </span>
+      </td>`;
+
+    // buňka Neobsazené postele: počet, tooltip=rozpis výpočtu
+    const unoccTooltip = `${unoccBeds}×${unusedBedPrice} = ${unoccBedsPrice.toLocaleString()} CZK`;
+    const unoccupiedCell = `
+      <td>
+        <span data-bs-toggle="tooltip"
+              data-bs-custom-class="white-tooltip"
+              title="${unoccTooltip}">
+          ${unoccBeds}
+        </span>
+      </td>`;
+
+    // buňka Pes a případný příplatek 30%
+    const petCell      = showPetColumn  ? `<td>${petCharge.toLocaleString()} CZK</td>` : '';
+    const surchargeCell = diffNights===1 ? `<td>${surcharge.toLocaleString()} CZK</td>` : '';
+
+    // buňka Za noc: číslo + tooltip detail
+    let parts = [];
+    parts.push(`Obsazené: ${occupiedTooltip}`);
+    if (unoccBeds > 0) parts.push(`Volná: ${unoccTooltip}`);
+    if (petCharge)    parts.push(`Pes: ${petCharge.toLocaleString()} CZK`);
+    if (surcharge)    parts.push(`Příplatek: ${surcharge.toLocaleString()} CZK`);
+    const totalTooltip = parts.join('\n');
+    const totalCell = `
+      <td>
+        <span data-bs-toggle="tooltip"
+              data-bs-custom-class="white-tooltip"
+              title="${totalTooltip}">
+          ${dayPrice.toLocaleString()} CZK
+        </span>
+      </td>`;
+
+    // sestavíme řádek
+    breakdown += `
       <tr>
-        <th></th>
-        <th></th>
-        <th>Noc</th>
-        <th>Obsazené postele</th>
-        <th>Neobsazené postele</th>
-        ${showPetColumn ? '<th>Poplatek za psa</th>' : ''}
-        ${diffNights === 1 ? '<th>Příplatek 30%</th>' : ''}
-        <th>Za noc</th>
+        ${dateCell}
+        ${iconCell}
+        ${occupiedCell}
+        ${unoccupiedCell}
+        ${petCell}
+        ${surchargeCell}
+        ${totalCell}
+      </tr>`;
+
+    totalPrice += dayPrice;
+  }
+
+  // závěrečný řádek s celkem
+  breakdown += `
+      <tr class="bg-secondary text-white">
+        <td colspan="${4 + (showPetColumn?1:0) + (diffNights===1?1:0)}">
+          <strong>Celkem</strong>
+        </td>
+        <td>${totalPrice.toLocaleString()} CZK</td>
       </tr>
-    </thead>`;
+    </tbody>
+  </table>`;
 
-            let isSilvestr = (dateFrom <= new Date(dateFrom.getFullYear(), 11, 31) && dateTo >= new Date(dateFrom.getFullYear(), 11, 31));
-            let silvestrNights = 0;
-            for (let d = new Date(dateFrom); d < dateTo; d.setDate(d.getDate() + 1)) {
-                const day = new Date(d);
-                const dateString = `${String(day.getDate()).padStart(2, '0')}.${String(day.getMonth() + 1).padStart(2, '0')}.${day.getFullYear()}`;
-                const weekday = day.toLocaleDateString('cs-CZ', { weekday: 'long' });
+  $('#result').html(breakdown).show();
+  initTooltips();
+}
 
-                const isHolidayDay = holidays.find(h => h.date === `${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}`);
-                const isWeekendDay = [5, 6].includes(day.getDay());
-                let priceType, occupiedBedsPrice, occupiedBedsPriceTitle;
-                if (isSilvestr && silvestrNights < 4) {
-                    priceType = 'Silvestr';
-                    occupiedBedsPrice = silvestrPrice * people;
-                    silvestrNights++;
-                } else if (isHolidayDay) {
-                    priceType = 'Sváteční';
-                    occupiedBedsPrice = holidayPrice * people;
-                } else if (isWeekendDay) {
-                    priceType = 'Víkendová';
-                    occupiedBedsPrice = weekendPrice * people;
-                } else {
-                    priceType = 'Normální';
-                    occupiedBedsPrice = standardPrice * people;
-                }
-                occupiedBedsPriceTitle = `${people} x ${occupiedBedsPrice / people} = ${occupiedBedsPrice.toLocaleString()} CZK`;
-                const unoccupiedBeds = Math.max(capacity - people, 0);
-                const unoccupiedBedsPrice = unusedBedPrice * unoccupiedBeds;
-                const unoccupiedBedsPriceTitle = `${unoccupiedBeds} x ${unusedBedPrice} = ${unoccupiedBedsPrice.toLocaleString()} CZK`;
-                const petCharge = pets > 0 ? pets * 300 : 0;
-                let dayPrice = occupiedBedsPrice + unoccupiedBedsPrice + petCharge;
-                let surcharge = 0;
-                if (diffNights === 1) {
-                    surcharge = dayPrice * 0.3;
-                    dayPrice += surcharge;
-                }
 
-                breakdown += `<tr> <td style="text-transform: capitalize">${weekday}</td>
-      <td>${dateString}${isHolidayDay ? `<span class="holiday-info"   data-bs-custom-class="white-tooltip" title="${isHolidayDay.title}">i</span> ` : ''}</td>
-         
+     async function onReservationSubmit(e) {
+  e.preventDefault();
 
-      <td>${priceType}</td>
-      <td>${occupiedBedsPriceTitle}</td>
-      <td>${unoccupiedBedsPriceTitle}</td>
-    ${showPetColumn ? `<td>${petCharge.toLocaleString()} CZK</td>` : ''}
-      ${diffNights === 1 ? `<td>${surcharge.toLocaleString()} CZK</td>` : ''}
-      <td>${dayPrice.toLocaleString()} CZK</td>
-    </tr>`;
-                totalPrice += dayPrice;
-            }
+  // 1) Naplníme data
+  fillReservationFormData();
 
-            // použijte:
-            breakdown += `
-  <tr class="text-bold celkova bg-secondary">
-    <td colspan="${diffNights === 1 ? 5 : 4}"><strong>Celková cena</strong></td>
-    <td class="text-end">${totalPrice.toLocaleString()} CZK</td>
-  </tr>
-</table>`;
+  // 2) Název souboru
+  const orderNum = document
+    .getElementById('orderNumber')
+    .value
+    .trim() || 'objednavka';
 
-            $('#result').html(breakdown).show();
-        }
-        function fillReservationFormData() {
-            const form = document.getElementById('reservationForm');
-            const dr = $('#daterange').val();
-            const apt = $('#apartmentSelect').val();
-            const ppl = +$('#peopleA').val();
-            const pets = +$('#petsA').val();
-            const orderNumber = $('#orderNumber').val();
+  // 3) Element, který chceme v PDF
+  const element = document.querySelector('#reservationFormPage');
 
-            // Správně vybrat text s cenou
-            const priceText = $('#result .text-end').text().trim();
-            const price = priceText.replace('Celková cena: ', '');
+  // --- Nastavíme kontejner na relative, aby absolutní footer fungoval ---
+  element.style.position = 'relative';
 
-            // Ponechat dataset (pro generování PDF)
-            form.dataset.dateRange = dr;
-            form.dataset.apartment = apt;
-            form.dataset.totalPrice = price;
-            form.dataset.orderNumber = orderNumber;
-            // Ostatní předvyplnění
-            form.termSummary.value = dr;
-            form.men.value = Math.floor(ppl / 2);
-            form.women.value = ppl - Math.floor(ppl / 2);
-            form.dogs.value = pets;
-            document.getElementById('apartmentInfo').value = 'Apartmán ' + apt;
-
-            // **Zde** přiřadit cenu do správného políčka:
-            form.elements['priceSummary'].value = price;
-            // odstraň případnou předchozí kopii
-            const prev = document.getElementById('calcCopy');
-            if (prev) prev.remove();
-
-            // pokud je checkbox UI zaškrtnutý, naklonuj tabulku do PDF-zóny
-            if (document.getElementById('toggleCalcUI').checked) {
-                const html = document.getElementById('result').innerHTML;
-                const wrapper = document.createElement('div');
-                wrapper.id = 'calcCopy';
-                wrapper.innerHTML = `
-      <div class="sub-heading">Detailní kalkulace</div>
-      <div class="form-section">
-        ${html}
-      </div>
-    `;
-                // #reservationFormPage je kontejner, který html2pdf bere
-                document.getElementById('reservationFormPage')
-                    .appendChild(wrapper);
-            }
-            showSection('#collapseThree');
-        }
-
-        async function onReservationSubmit(e) {
-            e.preventDefault();
-
-            // 1) Naplníme data
-            fillReservationFormData();
-
-            // 2) Název souboru
-            const orderNum = document
-                .getElementById('orderNumber')
-                .value
-                .trim() || 'objednavka';
-
-            // 3) Vybereme element, který chceme v PDF
-            const element = document.querySelector('#reservationFormPage');
-
-            // 4) Vložíme mu style tak, aby html2pdf vykreslil jen spodní okraj
-            const styleTag = document.createElement('style');
-            styleTag.textContent = `
+  // 4) Vložíme mu style tak, aby .form-footer (nebo .pdf-footer) byla absolutně dole
+  const styleTag = document.createElement('style');
+  styleTag.textContent = `
+    /* zachováme vaše styly pro inputy */
     .form-control,
     .form-select,
     textarea {
@@ -1049,35 +1102,44 @@
     .form-control[readonly],
     .form-control[disabled] {
       background-color: #fff !important;
-    },   .form-footer {
-      text-align: center;
-      margin-top: 50px;
+    }
+
+    /* důležité: container PDF musí být relative */
+    #reservationFormPage {
+      position: relative;
+    }
+
+    /* upravený footer: absolutně dole v PDF */
+    .form-footer {
+      position: absolute !important;
+      bottom: 15px;
+      left: 0;
       width: 100%;
- left: 0px;      color: #000;
-      position: absolute;
-      bottom: 0px;
-      padding:10px;
-      margin: 0px auto;
+      text-align: center;
+      padding: 8px 0;
       border-top: 1px solid #000;
+      margin: 0;
+      color: #000;
+      background: transparent;
     }
   `;
-            element.insertBefore(styleTag, element.firstChild);
+  element.insertBefore(styleTag, element.firstChild);
 
-            // 5) Nastavení html2pdf
-            const opt = {
-                margin: [15, 15, 15, 15],
-                filename: `${orderNum}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
-            };
+  // 5) Nastavení html2pdf
+  const opt = {
+    margin: [15, 15, 15, 15],
+    filename: `${orderNum}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+  };
 
-            // 6) Generování PDF
-            html2pdf()
-                .set(opt)
-                .from(element)
-                .save();
-        }
+  // 6) Generování PDF
+  html2pdf()
+    .set(opt)
+    .from(element)
+    .save();
+}
 
         // --- Uložení formuláře do localStorage ---
         function saveFormToLocalStorage() {
