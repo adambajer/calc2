@@ -125,8 +125,8 @@
 
         .header-logo {
             text-align: center;
-            margin-bottom: 40px;
-            margin-top: 40px;
+            margin-bottom: 20px;
+            margin-top: 20px;
         }
 
         .header-logo img {
@@ -144,7 +144,7 @@
             font-weight: 400;
             /* Regular weight pro titulky */
             text-align: center;
-            margin-bottom: 55px;
+            margin-bottom: 10PX;
             color: #000;
         }
 
@@ -1067,8 +1067,46 @@
 
   $('#result').html(breakdown).show();
   initTooltips();
+  
 }
 
+function fillReservationFormData() {
+  const form = document.getElementById('reservationForm');
+  const dr = $('#daterange').val();
+  const apt = $('#apartmentSelect').val();
+  const ppl = +$('#peopleA').val();
+  const pets = +$('#petsA').val();
+  const orderNumber = $('#orderNumber').val();
+
+  const priceText = $('#result .text-end').text().trim();
+  const price = priceText.replace('Celková cena: ', '');
+
+  form.dataset.dateRange    = dr;
+  form.dataset.apartment    = apt;
+  form.dataset.totalPrice   = price;
+  form.dataset.orderNumber  = orderNumber;
+
+  form.termSummary.value    = dr;
+  form.men.value            = Math.floor(ppl/2);
+  form.women.value          = ppl - Math.floor(ppl/2);
+  form.dogs.value           = pets;
+  document.getElementById('apartmentInfo').value = 'Apartmán ' + apt;
+  form.elements['priceSummary'].value = price;
+
+  const prev = document.getElementById('calcCopy');
+  if (prev) prev.remove();
+  if (document.getElementById('toggleCalcUI').checked) {
+    const html = document.getElementById('result').innerHTML;
+    const wrapper = document.createElement('div');
+    wrapper.id = 'calcCopy';
+    wrapper.innerHTML = `
+      <div class="sub-heading">Detailní kalkulace</div>
+      <div class="form-section">${html}</div>
+    `;
+    document.getElementById('reservationFormPage').appendChild(wrapper);
+  }
+  showSection('#collapseThree');
+}
 
      async function onReservationSubmit(e) {
   e.preventDefault();
