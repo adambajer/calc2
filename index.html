@@ -920,8 +920,8 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Noc</th>
           <th>Typ </th>
+          <th>Noc</th> 
           <th>Obsazené postele</th>
           <th>Neobsazené postele</th>
           ${showPetColumn  ? '<th>Pes</th>' : ''}
@@ -973,6 +973,16 @@
       surcharge = dayPrice * 0.3;
       dayPrice += surcharge;
     }
+ // buňka Typ ceny jako piktogram s tooltipem
+    const ico = iconMap[ priceType.split(':')[0] ] || 'paid';
+    const iconCell = `
+      <td>
+        <span class="material-symbols-outlined price-icon"
+              data-bs-toggle="tooltip"
+              title="${priceType.split(':')[0]}">
+          ${ico}
+        </span>
+      </td>`;
 
     // buňka Datum s tooltipem (den + svátek/Silvestr)
     const dateTooltip = isHolidayDay
@@ -987,16 +997,7 @@
         </span>
       </td>`;
 
-    // buňka Typ ceny jako piktogram s tooltipem
-    const ico = iconMap[ priceType.split(':')[0] ] || 'paid';
-    const iconCell = `
-      <td>
-        <span class="material-symbols-outlined price-icon"
-              data-bs-toggle="tooltip"
-              title="${priceType.split(':')[0]}">
-          ${ico}
-        </span>
-      </td>`;
+   
 
     // buňka Obsazené postele: počet, tooltip=rozpis výpočtu
     const occupiedTooltip = `${people}×${(occupiedBedsPrice/people).toLocaleString()} = ${occupiedBedsPrice.toLocaleString()} CZK`;
@@ -1043,8 +1044,8 @@
     // sestavíme řádek
     breakdown += `
       <tr>
-        ${dateCell}
         ${iconCell}
+        ${dateCell}
         ${occupiedCell}
         ${unoccupiedCell}
         ${petCell}
