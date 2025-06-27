@@ -1057,11 +1057,11 @@
 
   // závěrečný řádek s celkem
   breakdown += `
-      <tr class="bg-secondary text-white">
+      <tr class="totalprice bg-secondary text-white">
         <td colspan="${4 + (showPetColumn?1:0) + (diffNights===1?1:0)}">
           <strong>Celkem</strong>
         </td>
-        <td>${totalPrice.toLocaleString()} CZK</td>
+        <td class="totalprice">${totalPrice.toLocaleString()} CZK</td>
       </tr>
     </tbody>
   </table>`;
@@ -1079,7 +1079,7 @@ function fillReservationFormData() {
   const pets = +$('#petsA').val();
   const orderNumber = $('#orderNumber').val();
 
-  const priceText = $('#result .text-end').text().trim();
+  const priceText = $('.totalprice').text().trim();
   const price = priceText.replace('Celková cena: ', '');
 
   form.dataset.dateRange    = dr;
