@@ -49,6 +49,15 @@
             cursor: pointer;
         }
 
+        .page-2,
+        .page-1 {
+            background-color: white;
+            position: relative;
+            padding: 1rem;
+            margin: 10px;
+            border: 1px solid #ccc;
+        }
+
         .accordion-button.bg-primary::after,
         .accordion-button.bg-success::after,
         .accordion-button.bg-dark::after,
@@ -109,7 +118,7 @@
         /* Custom layout for table-like fields */
         .form-row-custom {
             display: grid;
-            grid-template-columns: 0.25fr 0.35fr 0.25fr 0.35fr;
+            grid-template-columns: 0.15fr 0.45fr 0.15fr 0.45fr;
             /* Relativní šířky */
             /* col1W_label col2W_value col3W_label col4W_value */
             gap: 0px 5px;
@@ -124,27 +133,27 @@
         }
 
         .header-logo {
-            text-align: center;
-            margin-bottom: 20px;
-            margin-top: 20px;
+
+            margin-top: 0rem;
         }
 
         .header-logo img {
-            max-width: 200px;
-            margin: 0px auto;
+            max-width: 140px;
+            text-align: right;
             /* Stejná šířka jako v PDF */
             height: auto;
             display: block;
             /* Odstraní extra prostor pod obrázkem */
             /* Centruje obrázek */
+            position: absolute;
+            right: 1rem;
         }
 
         .main-title {
-            font-size: 42px;
+            font-size: 32px;
             font-weight: 400;
             /* Regular weight pro titulky */
-            text-align: center;
-            margin-bottom: 10PX;
+            margin-bottom: 1rem;
             color: #000;
         }
 
@@ -228,6 +237,54 @@
             position: relative;
         }
 
+        .page-1,
+        .page-2 {
+            /* skutečné rozměry A4 */
+            width: 210mm;
+            height: 297mm;
+
+            /* nebo alternativně:
+  width: 100%;
+  max-width: 210mm;
+  aspect-ratio: 210 / 297;
+  height: auto;
+  */
+            font-size: 0.8rem;
+
+            /* zachování okrajů, pozadí atp. */
+            background-color: white;
+            box-sizing: border-box;
+            padding: 1rem;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+
+            /* pro tisk každou stránku zvlášť */
+            page-break-after: always;
+        }
+        .page-1 .inner {
+  position: relative;
+  height: 100%;
+}
+       .page-2 .inner {
+  position: relative;
+  height: 100%;
+}
+.page-1 .form-control, .page-2 .form-control, .page-1 .form-select, .page-2 .form-select {
+            font-size: 0.8rem;
+            /* Zmenšení fontu pro lepší čitelnost */
+        }
+
+        .page-1 .form-label, .page-2 .form-label {
+            font-size: 0.9rem;
+            /* Zmenšení fontu pro lepší čitelnost */
+        }
+
+        .page-1 .form-row-custom, .page-2 .form-row-custom {
+            font-size: 0.8rem;
+        }
+
+        .page-1 .sub-heading, .page-2 .sub-heading {
+font-size: 0.8rem;}
         /* Patička */
         .form-footer {
             text-align: center;
@@ -235,9 +292,10 @@
             width: 100%;
             color: #000;
             position: static !important;
-            border-top: 1px solid #000;
+            border-top: 1px solid #ccc;
             padding: 10px;
             margin-bottom: 0;
+            color: #ccc;
         }
 
         .btn-dark {
@@ -391,7 +449,25 @@
 
         .form-footer {
             margin-top: auto;
-            position: static !important;
+            position: absolute !important;
+            bottom: 1rem;
+            width: 90%;
+        }
+
+        .price-icon {
+            /* … vaše ostatní styly … */
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1;
+            /* zajistí, že box ikony bude přesně výšky font-sizů */
+        }
+
+        #collapseOne {
+            font-size: 1.2rem;
+        }
+
+        table th {
+            font-weight: normal;
         }
     </style>
 </head>
@@ -399,239 +475,249 @@
 <body>
     <div class="container mx-auto m-4   ">
         <div class="accordion" id="accordionExample">
-            <div class="accordion-item  rounded shadow-sm my-4  ">
-                <h2 class="accordion-header">
-                    <button class="accordion-button rounded    bg-white fw-semibold " type="button"
-                        data-bs-toggle="collapse" data-bs-target="#collapseOne">
-                        <span class="material-symbols-outlined pe-1">hotel</span>Ubytování
-                    </button>
-                </h2>
+            <div class="accordion-item  shadow-sm   ">
+
                 <div id="collapseOne" class="accordion-collapse collapse show">
                     <div class="accordion-body">
-                        <form id="priceCalculatorA">
-                            <table class="table mb-3">
-                                <thead>
-                                    <tr>
-                                        <th>Apartmán</th>
-                                        <th>Termín</th>
-                                        <th>Obsazené postele</th>
-                                        <th>Neobsazené postele</th>
-                                        <th>Psi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <select class="form-select" id="apartmentSelect">
-                                                <option value="A" selected>Apartmán A</option>
-                                                <option value="B">Apartmán B</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control" id="daterange"
-                                                value="30.12.2024 - 02.01.2025">
-                                        </td>
-                                        <td>
-                                            <select class="form-select" id="peopleA">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="text" id="freeBeds" class="form-control readonly" readonly
-                                                disabled>
-                                        </td>
-                                        <td>
-                                            <select class="form-select" id="petsA">
-                                                <option value="0">0</option>
-                                                <option value="1">1</option> <option value="2">2</option> <option value="3">3</option><option value="4">4</option><option value="5">5</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <button type="submit" class="btn btn-white text-dark border-dark m-2">Vypočítej</button>
-                            <button type="submit" class="btn btn-white border-dark   m-2" data-bs-toggle="modal"
-                                data-bs-target="#priceModal">Ceník ubytování</button>
+                        <form id="priceCalculatorA" class="gx-3 gy-3 align-items-start">
+                            <div class="row"><!-- 1. sloupec: Termín + Apartmán -->
+                                <div class="col-md-3">
+                                    <label for="daterange" class="form-label small">Termín</label>
+                                    <input type="text" id="daterange" class="form-control form-control-sm mb-2"
+                                        value="30.12.2024 - 02.01.2025" readonly>
+
+
+
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="apartmentSelect" class="form-label small">Apartmán</label>
+                                    <select id="apartmentSelect" class="form-select form-select-sm">
+                                        <option value="A" selected>A</option>
+                                        <option value="B">B</option>
+                                    </select>
+                                    <label for="capacityDisplay" class="form-label small">Kapacita</label>
+                                    <input type="text" id="capacityDisplay" class="form-control form-control-sm"
+                                        readonly disabled>
+                                    <label for="extraBeds" class="form-label small">Přistýlky</label>
+                                    <input type="text" id="extraBeds" class="form-control form-control-sm" readonly
+                                        disabled>
+                                </div>
+                                <!-- 2. sloupec: Kapacita / Přistýlky  &  Obsazené / Volné -->
+                                <div class="col-md-2">
+                                    <label for="peopleA" class="form-label small">Obsazené postele</label>
+                                    <select id="peopleA" class="form-select form-select-sm">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                    </select>
+                                    <label for="freeBeds" class="form-label small">Volné postele</label>
+                                    <input type="text" id="freeBeds" class="form-control form-control-sm" readonly
+                                        disabled>
+                                </div>
+                                <!-- 3. sloupec: Psi + tlačítko Ceník -->
+                                <div class="col-md-2 ">
+                                    <label for="petsA" class="form-label small text-bold">Psi</label>
+                                    <select id="petsA" class="form-select form-select-sm mb-3">
+                                        <option>0</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </select>
+
+
+                                </div>
+                                <div class="col-md-2 ">
+                                    <label class="form-label small text-bold">Aktuální ceník</label>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm mt-auto"
+                                        data-bs-toggle="modal" data-bs-target="#priceModal">
+                                        <i class="material-icons align-middle">price_check</i>
+                                        Ceník ubytování
+                                    </button>
+                                </div>
+                            </div>
 
                         </form>
+
+
 
                     </div>
                 </div>
             </div>
-            <div class="accordion-item  shadow-sm rounded my-4">
-                <h2 class="accordion-header">
-                    <button class="accordion-button rounded  bg-white fw-semibold" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#collapseTwo">
-                        <span class="material-symbols-outlined  pe-1">calculate</span> Rozpis </button>
-                </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse">
+            <div class="accordion-item  shadow-sm  ">
+
+                <div id="collapseTwo" class="accordion-collapse show">
                     <div class="accordion-body">
                         <div id="result"></div>
                     </div>
                 </div>
             </div>
-            <div class="accordion-item rounded shadow-sm my-4">
-                <h2 class="accordion-header  text-white">
-                    <button class="accordion-button  rounded  bg-white fw-semibold " type="button"
-                        data-bs-toggle="collapse" data-bs-target="#collapseThree">
-                        <span class="material-symbols-outlined pe-1">send</span>Objednávka
-                    </button>
-                </h2>
-                <div id="collapseThree" class="accordion-collapse collapse d-none">
-                    <div class="accordion-body">
-                        <div class="container-form shadow-sm">
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="toggleCalcUI">
-                                <label class="form-check-label" for="toggleCalcUI">Zobrazit kalkulaci v UI</label>
+
+        </div>
+        <form id="reservationForm" data-date-range=" " data-apartment="" data-total-price="">
+            <div id="reservationFormPage">
+                <div class="page page-1" id="page-1">
+                    <div class="inner">
+                        <div class="row">
+                            <div class="col-md-10">
+
+                                <div class="main-title">ZÁVAZNÁ OBJEDNÁVKA UBYTOVÁNÍ</div>
+
                             </div>
+                            <div class="col-md-2 text-end">
+                                <img width="100px" src="images/black.png" alt="Selský Dvůr Logo">
 
-                            <form id="reservationForm" data-date-range=" " data-apartment="" data-total-price="">
-                                <div id="reservationFormPage">
-                                    <div class="header-logo">
-                                        <img src="images/black.png" alt="Selský Dvůr Logo">
-                                    </div>
-                                    <div class="main-title">ZÁVAZNÁ OBJEDNÁVKA UBYTOVÁNÍ</div>
-                                    <div class="form-section">
+                            </div>
+                        </div>
 
-                                        <div class="form-section">
-                                            <div class="form-row-custom">
-                                                <label class="form-label col-label">Objednávka</label>
-                                                <div class="col-value">
-                                                    <input type="text" name="orderNumber" id="orderNumber"
-                                                        class="form-control" value="">
-                                                </div>
+                        <div class="form-section">
 
-                                            </div>
-                                            <div class="form-row-custom">
-                                                <label class="form-label col-label">Apartmán</label>
-                                                <div class="col-value">
-                                                    <input name="apartmentInfo" class="form-control readonly" disabled
-                                                        id="apartmentInfo" type="text"></input>
-                                                </div>
-                                                <label class="form-label col-label">Termín</label>
-                                                <div class="col-value">
-                                                    <input name="termSummary" class="form-control readonly" readonly>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div class="sub-heading">Zákazník</div>
-                                        <div class="form-section">
-
-                                            <div class="form-row-custom">
-
-                                                <label class="form-label col-label">Jméno</label>
-                                                <div class="col-value"><input name="firstName" class="form-control"
-                                                        required>
-                                                </div>
-                                                <label class="form-label col-label">Příjmení</label>
-                                                <div class="col-value"><input name="lastName" class="form-control"
-                                                        required>
-
-                                                </div>
-                                            </div>
-                                            <div class="form-row-custom">
-                                                <label class="form-label col-label">Adresa</label>
-                                                <div class="col-value"><input name="address" class="form-control"
-                                                        required>
-                                                </div>
-                                                <label class="form-label col-label">IČ/DIČ</label>
-                                                <div class="col-value"><input name="companyId" class="form-control">
-                                                </div>
-                                            </div>
-                                            <div class="form-row-custom">
-                                                <label class="form-label col-label">Email</label>
-                                                <div class="col-value"><input name="email" class="form-control"
-                                                        type="email" required></div>
-                                                <label class="form-label col-label">Telefon</label>
-                                                <div class="col-value"><input name="phone" class="form-control"
-                                                        required></div>
-                                            </div>
-                                            <div class="form-row-custom">
-                                                <label class="form-label col-label">Způsob platby</label>
-                                                <div class="col-value">
-                                                    <select name="payment" class="form-select">
-                                                        <option>zálohová faktura + doplatek na místě</option>
-                                                        <option>celá částka předem</option>
-                                                    </select>
-                                                </div>
-                                                <label class="form-label col-label">Účel pobytu</label>
-                                                <div class="col-value">
-                                                    <select name="purpose" class="form-select">
-                                                        <option>Rekreace</option>
-                                                        <option>Pracovní pobyt</option>
-                                                        <option>Rekreace a součástí oslava</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="sub-heading">Počet ubytovaných</div>
-                                    <div class="form-section">
-                                        <div class="form-row-custom">
-                                            <label class="form-label col-label">Muži</label>
-                                            <div class="col-value"><input name="men" type="number" min="0"
-                                                    class="form-control" value="0">
-                                            </div>
-                                            <label class="form-label col-label">Děti (uveď věk)</label>
-                                            <div class="col-value">
-                                                <input name="children" type="text" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-row-custom">
-                                            <label class="form-label col-label">Ženy</label>
-                                            <div class="col-value"><input name="women" type="number" min="0"
-                                                    class="form-control" value="0">
-                                            </div>
-                                            <label class="form-label col-label">Psi</label>
-                                            <div class="col-value"><input name="dogs" type="number" min="0"
-                                                    class="form-control" value="0">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-section">
-                                        <div class="form-row-custom full-width">
-                                            <div class="sub-heading col-label">Poznámka</div>
-
-                                            <div class="col-value">
-                                                <textarea name="note" class="form-control"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="sub-heading">Rekapitulace</div>
-
-                                    <div class="form-section">
-                                        <div class="form-row-custom ">
-                                            <label class="form-label col-label">Cena objednávky</label>
-                                            <div class="col-value">
-                                                <input name="priceSummary" class="form-control readonly" readonly>
-                                            </div>
-                                        </div>
-                                        <div class="form-row-custom ">
-                                            <label for="confirmationDate" class="form-label col-label">Objednáno
-                                                dne</label>
-                                            <div class="col-value">
-                                                <input type="text" name="confirmationDate" class="form-control readonly"
-                                                    id="confirmationDate" required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-footer">
-                                        Krystoma s.r.o., Moravská Huzová 80, 783 13 Štěpánov, +420 604 471 323
+                            <div class="form-section">
+                                <div class="form-row-custom">
+                                    <label class="form-label col-label">Číslo objednávky</label>
+                                    <div class="col-value">
+                                        <input name="orderNumber" class="form-control" id="orderNumber"
+                                            type="text"></input>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-dark">Generovat PDF</button>
-                            </form>
+                                <div class="form-row-custom">
+                                    <label class="form-label col-label">Apartmán</label>
+                                    <div class="col-value">
+                                        <input name="apartmentInfo" class="form-control readonly" disabled
+                                            id="apartmentInfo" type="text"></input>
+                                    </div>
+                                    <label class="form-label col-label">Termín</label>
+                                    <div class="col-value">
+                                        <input name="termSummary" class="form-control readonly" readonly>
+                                    </div>
 
+                                </div>
+                            </div>
+                            <div class="sub-heading">Zákazník</div>
+                            <div class="form-section">
+
+                                <div class="form-row-custom">
+
+                                    <label class="form-label col-label">Jméno</label>
+                                    <div class="col-value"><input name="firstName" class="form-control" required>
+                                    </div>
+                                    <label class="form-label col-label">Příjmení</label>
+                                    <div class="col-value"><input name="lastName" class="form-control" required>
+
+                                    </div>
+                                </div>
+                                <div class="form-row-custom">
+                                    <label class="form-label col-label">Adresa</label>
+                                    <div class="col-value"><input name="address" class="form-control" required>
+                                    </div>
+                                    <label class="form-label col-label">IČ/DIČ</label>
+                                    <div class="col-value"><input name="companyId" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-row-custom">
+                                    <label class="form-label col-label">Email</label>
+                                    <div class="col-value"><input name="email" class="form-control" type="email"
+                                            required>
+                                    </div>
+                                    <label class="form-label col-label">Telefon</label>
+                                    <div class="col-value"><input name="phone" class="form-control" required></div>
+                                </div>
+                                <div class="form-row-custom">
+                                    <label class="form-label col-label">Způsob platby</label>
+                                    <div class="col-value">
+                                        <select name="payment" class="form-select">
+                                            <option>zálohová faktura + doplatek na místě</option>
+                                            <option>celá částka předem</option>
+                                        </select>
+                                    </div>
+                                    <label class="form-label col-label">Účel pobytu</label>
+                                    <div class="col-value">
+                                        <select name="purpose" class="form-select">
+                                            <option>Rekreace</option>
+                                            <option>Pracovní pobyt</option>
+                                            <option>Rekreace a součástí oslava</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="sub-heading">Počet ubytovaných</div>
+                        <div class="form-section">
+                            <div class="form-row-custom">
+                                <label class="form-label col-label">Muži</label>
+                                <div class="col-value"><input name="men" type="number" min="0" class="form-control"
+                                        value="0">
+                                </div>
+                                <label class="form-label col-label">Děti (uveď věk)</label>
+                                <div class="col-value">
+                                    <input name="children" type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-row-custom">
+                                <label class="form-label col-label">Ženy</label>
+                                <div class="col-value"><input name="women" type="number" min="0" class="form-control"
+                                        value="0">
+                                </div>
+                                <label class="form-label col-label">Psi</label>
+                                <div class="col-value"><input name="dogs" type="number" min="0" class="form-control"
+                                        value="0">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-section">
+                            <div class="form-row-custom full-width">
+                                <div class="sub-heading col-label">Poznámka</div>
+
+                                <div class="col-value">
+                                    <textarea name="note" class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sub-heading">Rekapitulace</div>
+
+                        <div class="form-section">
+                            <div class="form-row-custom ">
+                                <label class="form-label col-label">Cena objednávky</label>
+                                <div class="col-value">
+                                    <input name="priceSummary" class="form-control readonly" readonly>
+                                </div>
+                            </div>
+                            <div class="form-row-custom ">
+                                <label for="confirmationDate" class="form-label col-label">Objednáno
+                                    dne</label>
+                                <div class="col-value">
+                                    <input type="text" name="confirmationDate" class="form-control readonly"
+                                        id="confirmationDate" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-footer">
+                            Krystoma s.r.o., Moravská Huzová 80, 783 13 Štěpánov, +420 604 471 323
                         </div>
                     </div>
                 </div>
+                <div class="page page-2" id="page-2">
+                    <div class="inner">
+                        <div class="header-logo">
+                            <img src="images/black.png" alt="Selský Dvůr Logo">
+                        </div>
+                        <div class="sub-heading">Detailní kalkulace</div>
+                        <div id="resultDetail"></div>
+                        <div class="form-footer">
+                            Krystoma s.r.o., Moravská Huzová 80, 783 13 Štěpánov, +420 604 471 323
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </div>
+
+            <button type="submit" class="btn btn-dark">Generovat PDF</button>
+            <button type="button" class="btn btn-dark" id="generatePage2">Generovat PDF – Strana 2</button>
+
+        </form>
         <!-- Modal for Price Table -->
         <div class="modal fade" id="priceModal" tabindex="-1" aria-labelledby="priceModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -677,6 +763,12 @@
             { date: "04-05", title: "Velikonoční pondělí" },
             { date: "05-01", title: "Svátek práce" }
         ];
+        // 1) Nejprve si externě definujte společnou funkci pro přepočet:
+        function recalc() {
+            calculatePrice();
+            fillReservationFormData();
+        }
+
 
         // ----- Init -----
         document.addEventListener('DOMContentLoaded', init);
@@ -685,22 +777,27 @@
             initTooltips();
             initDateRangePicker();
             initApartmentPeople();
-            hideSections(['#collapseTwo', '#collapseThree']);
-            document.getElementById('priceCalculatorA')
-                .addEventListener('submit', onCalculateSubmit);
-            document.getElementById('reservationForm')
-                .addEventListener('submit', onReservationSubmit);
+            recalc();
+            // 2) Napojte ji na všechny inputy/selecty ve formuláři:
+            ['change', 'input'].forEach(evt => {
+                document
+                    .querySelectorAll('#priceCalculatorA input, #priceCalculatorA select')
+                    .forEach(el => el.addEventListener(evt, recalc));
+            });
+
+            // 3) A přidejte ho i na apply udalost daterangepickeru:
+            $('#daterange').on('apply.daterangepicker', recalc);
+            document
+                .getElementById('reservationForm')
+                .addEventListener('submit', e => onReservationSubmit(e, 1));
+
+            // Nové tlačítko → stránka 2
+            document
+                .getElementById('generatePage2')
+                .addEventListener('click', e => onReservationSubmit(e, 2));
         }
         // po init()
-        document.getElementById('toggleCalcUI')
-            .addEventListener('change', e => {
-                const calcPane = document.querySelector('#collapseTwo');
-                if (e.target.checked) {
-                    showSection('#collapseTwo');
-                } else {
-                    calcPane.classList.add('d-none');
-                }
-            });
+
 
         // místo původní funkce
         function getSilvesterDates() {
@@ -717,58 +814,44 @@
             return dates.join('\n');
         }
 
-        // ----- Ceník -----
         function renderPriceTable() {
             const container = document.getElementById('priceTableContainer');
             container.innerHTML = '';
+
+            // Tabulka A – ceny za noc
+            const titleA = document.createElement('h5');
+            titleA.textContent = 'Ceník ubytovacích nocí';
+            container.appendChild(titleA);
+
             const colA = createTable(
-                ["Osoba noc", "Cena", "Min. nocí"],
+                ["Ubytovací noc", "Cena", "Minimální počet nocí"],
                 [
-                    [`Normální <span
-         class="holiday-info"
-         data-bs-toggle="tooltip"
-         data-bs-custom-class="custom-tooltip"
-         title="Noc neděle až čtvrtek">
-         i
-       </span>`, "550 Kč", "2"],
-                    [`Víkend <span
-         class="holiday-info"
-         data-bs-toggle="tooltip"
-         data-bs-custom-class="custom-tooltip"
-         title="páteční a sobotní noc">
-         i
-       </span>`, "650 Kč", "2"],
-                    [`Svátek <span class="holiday-info" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" title="${getHolidayDates().replace(/"/g, '&quot;')}">i</span>`, "650 Kč", "2"],
-                    [
-                        `Silvestr <span
-         class="holiday-info"
-         data-bs-toggle="tooltip"
-         data-bs-custom-class="custom-tooltip"
-         title="${getSilvesterDates()}">
-         i
-       </span>`,
-                        "650 Kč", "4"
-                    ]
+                    [`<span class="holiday-info" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" title="Noc neděle až čtvrtek">i</span> Všední den`, "550 CZK", "2"],
+                    [`<span class="holiday-info" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" title="páteční a sobotní noc">i</span> Víkendová noc`, "650 CZK", "2"],
+                    [`<span class="holiday-info" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" title="${getHolidayDates().replace(/"/g, '&quot;')}">i</span> Sváteční noc`, "650 CZK", "2"],
+                    [`<span class="holiday-info" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" title="${getSilvesterDates()}">i</span> Silvestr`, "650 CZK", "4"]
                 ]
             );
+            container.appendChild(colA);
+
+            // Tabulka B – příplatky
+            const titleB = document.createElement('h5');
+            titleB.textContent = 'Příplatky';
+            titleB.classList.add('mt-4');  // trochu mezery od předchozí tabulky
+            container.appendChild(titleB);
+
             const colB = createTable(
                 ["Příplatek", "Cena"],
                 [
                     ["Pouze 1 noc", "+30%"],
-                    ["Neobsazená postel", "300 Kč"],
-                    ["Pes (za den)", "300 Kč"]
+                    ["Neobsazená postel", "300 CZK"],
+                    ["Pes (za den)", "300 CZK"]
                 ]
             );
+            container.appendChild(colB);
 
-            const row = document.createElement('div');
-            row.className = 'row';
-            [[colA, 'col-md-6'], [colB, 'col-md-6']].forEach(([col, cls]) => {
-                const w = document.createElement('div');
-                w.className = cls;
-                w.appendChild(col);
-                row.appendChild(w);
-            });
-            container.appendChild(row);
+            // znovu inicializovat tooltipy
+            initTooltips();
         }
 
         function createTable(headers, rows) {
@@ -838,47 +921,40 @@
             onApartmentChange();
         }
         function onApartmentChange() {
-            const apt = document.getElementById('apartmentSelect').value;
-            const ppl = document.getElementById('peopleA');
-            const max = apt === 'A' ? 18 : 8;
-            const cap = apt === 'A' ? 11 : 6;
-            ppl.innerHTML = '';
+            const aptVal = document.getElementById('apartmentSelect').value;
+            const max = aptVal === 'A' ? 18 : 8;
+            const cap = aptVal === 'A' ? 11 : 6;
+            document.getElementById('capacityDisplay').value = cap;
+            // Řekněme, že extraBeds = max - kapacita
+            document.getElementById('extraBeds').value = (aptVal === 'A' ? 18 : 8) - cap;
+
+            const pplSelect = document.getElementById('peopleA');
+            pplSelect.innerHTML = '';
             for (let i = 1; i <= max; i++) {
-                const o = document.createElement('option');
-                o.value = i; o.textContent = i;
-                ppl.appendChild(o);
+                const opt = document.createElement('option');
+                opt.value = i; opt.textContent = i;
+                pplSelect.appendChild(opt);
             }
             updateFreeBeds();
         }
+
         function updateFreeBeds() {
-            const apt = document.getElementById('apartmentSelect').value;
-            const cap = apt === 'A' ? 11 : 6;
+            const aptVal = document.getElementById('apartmentSelect').value;
+            const cap = aptVal === 'A' ? 11 : 6;
             const used = +document.getElementById('peopleA').value;
-            const free = Math.max(cap - used, 0);
-            document.getElementById('freeBeds').value = free;
+            document.getElementById('freeBeds').value = Math.max(cap - used, 0);
         }
 
 
-        // ----- Skrytí / zobrazení sekcí -----
-        function hideSections(selectors) {
-            selectors.forEach(s => {
-                document.querySelector(s).classList.add('d-none');
-            });
-        }
-        function showSection(selector) {
-            const sec = document.querySelector(selector);
-            sec.classList.remove('d-none');
-            new bootstrap.Collapse(sec, { toggle: true });
-        }
 
-        // ----- Výpočet ceny -----
-        function onCalculateSubmit(e) {
-            e.preventDefault();
+
+
+        function calculate() {
             calculatePrice();
-            showSection('#collapseTwo');
-            showSection('#collapseThree');
             fillReservationFormData();
-        } function calculatePrice() {
+        }
+
+        function calculatePrice() {
             // --- načtení vstupních hodnot ---
             const dateRange = $('#daterange').val().split(' - ');
             const dateFrom = new Date(dateRange[0].split('.').reverse().join('-'));
@@ -907,29 +983,29 @@
 
             // --- ikony pro typ ceny ---
             const iconMap = {
-                'Normální': 'bed',
-                'Víkend': 'weekend',
+                'Všední noc': 'bed',
+                'Víkendová noc': 'weekend',
                 'Svátek': 'event',
-                'Silvestr': 'celebration'
+                'Silvestrovská noc': 'celebration'
             };
 
             let totalPrice = 0;
 
             // --- hlavička tabulky ---
             let breakdown = `
-    <table class="table">
-      <thead>
-        <tr>
-           <th>Noc</th> 
-          <th>Obsazené postele</th>
-          <th>Neobsazené postele</th>
-          ${showPetColumn ? '<th>Pes</th>' : ''}
-          ${diffNights === 1 ? '<th>Příplatek 30 %</th>' : ''}
-          <th>Celkem za noc</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
+        <table class="table">
+        <thead>
+            <tr>
+            <th>Ubytovací noc</th> 
+            <th>Obsazené postele</th>
+            <th>Neobsazené postele</th>
+            ${showPetColumn ? '<th>Pes</th>' : ''}
+            ${diffNights === 1 ? '<th>Příplatek 30 %</th>' : ''}
+            <th>Celkem za noc</th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
 
             for (let d = new Date(dateFrom); d < dateTo; d.setDate(d.getDate() + 1)) {
                 const day = new Date(d);
@@ -944,17 +1020,17 @@
                 // 1) typ ceny a cena obsazených lůžek
                 let priceType, occupiedBedsPrice;
                 if (isSilvestr && silvestrNights < 4) {
-                    priceType = 'Silvestr';
+                    priceType = 'Silvestrovská noc';
                     occupiedBedsPrice = silvestrPrice * people;
                     silvestrNights++;
                 } else if (isHolidayDay) {
-                    priceType = `Svátek: ${isHolidayDay.title}`;
+                    priceType = `Sváteční noc:: ${isHolidayDay.title}`;
                     occupiedBedsPrice = holidayPrice * people;
                 } else if (isWeekendDay) {
-                    priceType = 'Víkend';
+                    priceType = 'Víkendová noc';
                     occupiedBedsPrice = weekendPrice * people;
                 } else {
-                    priceType = 'Normální';
+                    priceType = 'Všední noc';
                     occupiedBedsPrice = standardPrice * people;
                 }
 
@@ -974,18 +1050,19 @@
                 }
                 // buňka Typ ceny jako piktogram s tooltipem
                 const ico = iconMap[priceType.split(':')[0]] || 'paid';
-        
+
 
                 // buňka Datum s tooltipem (den + svátek/Silvestr)
                 const dateTooltip = isHolidayDay
                     ? `${weekday}, Svátek: ${isHolidayDay.title}`
-                    : (priceType.startsWith('Silvestr') ? `${weekday}, Silvestr` : weekday);
+                    : (priceType.startsWith('Silvestrovská noc') ? `${weekday}, Silvestr` : weekday);
                 const dateCell = `
       <td>
+        <span data-bs-toggle="tooltip" data-bs-custom-class="white-tooltip" class="material-symbols-outlined price-icon" title="${priceType.split(':')[0]} ">${ico} </span>
         <span data-bs-toggle="tooltip"
               data-bs-custom-class="white-tooltip"
               title="${dateTooltip}">
-           <span class="material-symbols-outlined price-icon" title="${priceType.split(':')[0]} ">${ico} </span>
+           
           ${dateStr}
         </span>
       </td>`;
@@ -994,14 +1071,16 @@
 
                 // buňka Obsazené postele: počet, tooltip=rozpis výpočtu
                 const occupiedTooltip = `${people} × ${(occupiedBedsPrice / people).toLocaleString()} = ${occupiedBedsPrice.toLocaleString()} CZK`;
+                const perBed = (occupiedBedsPrice / people).toLocaleString();
                 const occupiedCell = `
-      <td>
-        <span data-bs-toggle="tooltip"
-              data-bs-custom-class="white-tooltip"
-              title="${occupiedTooltip}">
-          ${people}x
-        </span>
-      </td>`;
+  <td>
+    <span data-bs-toggle="tooltip"
+          data-bs-custom-class="white-tooltip"
+          title="${people} × ${perBed} CZK = ${occupiedBedsPrice.toLocaleString()} CZK">
+      ${people} × ${perBed}
+    </span>
+  </td>`;
+
 
                 // buňka Neobsazené postele: počet, tooltip=rozpis výpočtu
                 const unoccTooltip = `${unoccBeds} × ${unusedBedPrice} = ${unoccBedsPrice.toLocaleString()} CZK`;
@@ -1010,18 +1089,26 @@
         <span data-bs-toggle="tooltip"
               data-bs-custom-class="white-tooltip"
               title="${unoccTooltip}">
-          ${unoccBeds}x
+          ${unoccBeds} × ${unusedBedPrice}
         </span>
       </td>`;
+                const petCell = showPetColumn ? `
+      <td>
+        <span data-bs-toggle="tooltip"
+              data-bs-custom-class="white-tooltip"
+              title="${pets} × 300 = ${petCharge.toLocaleString()} CZK">
+          ${pets} x ${petCharge.toLocaleString()}
+        </span>
+      </td>` : '';
 
                 // buňka Pes a případný příplatek 30%
-                const petCell = showPetColumn ? `<td>${petCharge.toLocaleString()} CZK</td>` : '';
+
                 const surchargeCell = diffNights === 1 ? `<td>${surcharge.toLocaleString()} CZK</td>` : '';
 
                 // buňka Za noc: číslo + tooltip detail
                 let parts = [];
                 parts.push(`Obsazené: ${occupiedTooltip}`);
-                if (unoccBeds > 0) parts.push(`Volná: ${unoccTooltip}`);
+                if (unoccBeds > 0) parts.push(`Neobsazené: ${unoccTooltip}`);
                 if (petCharge) parts.push(`Pes: ${petCharge.toLocaleString()} CZK`);
                 if (surcharge) parts.push(`Příplatek: ${surcharge.toLocaleString()} CZK`);
                 const totalTooltip = parts.join('\n');
@@ -1059,8 +1146,9 @@
       </tr>
     </tbody>
   </table>`;
-
             $('#result').html(breakdown).show();
+
+            $('#resultDetail').html(breakdown);
             initTooltips();
             fillReservationFormData();
         }
@@ -1073,7 +1161,7 @@
             const pets = +$('#petsA').val();
             const orderNumber = $('#orderNumber').val();
 
-            const priceText = $('.totalprice').text().trim();
+            const priceText = $('#result .totalprice').first().text().trim();
             const price = priceText.replace('Celková cena: ', '');
 
             form.dataset.dateRange = dr;
@@ -1088,23 +1176,10 @@
             document.getElementById('apartmentInfo').value = 'Apartmán ' + apt;
             form.elements['priceSummary'].value = price;
 
-            const prev = document.getElementById('calcCopy');
-            if (prev) prev.remove();
-            if (document.getElementById('toggleCalcUI').checked) {
-                const html = document.getElementById('result').innerHTML;
-                const wrapper = document.createElement('div');
-                wrapper.id = 'calcCopy';
-                wrapper.innerHTML = `
-      <div class="page-break"></div>
-      <div class="sub-heading">Detailní kalkulace</div>
-      <div class="form-section">${html}</div>
-    `;
-                document.getElementById('reservationFormPage').appendChild(wrapper);
-            }
-            showSection('#collapseThree');
+
         }
 
-        async function onReservationSubmit(e) {
+        async function onReservationSubmit(e, pageNo = 1) {
             e.preventDefault();
 
             // 1) Naplníme data
@@ -1116,16 +1191,29 @@
                 .value
                 .trim() || 'objednavka';
 
-            // 3) Element, který chceme v PDF
-            const element = document.querySelector('#reservationFormPage');
+            // 3) Hledáme element .inner uvnitř #page-X
+            const pageEl = document.getElementById(`page-${pageNo}`);
+            if (!pageEl) {
+                alert(`Strana ${pageNo} neexistuje!`);
+                return;
+            }
+            const innerEl = pageEl.querySelector('.inner');
+            if (!innerEl) {
+                alert(`Strana ${pageNo} nemá element .inner`);
+                return;
+            }
 
-            // --- Nastavíme kontejner na relative, aby absolutní footer fungoval ---
-            element.style.position = 'relative';
+            // 4) Připravíme název souboru
+            const filename = pageNo === 2
+                ? `${orderNum}_strana2.pdf`
+                : `${orderNum}.pdf`;
 
-            // 4) Vložíme mu style tak, aby .form-footer (nebo .pdf-footer) byla absolutně dole
+            // 5) Nastavíme relative kontejner pro footer
+            innerEl.style.position = 'relative';
+
+            // 6) Vložíme upravující <style> jen jednou, na .inner
             const styleTag = document.createElement('style');
             styleTag.textContent = `
-    /* zachováme vaše styly pro inputy */
     .form-control,
     .form-select,
     textarea {
@@ -1138,41 +1226,29 @@
     .form-control[disabled] {
       background-color: #fff !important;
     }
+   .form-footer {
+            margin-top: auto;
+            position: absolute !important;
+            bottom: 1rem;
+            width: 90%;
+        }
 
-    /* důležité: container PDF musí být relative */
-    #reservationFormPage {
-      position: relative;
-    }
-
-    /* upravený footer: absolutně dole v PDF */
-    .form-footer {
-      position: absolute !important;
-      bottom: 15px;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      padding: 8px 0;
-      border-top: 1px solid #000;
-      margin: 0;
-      color: #000;
-      background: transparent;
-    }
   `;
-            element.insertBefore(styleTag, element.firstChild);
+            innerEl.insertBefore(styleTag, innerEl.firstChild);
 
-            // 5) Nastavení html2pdf
+            // 7) Nastavení html2pdf
             const opt = {
                 margin: [15, 15, 15, 15],
-                filename: `${orderNum}.pdf`,
+                filename,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
             };
 
-            // 6) Generování PDF
+            // 8) Generování PDF jen z .inner
             html2pdf()
                 .set(opt)
-                .from(element)
+                .from(innerEl)
                 .save();
         }
 
