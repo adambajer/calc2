@@ -140,7 +140,7 @@
         /* Form Grid */
         .form-row-custom {
             display: grid;
-            grid-template-columns: 0.25fr 0.35fr 0.25fr 0.35fr;
+            grid-template-columns: 0.25fr 0.65fr 0.25fr 0.4fr;
             gap: 0 0.3125rem;
             align-items: center;
             margin-bottom: 0.5rem;
@@ -298,36 +298,38 @@
             position: absolute;
             bottom: 1rem;
             width: 90%;
-        }/* --- GRAFICKÉ ZOBRAZENÍ LŮŽEK --- */
-#capacityDisplay,
-#extraBeds {
-  display: flex;
-  gap: 4px;
-  padding: 2px 0;
+        }
+        /* skryjeme číselné pole Volné postele */
+#freeBeds {
+  display: none !important;
 }
 
-#capacityDisplay .bed-rect,
-#extraBeds .bed-rect {
+/* společné stylování políček */
+.bed-rect {
+  display: inline-block;
   width: 16px;
   height: 16px;
+  margin-right: 4px;
   border: 1px solid #ccc;
   box-sizing: border-box;
+  vertical-align: middle;
 }
 
-/* obsazené lůžko = plné modré */
-#capacityDisplay .bed-rect.occupied {
+/* obsazené postele = modré */
+.bed-rect.occupied {
   background-color: #0d6efd;
-  border-color: #0d6efd;
+  border-color:   #0d6efd;
 }
 
-/* neobsazené lůžko = jen obrys */
-#capacityDisplay .bed-rect.free {
+/* neobsazené postele = průhledné */
+.bed-rect.free {
   background: transparent;
 }
 
-/* přistýlka = šedý obrys */
-#extraBeds .bed-rect {
-  border-color: #6c757d;
+/* přistýlky = žluté */
+.bed-rect.extra {
+  background-color: #ffc107;
+  border-color:   #ffc107;
 }
 
     </style>
@@ -352,7 +354,7 @@
                      >
             </div>
  
-          <div class="col-md-2">
+          <div class="col-md-3">
             <label for="apartmentSelect" class="form-label small">                <span class="material-symbols-outlined">apartment</span>
  Apartmán</label>
                <select id="apartmentSelect"
@@ -390,9 +392,7 @@
                 <option>2</option>
                 <option>3</option>
               </select>
- 
-            <label for="freeBeds" class="form-label small"><span class="material-symbols-outlined">bed</span> Volné postele                 
-</label>
+  
                <input type="text"
                      id="freeBeds"
                      class="form-control form-control-sm"
@@ -804,16 +804,52 @@
             ppl.addEventListener('change', updateFreeBeds);
             onApartmentChange();
         }
-        // před funkcemi, např. nahoře ve script.js
+ /** vykreslí řadu postelí (kapacita) */
 function renderBedGraphics(container, total, filled) {
-  // container = DOM element, total = kapacita, filled = obsazené
   let html = '';
   for (let i = 1; i <= total; i++) {
-    const cls = i <= filled ? 'bed-rect occupied' : 'bed-rect free';
-    html += `<div class="${cls}"></div>`;
+    const isOcc = i <= filled;
+    const cls   = isOcc ? 'bed-rect occupied' : 'bed-rect free';
+    const title = isOcc ? 'Obsazená postel' : 'Neobsazená postel';
+    html += `<div class="${cls}" title="${title}"></div>`;
   }
   container.innerHTML = html;
 }
+
+/** vykreslí řadu přistýlek (žluté) */
+function renderExtraBedsGraphics(container, totalExtra) {
+  let html = '';
+  for (let i = 0; i < totalExtra; i++) {
+    html += `<div class="bed-rect extra" title="Přistýlka"></div>`;
+  }
+  container.innerHTML = html;
+}
+
+// ve funkci onApartmentChange() a updateFreeBeds() zavoláme:
+
+function updateFreeBeds() {
+  const aptVal = document.getElementById('apartmentSelect').value;
+  const cap    = aptVal === 'A' ? 11 : 6;
+  const used   = +document.getElementById('peopleA').value;
+  const free   = Math.max(cap - used, 0);
+
+  // 1) grafiku kapacity
+  renderBedGraphics(
+    document.getElementById('capacityDisplay'),
+    cap, used
+  );
+
+  // 2) grafiku přistýlek
+  const extra = (aptVal === 'A' ? 18 : 8) - cap;
+  renderExtraBedsGraphics(
+    document.getElementById('extraBeds'),
+    extra
+  );
+
+  // (Volné postele už skryté, ale pro kalkulaci ponecháme hodnotu)
+  document.getElementById('freeBeds').value = free;
+}
+
 
         function onApartmentChange() {
             const aptVal = document.getElementById('apartmentSelect').value;
@@ -821,34 +857,27 @@ function renderBedGraphics(container, total, filled) {
             const cap = aptVal === 'A' ? 11 : 6;
            // v onApartmentChange() místo textContent pro capacityDisplay:
 const capDisp = document.getElementById('capacityDisplay');
- renderBedGraphics(capDisp, cap, +document.getElementById('peopleA').value);
+  const used   = +document.getElementById('peopleA').value;
+  const free   = Math.max(cap - used, 0);
 
-            const pplSelect = document.getElementById('peopleA');
-            pplSelect.innerHTML = '';
-            for (let i = 1; i <= max; i++) {
-                const opt = document.createElement('option');
-                opt.value = i; opt.textContent = i;
-                pplSelect.appendChild(opt);
-            }
-            updateFreeBeds();
+  // 1) grafiku kapacity
+  renderBedGraphics(
+    document.getElementById('capacityDisplay'),
+    cap, used
+  );
+
+  // 2) grafiku přistýlek
+  const extra = (aptVal === 'A' ? 18 : 8) - cap;
+  renderExtraBedsGraphics(
+    document.getElementById('extraBeds'),
+    extra
+  );
+
+  // (Volné postele už skryté, ale pro kalkulaci ponecháme hodnotu)
+  document.getElementById('freeBeds').value = free;
         }
 
- function updateFreeBeds() {
-  const aptVal = document.getElementById('apartmentSelect').value;
-  const cap = aptVal === 'A' ? 11 : 6;
-  const used = +document.getElementById('peopleA').value;
-  const free = Math.max(cap - used, 0);
-
-  // grafika pro volná lůžka
-  renderBedGraphics(document.getElementById('capacityDisplay'), cap, used);
-
-  // přistýlky:
-  const extra = (aptVal === 'A' ? 18 : 8) - cap;
-  renderBedGraphics(document.getElementById('extraBeds'), extra, 0);
-
-  document.getElementById('freeBeds').value = free;
-}
-
+ 
 
 
 
