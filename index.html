@@ -286,18 +286,15 @@
         .page-1 .sub-heading, .page-2 .sub-heading {
 font-size: 0.8rem;}
         /* Patička */
-        .form-footer {
-            text-align: center;
-            margin-top: auto;
-            width: 100%;
-            color: #000;
-            position: static !important;
-            border-top: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 0;
-            color: #ccc;
-        }
-
+       
+.form-header {      margin-bottom: 2rem;
+    color: #ccc;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 1rem;
+    display: flex
+;
+    justify-content: space-between;
+}
         .btn-dark {
             background-color: #343a40;
             border-color: #343a40;
@@ -559,17 +556,14 @@ font-size: 0.8rem;}
             <div id="reservationFormPage">
                 <div class="page page-1" id="page-1">
                     <div class="inner">
-                        <div class="row">
-                            <div class="col-md-10">
-
+                         <div class="form-header">
+                            Krystoma s.r.o., Moravská Huzová 80, 783 13 Štěpánov, +420 604 471 323
+                             <img src="images/black.png" alt="Selský Dvůr Logo" width="100px" >
+                        </div>
+                   
                                 <div class="main-title">ZÁVAZNÁ OBJEDNÁVKA UBYTOVÁNÍ</div>
 
-                            </div>
-                            <div class="col-md-2 text-end">
-                                <img width="100px" src="images/black.png" alt="Selský Dvůr Logo">
-
-                            </div>
-                        </div>
+                          
 
                         <div class="form-section">
 
@@ -694,28 +688,27 @@ font-size: 0.8rem;}
                                 </div>
                             </div>
                         </div>
-                        <div class="form-footer">
-                            Krystoma s.r.o., Moravská Huzová 80, 783 13 Štěpánov, +420 604 471 323
-                        </div>
+                       
                     </div>
-                </div>
+                </div>            
+                <button type="submit" class="btn btn-dark">PDF 1</button>
+
                 <div class="page page-2" id="page-2">
                     <div class="inner">
-                        <div class="header-logo">
-                            <img src="images/black.png" alt="Selský Dvůr Logo">
+                        <div class="form-header">
+                            Krystoma s.r.o., Moravská Huzová 80, 783 13 Štěpánov, +420 604 471 323
+                             <img src="images/black.png" alt="Selský Dvůr Logo" width="100px" >
                         </div>
+                       
                         <div class="sub-heading">Detailní kalkulace</div>
                         <div id="resultDetail"></div>
-                        <div class="form-footer">
-                            Krystoma s.r.o., Moravská Huzová 80, 783 13 Štěpánov, +420 604 471 323
-                        </div>
+                        
                     </div>
                 </div>
+            <button type="button" class="btn btn-dark" id="generatePage2">PDF 2</button>
 
             </div>
 
-            <button type="submit" class="btn btn-dark">Generovat PDF</button>
-            <button type="button" class="btn btn-dark" id="generatePage2">Generovat PDF – Strana 2</button>
 
         </form>
         <!-- Modal for Price Table -->
