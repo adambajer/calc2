@@ -359,7 +359,7 @@
  
 /* 4) odsazení selectu, aby se pod ikonu nevešel šipkový dropdown */
 .input-group .form-select {
-  padding-left: 2.5rem;
+  padding-right: 2.5rem;
 }
 
     </style>
@@ -880,12 +880,12 @@
   document.getElementById('freeBeds').value = freeBeds;
 
   document.getElementById('bedsLine').innerHTML =
-    '<span class="material-symbols-outlined bed-icon">bed</span>'.repeat(filledBeds) +
-    '<span class="material-symbols-outlined bed-icon empty">bed</span>'.repeat(freeBeds);
+    '<span class="material-symbols-outlined bed-icon">person</span>'.repeat(filledBeds) +
+    '<span class="material-symbols-outlined bed-icon empty">person</span>'.repeat(freeBeds);
 
   document.getElementById('extraBedsLine').innerHTML =
-    '<span class="material-symbols-outlined bed-icon extra">single_bed</span>'.repeat(extrasUsed) +
-    '<span class="material-symbols-outlined bed-icon empty">single_bed</span>'.repeat(extrasFree);
+    '<span class="material-symbols-outlined bed-icon extra">person</span>'.repeat(extrasUsed) +
+    '<span class="material-symbols-outlined bed-icon empty">person</span>'.repeat(extrasFree);
 
   let summary = `Využito: ${filledBeds} / ${cap} postelí`;
   if (extrasTotal > 0) {
