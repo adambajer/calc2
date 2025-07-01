@@ -146,6 +146,14 @@
             margin-bottom: 0.5rem;
         }
 
+        .form-row-custom2 {
+            display: grid;
+            grid-template-columns: 0.3fr 0.7fr;
+            gap: 0 0.3125rem;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
         .form-row-custom.full-width {
             grid-template-columns: 90px auto;
         }
@@ -336,7 +344,7 @@
 </head>
 
 <body>
-    <div class="container mx-auto m-4   ">
+    <div class="container-fluid mx-auto m-4   ">
         <div class="accordion" id="accordionExample">
             <div class="accordion-item shadow-sm">
                 <div id="collapseOne" class="accordion-collapse collapse show">
@@ -375,11 +383,11 @@
                                         </select>
                                     </div>
                                     <div class="mt-2">
-                                        <div   class="me-3 align-middle">
+                                        <div class="me-3 align-middle">
                                             <span class="material-symbols-outlined">hotel</span>
                                             <span id="capacityDisplay"></span>
                                         </div>
-                                        <div   class="align-middle">
+                                        <div class="align-middle">
                                             <span class="material-symbols-outlined">bedroom_child</span>
                                             <span id="extraBeds"></span>
                                         </div>
@@ -406,30 +414,29 @@
 
                                         <input type="text" id="freeBeds" class="form-control form-control-sm" readonly
                                             disabled>
-                                    </div> 
+                                    </div>
                                 </div>
 
                                 <!-- 3. sloupec: Psi -->
                                 <div class="col-md-2">
-                                    <label for="petsA" class="form-label small text-bold"> 
+                                    <label for="petsA" class="form-label small text-bold">
                                         Psi</label>
-                                  
+
                                     <div class="input-group mb-2">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">
-                                                <span
-                                            class="material-symbols-outlined">pets</span>
+                                                <span class="material-symbols-outlined">pets</span>
                                             </div>
                                         </div>
-                                         <select id="petsA" class="form-select form-select-sm">
-                                        <option>0</option>
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
-                                    </select>
-                                    </div> 
+                                        <select id="petsA" class="form-select form-select-sm">
+                                            <option>0</option>
+                                            <option>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                            <option>4</option>
+                                            <option>5</option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <!-- 4. sloupec: Ceník -->
@@ -459,168 +466,180 @@
 
         </div>
         <form id="reservationForm" data-date-range=" " data-apartment="" data-total-price="">
+        
+
             <div id="reservationFormPage">
-                <div class="page page-1" id="page-1">
-                    <div class="inner">
-                        <div class="form-header">
-                            Krystoma s.r.o., Moravská Huzová 80, 783 13 Štěpánov, +420 604 471 323
-                            <img src="images/black.png" alt="Selský Dvůr Logo" width="100px">
-                        </div>
+                <div class="row">
+                    <div class="col">
+                                <button type="submit" class="btn btn-dark d-inline-block">Stáhni PDF -
+                                strana 1</button>
+                        <div class="page page-1" id="page-1">
+                    
 
-                        <div class="main-title">ZÁVAZNÁ OBJEDNÁVKA UBYTOVÁNÍ</div>
+                            <div class="inner">
+                                <div class="form-header">
+                                    Krystoma s.r.o., Moravská Huzová 80, 783 13 Štěpánov, +420 604 471 323
+                                    <img src="images/black.png" alt="Selský Dvůr Logo" width="100px">
+                                </div>
+
+                                <div class="main-title">ZÁVAZNÁ OBJEDNÁVKA UBYTOVÁNÍ</div>
+                                <div class="form-section">
+
+                                    <div class="form-section">
+                                        <div class="form-row-custom2">
+                                            <label class="form-label col-label">Číslo objednávky</label>
+                                            <div class="col-value">
+                                                <input name="orderNumber" class="form-control" id="orderNumber"
+                                                    type="text"></input>
+                                            </div>
+                                        </div>
+                                        <div class="form-row-custom2">
+                                            <label class="form-label col-label">Termín</label>
+                                            <div class="col-value">
+                                                <input name="termSummary" class="form-control readonly" readonly>
+                                            </div>
 
 
 
-                        <div class="form-section">
+                                        </div>
+                                        <div class="form-row-custom2">
+                                            <label class="form-label col-label">Apartmán</label>
+                                            <div class="col-value">
+                                                <input name="apartmentInfo" class="form-control readonly" disabled
+                                                    id="apartmentInfo" type="text"></input>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="sub-heading">Zákazník</div>
+                                    <div class="form-section">
 
-                            <div class="form-section">
-                                <div class="form-row-custom">
-                                    <label class="form-label col-label">Číslo objednávky</label>
-                                    <div class="col-value">
-                                        <input name="orderNumber" class="form-control" id="orderNumber"
-                                            type="text"></input>
+                                        <div class="form-row-custom">
+
+                                            <label class="form-label col-label">Jméno</label>
+                                            <div class="col-value"><input name="firstName" class="form-control"
+                                                    required>
+                                            </div>
+                                            <label class="form-label col-label">Příjmení</label>
+                                            <div class="col-value"><input name="lastName" class="form-control" required>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-row-custom">
+                                            <label class="form-label col-label">Adresa</label>
+                                            <div class="col-value"><input name="address" class="form-control" required>
+                                            </div>
+                                            <label class="form-label col-label">IČ/DIČ</label>
+                                            <div class="col-value"><input name="companyId" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-row-custom">
+                                            <label class="form-label col-label">Email</label>
+                                            <div class="col-value"><input name="email" class="form-control" type="email"
+                                                    required>
+                                            </div>
+                                            <label class="form-label col-label">Telefon</label>
+                                            <div class="col-value"><input name="phone" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-row-custom">
+                                            <label class="form-label col-label">Účel pobytu</label>
+                                            <div class="col-value">
+                                                <select name="purpose" class="form-select">
+                                                    <option>Rekreace</option>
+                                                    <option>Pracovní pobyt</option>
+                                                    <option>Rekreace a součástí oslava</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-row-custom">
+                                            <label class="form-label col-label">Způsob platby</label>
+                                            <div class="col-value">
+                                                <select name="payment" class="form-select d-block">
+                                                    <option>zálohová faktura + doplatek na místě</option>
+                                                    <option>celá částka předem</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+
                                     </div>
                                 </div>
-                                <div class="form-row-custom">
-                                         <label class="form-label col-label">Termín</label>
-                                    <div class="col-value">
-                                        <input name="termSummary" class="form-control readonly" readonly>
+                                <div class="sub-heading">Počet ubytovaných</div>
+                                <div class="form-section">
+                                    <div class="form-row-custom">
+                                        <label class="form-label col-label">Muži</label>
+                                        <div class="col-value"><input name="men" type="number" min="0"
+                                                class="form-control" value="0">
+                                        </div>
+                                        <label class="form-label col-label">Děti (uveď věk)</label>
+                                        <div class="col-value">
+                                            <input name="children" type="text" class="form-control">
+                                        </div>
                                     </div>
-                                  
-                               
+                                    <div class="form-row-custom">
+                                        <label class="form-label col-label">Ženy</label>
+                                        <div class="col-value"><input name="women" type="number" min="0"
+                                                class="form-control" value="0">
+                                        </div>
+                                        <label class="form-label col-label">Psi</label>
+                                        <div class="col-value"><input name="dogs" type="number" min="0"
+                                                class="form-control" value="0">
 
-                                </div>
-                                                                <div class="form-row-custom">
-                                                                      <label class="form-label col-label">Apartmán</label>
-                                    <div class="col-value">
-                                        <input name="apartmentInfo" class="form-control readonly" disabled
-                                            id="apartmentInfo" type="text"></input>
-                                    </div>
-</div>
-                            </div>
-                            <div class="sub-heading">Zákazník</div>
-                            <div class="form-section">
-
-                                <div class="form-row-custom">
-
-                                    <label class="form-label col-label">Jméno</label>
-                                    <div class="col-value"><input name="firstName" class="form-control" required>
-                                    </div>
-                                    <label class="form-label col-label">Příjmení</label>
-                                    <div class="col-value"><input name="lastName" class="form-control" required>
-
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-row-custom">
-                                    <label class="form-label col-label">Adresa</label>
-                                    <div class="col-value"><input name="address" class="form-control" required>
-                                    </div>
-                                    <label class="form-label col-label">IČ/DIČ</label>
-                                    <div class="col-value"><input name="companyId" class="form-control">
+                                <div class="sub-heading">Poznámka</div>
+
+                                <div class="form-section">
+                                    <div class="form-row-custom w-100">
+
+                                        <div class="col-value ">
+                                            <textarea name="note" class="form-control"></textarea>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-row-custom">
-                                    <label class="form-label col-label">Email</label>
-                                    <div class="col-value"><input name="email" class="form-control" type="email"
-                                            required>
+                                <div class="sub-heading">Rekapitulace</div>
+
+                                <div class="form-section">
+                                    <div class="form-row-custom ">
+                                        <label class="form-label col-label">Cena objednávky</label>
+                                        <div class="col-value">
+                                            <input name="priceSummary" class="form-control readonly" readonly>
+                                        </div>
                                     </div>
-                                    <label class="form-label col-label">Telefon</label>
-                                    <div class="col-value"><input name="phone" class="form-control" required></div>
-                                </div>
-                                                                <div class="form-row-custom">
-                                                                     <label class="form-label col-label">Účel pobytu</label>
-                                    <div class="col-value">
-                                        <select name="purpose" class="form-select">
-                                            <option>Rekreace</option>
-                                            <option>Pracovní pobyt</option>
-                                            <option>Rekreace a součástí oslava</option>
-                                        </select>
+                                    <div class="form-row-custom ">
+                                        <label for="confirmationDate" class="form-label col-label">Objednáno
+                                            dne</label>
+                                        <div class="col-value">
+                                            <input type="text" name="confirmationDate" class="form-control readonly"
+                                                id="confirmationDate" required>
+                                        </div>
                                     </div>
-</div>
-                                <div class="form-row-custom">
-                                    <label class="form-label col-label">Způsob platby</label>
-                                    <div class="col-value">
-                                        <select name="payment" class="form-select d-block">
-                                            <option>zálohová faktura + doplatek na místě</option>
-                                            <option>celá částka předem</option>
-                                        </select>
-                                    </div>
-                                   
                                 </div>
 
-                            </div>
-                        </div>
-                        <div class="sub-heading">Počet ubytovaných</div>
-                        <div class="form-section">
-                            <div class="form-row-custom">
-                                <label class="form-label col-label">Muži</label>
-                                <div class="col-value"><input name="men" type="number" min="0" class="form-control"
-                                        value="0">
-                                </div>
-                                <label class="form-label col-label">Děti (uveď věk)</label>
-                                <div class="col-value">
-                                    <input name="children" type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-row-custom">
-                                <label class="form-label col-label">Ženy</label>
-                                <div class="col-value"><input name="women" type="number" min="0" class="form-control"
-                                        value="0">
-                                </div>
-                                <label class="form-label col-label">Psi</label>
-                                <div class="col-value"><input name="dogs" type="number" min="0" class="form-control"
-                                        value="0">
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="sub-heading">Poznámka</div>
-
-                        <div class="form-section">
-                            <div class="form-row-custom w-100">
-
-                                <div class="col-value ">
-                                    <textarea name="note" class="form-control"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="sub-heading">Rekapitulace</div>
-
-                        <div class="form-section">
-                            <div class="form-row-custom ">
-                                <label class="form-label col-label">Cena objednávky</label>
-                                <div class="col-value">
-                                    <input name="priceSummary" class="form-control readonly" readonly>
-                                </div>
-                            </div>
-                            <div class="form-row-custom ">
-                                <label for="confirmationDate" class="form-label col-label">Objednáno
-                                    dne</label>
-                                <div class="col-value">
-                                    <input type="text" name="confirmationDate" class="form-control readonly"
-                                        id="confirmationDate" required>
-                                </div>
                             </div>
                         </div>
 
                     </div>
-                </div>
-                <button type="submit" class="btn btn-dark">PDF 1</button>
+                    <div class="col">
+                              <button type="button" class="btn btn-dark d-inline-block" id="generatePage2">Závazná objednávka ubytování -
+                strana 2</button>
 
-                <div class="page page-2" id="page-2">
-                    <div class="inner">
-                        <div class="form-header">
-                            Krystoma s.r.o., Moravská Huzová 80, 783 13 Štěpánov, +420 604 471 323
-                            <img src="images/black.png" alt="Selský Dvůr Logo" width="100px">
+                        <div class="page page-2" id="page-2">
+                          
+                            <div class="inner">
+                                <div class="form-header">
+                                    Krystoma s.r.o., Moravská Huzová 80, 783 13 Štěpánov, +420 604 471 323
+                                    <img src="images/black.png" alt="Selský Dvůr Logo" width="100px">
+                                </div>
+
+                                <div class="sub-heading">Detailní kalkulace</div>
+                                <div id="resultDetail"></div>
+
+                            </div>
                         </div>
-
-                        <div class="sub-heading">Detailní kalkulace</div>
-                        <div id="resultDetail"></div>
-
                     </div>
                 </div>
-                <button type="button" class="btn btn-dark" id="generatePage2">PDF 2</button>
-
             </div>
 
 
@@ -839,64 +858,64 @@
             container.innerHTML = html;
         }
 
-     function renderExtraBedsGraphics(container, totalExtra, filledExtras) {
-  let html = '';
-  for (let i = 1; i <= totalExtra; i++) {
-    // i ≤ filledExtras → žlutá, jinak jen obrys
-    const cls   = i <= filledExtras ? 'bed-rect extra' : 'bed-rect free';
-    const title = i <= filledExtras
-      ? 'Přistýlka obsazená'
-      : 'Přistýlka volná';
-    html += `<div class="${cls}" title="${title}"></div>`;
-  }
-  container.innerHTML = html;
-}
-/** aktualizace grafiky lůžek a tooltipu s čísly */
-function updateFreeBeds() {
-  const aptVal   = document.getElementById('apartmentSelect').value;
-  const maxBeds  = aptVal === 'A' ? 18 : 8;      // max možných osob
-  const cap      = aptVal === 'A' ? 11 : 6;      // standardní kapacita
-  const used     = +document.getElementById('peopleA').value;
-  const free     = Math.max(cap - used, 0);
-  const extrasTotal  = maxBeds - cap;                   // maximální počet přistýlek
-  const extrasFilled = Math.max(used - cap, 0);         // kolik skutečně přistýlek
-  const usedAll     = +document.getElementById('peopleA').value; // celkem osob
-  const usedBeds    = Math.min(usedAll, cap);        // obsazené postele
-  
-  const usedExtras  = Math.max(usedAll - cap, 0);    // obsazené přistýlky
+        function renderExtraBedsGraphics(container, totalExtra, filledExtras) {
+            let html = '';
+            for (let i = 1; i <= totalExtra; i++) {
+                // i ≤ filledExtras → žlutá, jinak jen obrys
+                const cls = i <= filledExtras ? 'bed-rect extra' : 'bed-rect free';
+                const title = i <= filledExtras
+                    ? 'Přistýlka obsazená'
+                    : 'Přistýlka volná';
+                html += `<div class="${cls}" title="${title}"></div>`;
+            }
+            container.innerHTML = html;
+        }
+        /** aktualizace grafiky lůžek a tooltipu s čísly */
+        function updateFreeBeds() {
+            const aptVal = document.getElementById('apartmentSelect').value;
+            const maxBeds = aptVal === 'A' ? 18 : 8;      // max možných osob
+            const cap = aptVal === 'A' ? 11 : 6;      // standardní kapacita
+            const used = +document.getElementById('peopleA').value;
+            const free = Math.max(cap - used, 0);
+            const extrasTotal = maxBeds - cap;                   // maximální počet přistýlek
+            const extrasFilled = Math.max(used - cap, 0);         // kolik skutečně přistýlek
+            const usedAll = +document.getElementById('peopleA').value; // celkem osob
+            const usedBeds = Math.min(usedAll, cap);        // obsazené postele
 
-  // 1) grafika kapacity
-  renderBedGraphics(
-    document.getElementById('capacityDisplay'),
-    cap, used
-  );
+            const usedExtras = Math.max(usedAll - cap, 0);    // obsazené přistýlky
 
-  // 2) grafika přistýlek (žluté až po zaplnění kapacity)
-  renderExtraBedsGraphics(
-    document.getElementById('extraBeds'),
-    extrasTotal,
-    extrasFilled
-  );
+            // 1) grafika kapacity
+            renderBedGraphics(
+                document.getElementById('capacityDisplay'),
+                cap, used
+            );
 
-  // 3) skryté pole Volné postele jen pro výpočet
-  document.getElementById('freeBeds').value = free;
-  // vypočítáme a vypíšeme využití
-  const util = document.getElementById('capacityUtilization');
-  util.textContent = 
-    `Využito: ${usedBeds} / ${cap} postelí` +
-    (extrasTotal > 0
-      ? `, ${usedExtras} / ${extrasTotal} přistýlek` 
-      : '');
-  // 4) nový tooltip na kontejner kapacity s detailními čísly
-  const capContainer = document.getElementById('capacityDisplay');
-  capContainer.setAttribute(
-    'title',
-    `Kapacita: ${cap}, Obsazené: ${Math.min(used, cap)}, Přistýlky: ${extrasFilled}`
-  );
+            // 2) grafika přistýlek (žluté až po zaplnění kapacity)
+            renderExtraBedsGraphics(
+                document.getElementById('extraBeds'),
+                extrasTotal,
+                extrasFilled
+            );
 
-  // re-initializujeme Bootstrap tooltip
-  new bootstrap.Tooltip(capContainer);
-}
+            // 3) skryté pole Volné postele jen pro výpočet
+            document.getElementById('freeBeds').value = free;
+            // vypočítáme a vypíšeme využití
+            const util = document.getElementById('capacityUtilization');
+            util.textContent =
+                `Využito: ${usedBeds} / ${cap} postelí` +
+                (extrasTotal > 0
+                    ? `, ${usedExtras} / ${extrasTotal} přistýlek`
+                    : '');
+            // 4) nový tooltip na kontejner kapacity s detailními čísly
+            const capContainer = document.getElementById('capacityDisplay');
+            capContainer.setAttribute(
+                'title',
+                `Kapacita: ${cap}, Obsazené: ${Math.min(used, cap)}, Přistýlky: ${extrasFilled}`
+            );
+
+            // re-initializujeme Bootstrap tooltip
+            new bootstrap.Tooltip(capContainer);
+        }
 
 
         function onApartmentChange() {
