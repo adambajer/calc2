@@ -374,6 +374,59 @@
         .input-group .form-select {
             padding-right: 2.5rem;
         }
+
+        .beds-visual {
+            display: inline-flex;
+            gap: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .bed-rect {
+            width: 16px;
+            height: 16px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            transition: box-shadow 0.1s, border-color 0.1s;
+        }
+
+        .bed-rect.occupied {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .bed-rect.free {
+            background: transparent;
+        }
+
+        .bed-rect.extra {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+
+        .bed-rect:hover {
+            cursor: pointer;
+            border-color: #0056b3;
+        }
+
+        .bed-rect.selected {
+            box-shadow: inset 0 0 0 2px #0056b3;
+        }#bedsVisual {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;   /* table and grid left-aligned */
+  gap: 4px;                  /* a little space between table and grid */
+}
+
+#bedsVisual table {
+  width: auto !important;    /* shrink to fit contents */
+  margin-bottom: 0;          /* remove extra margin */
+}
+
+#bedsVisual .beds-visual {
+  width: 100%;
+  white-space: nowrap;       /* keep all the little squares in one line */
+}
+
     </style>
 </head>
 
@@ -383,26 +436,12 @@
             <div class="accordion-item shadow-sm">
                 <div id="collapseOne" class="accordion-collapse collapse show">
                     <div class="accordion-body">
-                        <h2>Volba ubytování</h2>
+                        <h2>Ubytování</h2>
 
                         <form id="priceCalculatorA" class="row gy-2 gx-3 align-items-center">
 
 
-                            <div class="col-auto">
 
-                                <label for="daterange" class="form-label small">
-                                    Termín</label>
-                                <div class="input-group">
-
-                                    <div class="input-group-text">
-
-                                        <span class="material-symbols-outlined d-inline-block">calendar_month</span>
-                                    </div>
-
-                                    <input type="text" id="daterange" class="form-control "
-                                        value="30.12.2024 - 02.01.2025">
-                                </div>
-                            </div>
                             <div class="col-auto">
                                 <label for="apartmentSelect" class="form-label ">
                                     Apartmán</label>
@@ -419,7 +458,7 @@
                             </div>
                             <div class="col-auto">
                                 <label for="peopleA" class="form-label ">
-                                    Počet osob</label>
+                                    Zvoleno osob</label>
                                 <div class="input-group">
 
                                     <div class="input-group-text">
@@ -461,26 +500,42 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-auto"> 
+
+                            <div class="col-auto">
+
+                                <label for="daterange" class="form-label small">
+                                    Termín</label>
+                                <div class="input-group">
+
+                                    <div class="input-group-text">
+
+                                        <span class="material-symbols-outlined d-inline-block">calendar_month</span>
+                                    </div>
+
+                                    <input type="text" id="daterange" class="form-control "
+                                        value="30.12.2024 - 02.01.2025">
+                                </div>
+
+                            </div>
+                            <div class="col-auto">
 
                                 <label for="petsA" class="form-label small text-bold">
                                     Ceník</label>
-                                    <button type="button" class="btn btn-success btn-sm mt-auto w-100"
-                                        data-bs-toggle="modal" data-bs-target="#priceModal" title="Ceník ubytování">
-                                        <i class="material-icons align-middle">credit_card</i>
+                                <button type="button" class="btn btn-success btn-sm mt-auto w-100"
+                                    data-bs-toggle="modal" data-bs-target="#priceModal" title="Ceník ubytování">
+                                    <i class="material-icons align-middle">credit_card</i>
 
-                                    </button>
-                               </div>   
+                                </button>
+                            </div>
                         </form>
+                        <!-- v sekci Volba ubytování -->
                         <div class="row">
                             <div>
-
-                                <div class="beds-line" id="bedsLine"></div>
-                                <div class="beds-line" id="extraBedsLine"></div>
-
+                                <div id="bedsVisual" class="beds-visual"></div>
                                 <div class="beds-summary" id="bedsSummary"></div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -488,7 +543,7 @@
             <div class="accordion-item  shadow-sm  ">
                 <div id="collapseTwo" class="accordion-collapse show">
                     <div class="accordion-body">
-                        <h2>Výsledky kalkulace</h2>
+                        <h3>Detailní kalkulace</h3>
 
                         <div id="result"></div>
                     </div>
@@ -718,38 +773,136 @@
             { date: "04-05", title: "Velikonoční pondělí" },
             { date: "05-01", title: "Svátek práce" }
         ];
-        // 1) Nejprve si externě definujte společnou funkci pro přepočet:
+        // 1) recalc() – překreslí postele, aktivuje tooltipy, přepočte cenu, apod.
         function recalc() {
+            renderBeds();      // ← dispose + rebind
             calculatePrice();
             fillReservationFormData();
         }
 
 
+        function initInteractiveBeds() {
+            document
+                .querySelectorAll('#apartmentSelect, #peopleA')
+                .forEach(el => el.addEventListener('change', renderBeds));
+
+            // A také při načtení stránky:
+            renderBeds();
+        }function renderBeds() {
+  const aptVal    = document.getElementById('apartmentSelect').value;
+  const cap       = aptVal === 'A' ? 11 : 6;
+  const maxExtras = (aptVal === 'A' ? 18 : 8) - cap;
+  const totalMax  = cap + maxExtras;
+  const people    = +document.getElementById('peopleA').value;
+  const usedBeds  = Math.min(people, cap);
+  const usedExtra = Math.max(people - cap, 0);
+  const container = document.getElementById('bedsVisual');
+
+  container.innerHTML = '';  // clear out old table + grid
+
+  // 1) build a tiny table
+  const tbl = document.createElement('table');
+  tbl.className = 'table table-sm text-center mb-0';
+  tbl.innerHTML = `
+    <thead>
+      <tr><th></th>
+        <th>Postelí</th>
+        <th>Přistýlek</th>
+                <th>Celkem</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Kapacita</td>
+        <td><strong>${cap}</strong></td>
+        <td><strong>${maxExtras}</strong></td>
+                <td><strong>${totalMax}</strong></td>
+
+      </tr>
+      <tr>
+        <td>Zvoleno</td>
+        <td>${usedBeds}</td>
+        <td> ${usedExtra}</td>
+                <td>${people}</td>
+
+      </tr>
+    </tbody>
+  `;
+  container.appendChild(tbl);
+
+  // 2) build the inline‐flex row of spans
+  const grid = document.createElement('div');
+  grid.className = 'beds-visual mt-3';
+  
+  // postele
+  for (let i = 0; i < cap; i++) {
+    const span = document.createElement('span');
+    span.className = 'bed-rect ' + (i < usedBeds ? 'occupied' : 'free');
+    span.title = `${i+1} osob`;
+    span.setAttribute('data-bs-toggle','tooltip');
+    span.addEventListener('click', onBedClick);
+    grid.appendChild(span);
+  }
+  // přistýlky
+  for (let j = 0; j < maxExtras; j++) {
+    const idx = cap + j + 1;
+    const span = document.createElement('span');
+    span.className = 'bed-rect ' + (j < usedExtra ? 'extra' : 'free');
+    span.title = `${idx} osob`;
+    span.setAttribute('data-bs-toggle','tooltip');
+    span.addEventListener('click', onBedClick);
+    grid.appendChild(span);
+  }
+
+  container.prepend(grid);
+  initTooltips();
+}
+
+
+        function onBedClick(e) {
+            // 1) Hide any open tooltips
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+                const ti = bootstrap.Tooltip.getInstance(el);
+                if (ti) ti.hide();
+            });
+
+            // 2) Find _only_ the bed‐rect spans inside our visual grid
+            const spans = Array.from(
+                document.querySelectorAll('#bedsVisual .beds-visual .bed-rect')
+            );
+            const idx = spans.indexOf(e.currentTarget);
+
+            // 3) Set the select to (index + 1)
+            document.getElementById('peopleA').value = idx + 1;
+
+            // 4) Recalculate everything
+            recalc();
+        }
+
+
+        function updateBedsSummary(beds, cap, extras, maxExtras) {
+            document.getElementById('bedsSummary').textContent =
+                `Postelí: ${beds}/${cap}, přistýlek: ${extras}/${maxExtras}`;
+        }
         // ----- Init -----
         document.addEventListener('DOMContentLoaded', init);
         function init() {
             renderPriceTable();
-            initTooltips();
             initDateRangePicker();
             initApartmentPeople();
+        ['change','input'].forEach(ev =>
+  document
+    .querySelectorAll('#priceCalculatorA select, #priceCalculatorA input')
+    .forEach(el => el.addEventListener(ev, recalc))
+);
+ 
+// po tom, co voláš daterangepicker(...)
+$('#daterange').on('apply.daterangepicker', function(ev, picker) {
+  recalc();
+});
+
             recalc();
-            // 2) Napojte ji na všechny inputy/selecty ve formuláři:
-            ['change', 'input'].forEach(evt => {
-                document
-                    .querySelectorAll('#priceCalculatorA input, #priceCalculatorA select')
-                    .forEach(el => el.addEventListener(evt, recalc));
-            });
-
-            // 3) A přidejte ho i na apply udalost daterangepickeru:
-            $('#daterange').on('apply.daterangepicker', recalc);
-            document
-                .getElementById('reservationForm')
-                .addEventListener('submit', e => onReservationSubmit(e, 1));
-
-            // Nové tlačítko → stránka 2
-            document
-                .getElementById('generatePage2')
-                .addEventListener('click', e => onReservationSubmit(e, 2));
         }
         // po init()
 
@@ -834,9 +987,15 @@
         }
 
         function initTooltips() {
-            document.querySelectorAll('[data-bs-toggle="tooltip"]')
-                .forEach(el => new bootstrap.Tooltip(el));
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+                // pokud už tooltip existuje, zničíme ho
+                const inst = bootstrap.Tooltip.getInstance(el);
+                if (inst) inst.dispose();
+                // a vytvoříme nový
+                new bootstrap.Tooltip(el);
+            });
         }
+
 
         // ----- DateRangePicker -----
         function initDateRangePicker() {
@@ -884,22 +1043,8 @@
             const extrasTotal = maxBeds - cap;
             const extrasUsed = Math.max(used - cap, 0);
             const extrasFree = extrasTotal - extrasUsed;
+            initInteractiveBeds();
 
-            document.getElementById('freeBeds').value = freeBeds;
-
-            document.getElementById('bedsLine').innerHTML =
-                '<span class="material-symbols-outlined bed-icon">person</span>'.repeat(filledBeds) +
-                '<span class="material-symbols-outlined bed-icon empty">person</span>'.repeat(freeBeds);
-
-            document.getElementById('extraBedsLine').innerHTML =
-                '<span class="material-symbols-outlined bed-icon extra">person</span>'.repeat(extrasUsed) +
-                '<span class="material-symbols-outlined bed-icon empty">person</span>'.repeat(extrasFree);
-
-            let summary = `Využito: ${filledBeds} / ${cap} postelí`;
-            if (extrasTotal > 0) {
-                summary += `, ${extrasUsed} / ${extrasTotal} přistýlek`;
-            }
-            document.getElementById('bedsSummary').textContent = summary;
         }
 
 
@@ -946,7 +1091,7 @@
             // --- cenové konstanty ---
             const apt = $('#apartmentSelect').val();
             const capacity = apt === 'A' ? 11 : 6;
-              const showFreeBedsColumn = people < capacity;
+            const showFreeBedsColumn = people < capacity;
 
             const showPetColumn = pets > 0;
             const standardPrice = 550;
@@ -1064,13 +1209,13 @@
 
                 // buňka Neobsazené postele: počet, tooltip=rozpis výpočtu
                 const unoccTooltip = `${unoccBeds} × ${unusedBedPrice} = ${unoccBedsPrice.toLocaleString()} CZK`;
-              const unoccupiedCell = showFreeBedsColumn
-      ? `<td>
+                const unoccupiedCell = showFreeBedsColumn
+                    ? `<td>
            <span data-bs-toggle="tooltip" title="${unoccBeds} × ${unusedBedPrice} = ${unoccBedsPrice} CZK">
              ${unoccBeds} × ${unusedBedPrice}
            </span>
          </td>`
-      : '';
+                    : '';
                 const petCell = showPetColumn ? `
       <td>
         <span data-bs-toggle="tooltip"
@@ -1115,13 +1260,13 @@
                 totalPrice += dayPrice;
             }
 
-       // finální řádek – správně dopočítat colspan
-  const staticCols = 2; // datum + obsazené
-  const colspan = staticCols
+            // finální řádek – správně dopočítat colspan
+            const staticCols = 2; // datum + obsazené
+            const colspan = staticCols
                 + (showFreeBedsColumn ? 1 : 0)
-                + (showPetColumn      ? 1 : 0)
-                + (diffNights === 1   ? 1 : 0);
-  breakdown += `
+                + (showPetColumn ? 1 : 0)
+                + (diffNights === 1 ? 1 : 0);
+            breakdown += `
       <tr class="bg-secondary text-white">
         <td colspan="${colspan}">
           <strong>Celkem</strong>
