@@ -166,21 +166,23 @@
         .col-value {
             padding-right: 0.3125rem;
         }
-  .form-control,
-      form-select,
+
+        .form-control,
+        form-select,
         textarea {
             font-weight: 400;
             background-color: #fff;
 
             border-radius: 0;
             padding: 0.25rem 0.5rem;
-            border:none;
-            border-bottom: 1px solid #dee2e6; 
+            border: none;
+            border-bottom: 1px solid #dee2e6;
         }
-      #priceCalculatorA  .form-control,
-       #priceCalculatorA .form-select,
-       #priceCalculatorA textarea {
-        
+
+        #priceCalculatorA .form-control,
+        #priceCalculatorA .form-select,
+        #priceCalculatorA textarea {
+
             border-top: 1px solid #dee2e6;
             border-bottom: 1px solid #dee2e6;
             border-right: 1px solid #dee2e6;
@@ -383,103 +385,100 @@
                     <div class="accordion-body">
                         <h2>Volba ubytování</h2>
 
-                        <form id="priceCalculatorA" class="gx-3 gy-3 align-items-start">
-                            <div class=" d-inline-flex"><!-- 1. sloupec: Termín + Apartmán -->
+                        <form id="priceCalculatorA" class="row gy-2 gx-3 align-items-center">
 
-                                <div class=" me-3   ">
-                                    <label for="daterange" class="form-label small">
-                                        Termín</label>
 
-                                    <div class="input-group mb-2">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text">
-                                                <span
-                                                    class="material-symbols-outlined d-inline-block">calendar_month</span>
-                                            </div>
-                                        </div>
-                                        <input type="text" id="daterange" class="form-control "
-                                            value="30.12.2024 - 02.01.2025">
+                            <div class="col-auto">
+
+                                <label for="daterange" class="form-label small">
+                                    Termín</label>
+                                <div class="input-group">
+
+                                    <div class="input-group-text">
+
+                                        <span class="material-symbols-outlined d-inline-block">calendar_month</span>
                                     </div>
+
+                                    <input type="text" id="daterange" class="form-control "
+                                        value="30.12.2024 - 02.01.2025">
                                 </div>
+                            </div>
+                            <div class="col-auto">
+                                <label for="apartmentSelect" class="form-label ">
+                                    Apartmán</label>
+                                <div class="input-group">
 
-                                <div class="me-3 ">
-                                    <label for="apartmentSelect" class="form-label small">
-                                        Apartmán</label>
-
-                                    <div class="input-group mb-2">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text"><span
-                                                    class="material-symbols-outlined">apartment</span></div>
-                                        </div>
-                                        <select id="apartmentSelect" class="form-select form-select-sm">
-                                            <option value="A" selected>A</option>
-                                            <option value="B">B</option>
-                                        </select>
-                                    </div> 
-                                </div>
-
-                                <!-- 2. sloupec: Obsazené / Volné -->
-                                <div class=" me-3 ">
-                                    <label for="peopleA" class="form-label small">
-                                        Počet osob</label>
-                                    <div class="input-group mb-2">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text">
-                                                <span class="material-symbols-outlined">people</span>
-                                            </div>
-                                        </div>
-                                        <select id="peopleA" class="form-select form-select-sm">
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                        </select>
-
-                                        <input type="text" id="freeBeds" class="form-control form-control-sm" readonly
-                                            disabled>
+                                    <div class="input-group-text">
+                                        <span class="material-symbols-outlined">apartment</span>
                                     </div>
+                                    <select id="apartmentSelect" class="form-select form-select-sm">
+                                        <option value="A" selected>A</option>
+                                        <option value="B">B</option>
+                                    </select>
                                 </div>
+                            </div>
+                            <div class="col-auto">
+                                <label for="peopleA" class="form-label ">
+                                    Počet osob</label>
+                                <div class="input-group">
 
-                                <!-- 3. sloupec: Psi -->
-                                <div class="me-3  ps-5 me-2">
-                                    <label for="petsA" class="form-label small text-bold">
-                                        Psi</label>
-
-                                    <div class="input-group mb-2">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text">
-                                                <span class="material-symbols-outlined">pets</span>
-                                            </div>
-                                        </div>
-                                        <select id="petsA" class="form-select form-select-sm">
-                                            <option>0</option>
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                        </select>
+                                    <div class="input-group-text">
+                                        <span class="material-symbols-outlined">people</span>
                                     </div>
+                                    <select id="peopleA" class="form-select form-select-sm">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                    </select>
                                 </div>
+                            </div>
 
-                                <!-- 4. sloupec: Ceník -->
-                                <div class="me-3 ">
-                                    <label class="form-label small text-bold">&nbsp;</label>
+                            <div class="col-auto">
+                                <div class="input-group">
+
+                                    <input type="text" id="freeBeds" class="form-control form-control-sm" readonly
+                                        disabled>
+                                </div>
+                            </div>
+                            <!-- 2. sloupec: Obsazené / Volné -->
+
+                            <div class="col-auto">
+                                <label for="petsA" class="form-label small text-bold">
+                                    Psi</label>
+                                <div class="input-group">
+
+                                    <div class="input-group-text">
+                                        <span class="material-symbols-outlined">pets</span>
+                                    </div>
+
+                                    <select id="petsA" class="form-select form-select-sm">
+                                        <option>0</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-auto"> 
+
+                                <label for="petsA" class="form-label small text-bold">
+                                    Ceník</label>
                                     <button type="button" class="btn btn-success btn-sm mt-auto w-100"
                                         data-bs-toggle="modal" data-bs-target="#priceModal" title="Ceník ubytování">
-                                        <i class="material-icons align-middle">credit_card</i>Ceník
+                                        <i class="material-icons align-middle">credit_card</i>
 
                                     </button>
-                                </div>
-
-                            </div>
+                               </div>   
                         </form>
                         <div class="row">
                             <div>
-                                
-                                        <div class="beds-line" id="bedsLine"></div>
-                                        <div class="beds-line" id="extraBedsLine"></div>
 
-                                        <div class="beds-summary" id="bedsSummary"></div>
+                                <div class="beds-line" id="bedsLine"></div>
+                                <div class="beds-line" id="extraBedsLine"></div>
+
+                                <div class="beds-summary" id="bedsSummary"></div>
                             </div>
                         </div>
                     </div>
@@ -947,12 +946,15 @@
             // --- cenové konstanty ---
             const apt = $('#apartmentSelect').val();
             const capacity = apt === 'A' ? 11 : 6;
+              const showFreeBedsColumn = people < capacity;
+
             const showPetColumn = pets > 0;
             const standardPrice = 550;
             const weekendPrice = 650;
             const unusedBedPrice = 300;
             const holidayPrice = 650;
             const silvestrPrice = 650;
+            const petPrice = 300;
 
             // --- Silvestr detekce ---
             const isSilvestr = dateFrom <= new Date(dateFrom.getFullYear(), 11, 31)
@@ -976,7 +978,7 @@
             <tr>
             <th>Ubytovací noc</th> 
             <th>Obsazené postele</th>
-            <th>Neobsazené postele</th>
+          ${showFreeBedsColumn ? '<th>Neobsazené postele</th>' : ''}
             ${showPetColumn ? '<th>Pes</th>' : ''}
             ${diffNights === 1 ? '<th>Příplatek 30 %</th>' : ''}
             <th>Celkem za noc</th>
@@ -1017,7 +1019,7 @@
                 const unoccBedsPrice = unusedBedPrice * unoccBeds;
 
                 // 3) poplatek za psa
-                const petCharge = pets > 0 ? pets * 300 : 0;
+                const petCharge = pets > 0 ? pets * petPrice : 0;
 
                 // 4) případný příplatek za jednu noc
                 let dayPrice = occupiedBedsPrice + unoccBedsPrice + petCharge;
@@ -1062,20 +1064,19 @@
 
                 // buňka Neobsazené postele: počet, tooltip=rozpis výpočtu
                 const unoccTooltip = `${unoccBeds} × ${unusedBedPrice} = ${unoccBedsPrice.toLocaleString()} CZK`;
-                const unoccupiedCell = `
-      <td>
-        <span data-bs-toggle="tooltip"
-              data-bs-custom-class="white-tooltip"
-              title="${unoccTooltip}">
-          ${unoccBeds} × ${unusedBedPrice}
-        </span>
-      </td>`;
+              const unoccupiedCell = showFreeBedsColumn
+      ? `<td>
+           <span data-bs-toggle="tooltip" title="${unoccBeds} × ${unusedBedPrice} = ${unoccBedsPrice} CZK">
+             ${unoccBeds} × ${unusedBedPrice}
+           </span>
+         </td>`
+      : '';
                 const petCell = showPetColumn ? `
       <td>
         <span data-bs-toggle="tooltip"
               data-bs-custom-class="white-tooltip"
-              title="${pets} × 300 = ${petCharge.toLocaleString()} CZK">
-          ${pets} x ${petCharge.toLocaleString()}
+              title="${pets} × ${petPrice} = ${petCharge.toLocaleString()} CZK">
+          ${pets} x ${petPrice}
         </span>
       </td>` : '';
 
@@ -1114,10 +1115,15 @@
                 totalPrice += dayPrice;
             }
 
-            // závěrečný řádek s celkem
-            breakdown += `
-      <tr class=" bg-secondary text-white">
-        <td colspan="${3 + (showPetColumn ? 1 : 0) + (diffNights === 1 ? 1 : 0)}">
+       // finální řádek – správně dopočítat colspan
+  const staticCols = 2; // datum + obsazené
+  const colspan = staticCols
+                + (showFreeBedsColumn ? 1 : 0)
+                + (showPetColumn      ? 1 : 0)
+                + (diffNights === 1   ? 1 : 0);
+  breakdown += `
+      <tr class="bg-secondary text-white">
+        <td colspan="${colspan}">
           <strong>Celkem</strong>
         </td>
         <td class="totalprice">${totalPrice.toLocaleString()} CZK</td>
