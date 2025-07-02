@@ -166,15 +166,24 @@
         .col-value {
             padding-right: 0.3125rem;
         }
-
-        .form-control,
-        .form-select,
+  .form-control,
+      form-select,
         textarea {
             font-weight: 400;
             background-color: #fff;
-      
+
             border-radius: 0;
-            padding: 0.25rem 0.5rem;    border-top:1px solid #dee2e6;border-bottom:1px solid #dee2e6;border-right:1px solid #dee2e6;
+            padding: 0.25rem 0.5rem;
+            border:none;
+            border-bottom: 1px solid #dee2e6; 
+        }
+      #priceCalculatorA  .form-control,
+       #priceCalculatorA .form-select,
+       #priceCalculatorA textarea {
+        
+            border-top: 1px solid #dee2e6;
+            border-bottom: 1px solid #dee2e6;
+            border-right: 1px solid #dee2e6;
         }
 
         .form-control:focus,
@@ -340,28 +349,29 @@
             border-color: #ffc107;
 
         }
+
         .bed-icon {
-  font-size: 1.5rem;
-  vertical-align: middle;
-  margin-right: 0.2rem;
-  /* obsazené lůžko = modrá barva */
-  color: #0d6efd;
-}
+            font-size: 1.5rem;
+            vertical-align: middle;
+            margin-right: 0.2rem;
+            /* obsazené lůžko = modrá barva */
+            color: #0d6efd;
+        }
 
-.bed-icon.empty {
-  /* prázdné lůžko/přistýlka = šedá */
-  color: #ccc;
-}
-/* 1) extra přistýlka bude žlutá */
-.bed-icon.extra {
-  color: #ffc107;
-}
- 
-/* 4) odsazení selectu, aby se pod ikonu nevešel šipkový dropdown */
-.input-group .form-select {
-  padding-right: 2.5rem;
-}
+        .bed-icon.empty {
+            /* prázdné lůžko/přistýlka = šedá */
+            color: #ccc;
+        }
 
+        /* 1) extra přistýlka bude žlutá */
+        .bed-icon.extra {
+            color: #ffc107;
+        }
+
+        /* 4) odsazení selectu, aby se pod ikonu nevešel šipkový dropdown */
+        .input-group .form-select {
+            padding-right: 2.5rem;
+        }
     </style>
 </head>
 
@@ -371,7 +381,7 @@
             <div class="accordion-item shadow-sm">
                 <div id="collapseOne" class="accordion-collapse collapse show">
                     <div class="accordion-body">
-                                        <h2>Volba ubytování</h2>
+                        <h2>Volba ubytování</h2>
 
                         <form id="priceCalculatorA" class="gx-3 gy-3 align-items-start">
                             <div class=" d-inline-flex"><!-- 1. sloupec: Termín + Apartmán -->
@@ -405,15 +415,7 @@
                                             <option value="A" selected>A</option>
                                             <option value="B">B</option>
                                         </select>
-                                    </div>
-                                    <div class="mt-2">
-                                       
-<div class="beds-line" id="bedsLine"></div>
-<div class="beds-line" id="extraBedsLine"></div>
-
-<div class="beds-summary" id="bedsSummary"></div>
-
-                                    </div>
+                                    </div> 
                                 </div>
 
                                 <!-- 2. sloupec: Obsazené / Volné -->
@@ -463,14 +465,23 @@
                                 <div class="me-3 ">
                                     <label class="form-label small text-bold">&nbsp;</label>
                                     <button type="button" class="btn btn-success btn-sm mt-auto w-100"
-                                        data-bs-toggle="modal" data-bs-target="#priceModal">
-                                        <i class="material-icons align-middle">price_check</i>
-                                        Ceník ubytování
+                                        data-bs-toggle="modal" data-bs-target="#priceModal" title="Ceník ubytování">
+                                        <i class="material-icons align-middle">credit_card</i>Ceník
+
                                     </button>
                                 </div>
 
                             </div>
                         </form>
+                        <div class="row">
+                            <div>
+                                
+                                        <div class="beds-line" id="bedsLine"></div>
+                                        <div class="beds-line" id="extraBedsLine"></div>
+
+                                        <div class="beds-summary" id="bedsSummary"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -478,7 +489,7 @@
             <div class="accordion-item  shadow-sm  ">
                 <div id="collapseTwo" class="accordion-collapse show">
                     <div class="accordion-body">
-                                        <h2>Výsledky kalkulace</h2>
+                        <h2>Výsledky kalkulace</h2>
 
                         <div id="result"></div>
                     </div>
@@ -487,15 +498,14 @@
 
         </div>
         <form id="reservationForm" data-date-range=" " data-apartment="" data-total-price="">
-        
+
 
             <div id="reservationFormPage">
                 <div class="row">
                     <div class="col">
-                                <button type="submit" class="btn btn-dark mx-auto">Závazná objednavka ubytování -
-                            PDF 1</button>
+                        <button type="submit" class="btn btn-dark mx-auto">PDF 1</button>
                         <div class="page page-1" id="page-1">
-                    
+
 
                             <div class="inner">
                                 <div class="form-header">
@@ -643,10 +653,10 @@
 
                     </div>
                     <div class="col">
-                              <button type="button" class="btn btn-dark mx-auto" id="generatePage2">Závazná objednávka ubytování - PDF 2</button>
+                        <button type="button" class="btn btn-dark mx-auto" id="generatePage2">PDF 2</button>
 
                         <div class="page page-2" id="page-2">
-                          
+
                             <div class="inner">
                                 <div class="form-header">
                                     Krystoma s.r.o., Moravská Huzová 80, 783 13 Štěpánov, +420 604 471 323
@@ -764,10 +774,6 @@
             const container = document.getElementById('priceTableContainer');
             container.innerHTML = '';
 
-            // Tabulka A – ceny za noc
-            const titleA = document.createElement('h5');
-            titleA.textContent = 'Ceník ubytovacích nocí';
-            container.appendChild(titleA);
 
             const colA = createTable(
                 ["Ubytovací noc", "Cena", "Minimální počet nocí"],
@@ -863,39 +869,39 @@
             const apt = document.getElementById('apartmentSelect');
             const ppl = document.getElementById('peopleA');
             apt.addEventListener('change', onApartmentChange);
-             document
-  .querySelectorAll('#apartmentSelect, #peopleA')
-  .forEach(el => el.addEventListener('change', updateFreeBeds));
+            document
+                .querySelectorAll('#apartmentSelect, #peopleA')
+                .forEach(el => el.addEventListener('change', updateFreeBeds));
 
             onApartmentChange();
-          updateFreeBeds();
+            updateFreeBeds();
         } function updateFreeBeds() {
-  const aptVal      = document.getElementById('apartmentSelect').value;
-  const maxBeds     = aptVal === 'A' ? 18 : 8;
-  const cap         = aptVal === 'A' ? 11 : 6;
-  const used        = +document.getElementById('peopleA').value;
-  const filledBeds  = Math.min(used, cap);
-  const freeBeds    = cap - filledBeds;
-  const extrasTotal = maxBeds - cap;
-  const extrasUsed  = Math.max(used - cap, 0);
-  const extrasFree  = extrasTotal - extrasUsed;
+            const aptVal = document.getElementById('apartmentSelect').value;
+            const maxBeds = aptVal === 'A' ? 18 : 8;
+            const cap = aptVal === 'A' ? 11 : 6;
+            const used = +document.getElementById('peopleA').value;
+            const filledBeds = Math.min(used, cap);
+            const freeBeds = cap - filledBeds;
+            const extrasTotal = maxBeds - cap;
+            const extrasUsed = Math.max(used - cap, 0);
+            const extrasFree = extrasTotal - extrasUsed;
 
-  document.getElementById('freeBeds').value = freeBeds;
+            document.getElementById('freeBeds').value = freeBeds;
 
-  document.getElementById('bedsLine').innerHTML =
-    '<span class="material-symbols-outlined bed-icon">person</span>'.repeat(filledBeds) +
-    '<span class="material-symbols-outlined bed-icon empty">person</span>'.repeat(freeBeds);
+            document.getElementById('bedsLine').innerHTML =
+                '<span class="material-symbols-outlined bed-icon">person</span>'.repeat(filledBeds) +
+                '<span class="material-symbols-outlined bed-icon empty">person</span>'.repeat(freeBeds);
 
-  document.getElementById('extraBedsLine').innerHTML =
-    '<span class="material-symbols-outlined bed-icon extra">person</span>'.repeat(extrasUsed) +
-    '<span class="material-symbols-outlined bed-icon empty">person</span>'.repeat(extrasFree);
+            document.getElementById('extraBedsLine').innerHTML =
+                '<span class="material-symbols-outlined bed-icon extra">person</span>'.repeat(extrasUsed) +
+                '<span class="material-symbols-outlined bed-icon empty">person</span>'.repeat(extrasFree);
 
-  let summary = `Využito: ${filledBeds} / ${cap} postelí`;
-  if (extrasTotal > 0) {
-    summary += `, ${extrasUsed} / ${extrasTotal} přistýlek`;
-  }
-  document.getElementById('bedsSummary').textContent = summary;
-}
+            let summary = `Využito: ${filledBeds} / ${cap} postelí`;
+            if (extrasTotal > 0) {
+                summary += `, ${extrasUsed} / ${extrasTotal} přistýlek`;
+            }
+            document.getElementById('bedsSummary').textContent = summary;
+        }
 
 
 
@@ -905,7 +911,7 @@
             const cap = aptVal === 'A' ? 11 : 6;
             // v onApartmentChange() místo textContent pro capacityDisplay:
             const capDisp = document.getElementById('capacityDisplay');
- 
+
             const pplSelect = document.getElementById('peopleA');
             pplSelect.innerHTML = '';
             for (let i = 1; i <= max; i++) {
