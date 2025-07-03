@@ -410,37 +410,72 @@
 
         .bed-rect.selected {
             box-shadow: inset 0 0 0 2px #0056b3;
-        }#bedsVisual {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;   /* table and grid left-aligned */
-  gap: 4px;                  /* a little space between table and grid */
-}
+        }
 
-#bedsVisual table {
-  width: auto !important;    /* shrink to fit contents */
-  margin-bottom: 0;          /* remove extra margin */
-}
+        #bedsVisual {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            /* table and grid left-aligned */
+            gap: 4px;
+            /* a little space between table and grid */
+        }
 
-#bedsVisual .beds-visual {
-  width: 100%;
-  white-space: nowrap;       /* keep all the little squares in one line */
-}
+        #bedsVisual table {
+            width: auto !important;
+            /* shrink to fit contents */
+            margin-bottom: 0;
+            /* remove extra margin */
+        }
 
+        #bedsVisual .beds-visual {
+            width: 100%;
+            white-space: nowrap;
+            /* keep all the little squares in one line */
+        }
+
+        .help {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+        .accordion {
+        position: relative;width: 100%;display: block;;}
     </style>
 </head>
 
 <body>
-    <div class="container-fluid mx-auto m-4   ">
+    <div class=" mx-4 my-4   ">
         <div class="accordion" id="accordionExample">
+            
+            <button type="button" class="btn text help btn-sm  " data-bs-toggle="modal"
+                data-bs-target="#priceModal" title="Ceník ubytování">
+                <i class="material-icons  ">help</i>
+
+            </button>
             <div class="accordion-item shadow-sm">
                 <div id="collapseOne" class="accordion-collapse collapse show">
                     <div class="accordion-body">
-                        <h2>Ubytování</h2>
+                        <h2>Parametry pobytu</h2>
 
-                        <form id="priceCalculatorA" class="row gy-2 gx-3 align-items-center">
+                        <form id="priceCalculatorA" class=" gy-2 gx-3 align-items-center">
+<div  class="row">
+                            <div class="col-auto">
 
+                                <label for="daterange" class="form-label small">
+                                    Den příjezdu</label>
+                                <div class="input-group">
 
+                                    <div class="input-group-text">
+
+                                        <span class="material-symbols-outlined d-inline-block">calendar_month</span>
+                                    </div>
+
+                                    <input type="text" id="daterange" class="form-control "
+                                        value="30.12.2024 - 02.01.2025">
+                                </div>
+
+                            </div>
 
                             <div class="col-auto">
                                 <label for="apartmentSelect" class="form-label ">
@@ -455,10 +490,11 @@
                                         <option value="B">B</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div></div>
+                            <div  class="row">
                             <div class="col-auto">
                                 <label for="peopleA" class="form-label ">
-                                    Zvoleno osob</label>
+                                    Počet osob</label>
                                 <div class="input-group">
 
                                     <div class="input-group-text">
@@ -483,7 +519,7 @@
 
                             <div class="col-auto">
                                 <label for="petsA" class="form-label small text-bold">
-                                    Psi</label>
+                                    Počet mazlíčků</label>
                                 <div class="input-group">
 
                                     <div class="input-group-text">
@@ -499,33 +535,7 @@
                                         <option>5</option>
                                     </select>
                                 </div>
-                            </div>
-
-                            <div class="col-auto">
-
-                                <label for="daterange" class="form-label small">
-                                    Termín</label>
-                                <div class="input-group">
-
-                                    <div class="input-group-text">
-
-                                        <span class="material-symbols-outlined d-inline-block">calendar_month</span>
-                                    </div>
-
-                                    <input type="text" id="daterange" class="form-control "
-                                        value="30.12.2024 - 02.01.2025">
-                                </div>
-
-                            </div>
-                            <div class="col-auto">
-
-                                <label for="petsA" class="form-label small text-bold">
-                                    Ceník</label>
-                                <button type="button" class="btn btn-success btn-sm mt-auto w-100"
-                                    data-bs-toggle="modal" data-bs-target="#priceModal" title="Ceník ubytování">
-                                    <i class="material-icons align-middle">credit_card</i>
-
-                                </button>
+                            </div> 
                             </div>
                         </form>
                         <!-- v sekci Volba ubytování -->
@@ -543,13 +553,11 @@
             <div class="accordion-item  shadow-sm  ">
                 <div id="collapseTwo" class="accordion-collapse show">
                     <div class="accordion-body">
-                        <h3>Detailní kalkulace</h3>
-
+                        <h3>Detailní kalkulace</h3> 
                         <div id="result"></div>
                     </div>
                 </div>
             </div>
-
         </div>
         <form id="reservationForm" data-date-range=" " data-apartment="" data-total-price="">
 
@@ -788,22 +796,22 @@
 
             // A také při načtení stránky:
             renderBeds();
-        }function renderBeds() {
-  const aptVal    = document.getElementById('apartmentSelect').value;
-  const cap       = aptVal === 'A' ? 11 : 6;
-  const maxExtras = (aptVal === 'A' ? 18 : 8) - cap;
-  const totalMax  = cap + maxExtras;
-  const people    = +document.getElementById('peopleA').value;
-  const usedBeds  = Math.min(people, cap);
-  const usedExtra = Math.max(people - cap, 0);
-  const container = document.getElementById('bedsVisual');
+        } function renderBeds() {
+            const aptVal = document.getElementById('apartmentSelect').value;
+            const cap = aptVal === 'A' ? 11 : 6;
+            const maxExtras = (aptVal === 'A' ? 18 : 8) - cap;
+            const totalMax = cap + maxExtras;
+            const people = +document.getElementById('peopleA').value;
+            const usedBeds = Math.min(people, cap);
+            const usedExtra = Math.max(people - cap, 0);
+            const container = document.getElementById('bedsVisual');
 
-  container.innerHTML = '';  // clear out old table + grid
+            container.innerHTML = '';  // clear out old table + grid
 
-  // 1) build a tiny table
-  const tbl = document.createElement('table');
-  tbl.className = 'table table-sm text-center mb-0';
-  tbl.innerHTML = `
+            // 1) build a tiny table
+            const tbl = document.createElement('table');
+            tbl.className = 'table table-sm text-center mb-0';
+            tbl.innerHTML = `
     <thead>
       <tr><th></th>
         <th>Postelí</th>
@@ -829,35 +837,35 @@
       </tr>
     </tbody>
   `;
-  container.appendChild(tbl);
+            container.appendChild(tbl);
 
-  // 2) build the inline‐flex row of spans
-  const grid = document.createElement('div');
-  grid.className = 'beds-visual mt-3';
-  
-  // postele
-  for (let i = 0; i < cap; i++) {
-    const span = document.createElement('span');
-    span.className = 'bed-rect ' + (i < usedBeds ? 'occupied' : 'free');
-    span.title = `${i+1} osob`;
-    span.setAttribute('data-bs-toggle','tooltip');
-    span.addEventListener('click', onBedClick);
-    grid.appendChild(span);
-  }
-  // přistýlky
-  for (let j = 0; j < maxExtras; j++) {
-    const idx = cap + j + 1;
-    const span = document.createElement('span');
-    span.className = 'bed-rect ' + (j < usedExtra ? 'extra' : 'free');
-    span.title = `${idx} osob`;
-    span.setAttribute('data-bs-toggle','tooltip');
-    span.addEventListener('click', onBedClick);
-    grid.appendChild(span);
-  }
+            // 2) build the inline‐flex row of spans
+            const grid = document.createElement('div');
+            grid.className = 'beds-visual mt-3';
 
-  container.prepend(grid);
-  initTooltips();
-}
+            // postele
+            for (let i = 0; i < cap; i++) {
+                const span = document.createElement('span');
+                span.className = 'bed-rect ' + (i < usedBeds ? 'occupied' : 'free');
+                span.title = `${i + 1} osob`;
+                span.setAttribute('data-bs-toggle', 'tooltip');
+                span.addEventListener('click', onBedClick);
+                grid.appendChild(span);
+            }
+            // přistýlky
+            for (let j = 0; j < maxExtras; j++) {
+                const idx = cap + j + 1;
+                const span = document.createElement('span');
+                span.className = 'bed-rect ' + (j < usedExtra ? 'extra' : 'free');
+                span.title = `${idx} osob`;
+                span.setAttribute('data-bs-toggle', 'tooltip');
+                span.addEventListener('click', onBedClick);
+                grid.appendChild(span);
+            }
+
+            container.prepend(grid);
+            initTooltips();
+        }
 
 
         function onBedClick(e) {
@@ -891,16 +899,16 @@
             renderPriceTable();
             initDateRangePicker();
             initApartmentPeople();
-        ['change','input'].forEach(ev =>
-  document
-    .querySelectorAll('#priceCalculatorA select, #priceCalculatorA input')
-    .forEach(el => el.addEventListener(ev, recalc))
-);
- 
-// po tom, co voláš daterangepicker(...)
-$('#daterange').on('apply.daterangepicker', function(ev, picker) {
-  recalc();
-});
+            ['change', 'input'].forEach(ev =>
+                document
+                    .querySelectorAll('#priceCalculatorA select, #priceCalculatorA input')
+                    .forEach(el => el.addEventListener(ev, recalc))
+            );
+
+            // po tom, co voláš daterangepicker(...)
+            $('#daterange').on('apply.daterangepicker', function (ev, picker) {
+                recalc();
+            });
 
             recalc();
         }
@@ -928,7 +936,7 @@ $('#daterange').on('apply.daterangepicker', function(ev, picker) {
 
 
             const colA = createTable(
-                ["Ubytovací noc", "Cena", "Minimální počet nocí"],
+                ["Období", "Cena", "Minimální počet nocí"],
                 [
                     [`<span class="holiday-info" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" title="Noc neděle až čtvrtek">i</span> Všední den`, "550 CZK", "2"],
                     [`<span class="holiday-info" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" title="páteční a sobotní noc">i</span> Víkendová noc`, "650 CZK", "2"],
