@@ -201,25 +201,7 @@
             opacity: 1;
             cursor: not-allowed;
         }
-
-        /* Table Styles */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1rem;
-        }
-
-        th,
-        td {
-            padding: 0.5rem;
-            text-align: left;
-        }
-
-        th {
-            font-style: italic;
-            font-weight: normal;
-        }
-
+ 
         .bg-secondary {
             background-color: #6c757d !important;
         }
@@ -445,13 +427,13 @@
             position: relative;
             width: 100%;
             display: block;
-            ;
+            background: transparent !important
         }
     </style>
 </head>
 
 <body>
-    <div class=" mx-4 my-4   ">
+    <div class=" mx-4    ">
         <div class="accordion" id="accordionExample">
 
             <button type="button" class="btn text help btn-sm  " data-bs-toggle="modal" data-bs-target="#priceModal"
@@ -459,7 +441,7 @@
                 <i class="material-icons  ">help</i>
 
             </button>
-            <div class="accordion-item shadow-sm">
+            <div class="  ">
                 <div id="collapseOne" class="accordion-collapse collapse show">
                     <div class="accordion-body">
 
@@ -528,7 +510,7 @@
                                     <div class="col-md-4">
                                         <div class="card shadow-sm h-100">
                                             <div class="card-body">
-                                                <h5 class="card-title">Obsazení lůžek</h5>
+                                                <h5 class="card-title">Obsazenost</h5>
                                                 <!-- sem přijde <progress> -->
                                                 <div id="bedsVisual" class="beds-visual"></div>
                                                 <div class="beds-summary" id="bedsSummary"></div>
@@ -555,7 +537,7 @@
                 </div>
             </div>
 
-            <div class="accordion-item  shadow-sm  ">
+            <div class="s   ">
                 <div id="collapseTwo" class="accordion-collapse show">
                     <div class="accordion-body">
 
@@ -565,10 +547,9 @@
                                 <div class="card shadow-sm h-100">
                                     <div class="card-body">
                                         <h5 class="card-title">Rozpis pobytu</h5>
-                                    </div>
-                                    <div class="mb-3">
-                                        <div id="result"></div>
-                                    </div>
+                                                                                <div id="result"></div>
+
+                                    </div> 
 
                                 </div>
                             </div>
