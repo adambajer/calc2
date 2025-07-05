@@ -9,7 +9,7 @@
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..700;1,100..700&display=swap"
         rel="stylesheet">
-    <link   href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
@@ -201,7 +201,7 @@
             opacity: 1;
             cursor: not-allowed;
         }
- 
+
         .bg-secondary {
             background-color: #6c757d !important;
         }
@@ -429,6 +429,46 @@
             display: block;
             background: transparent !important
         }
+
+        :root {
+            --primary: #0d6efd;
+            --extra: #ffc107;
+            --border: #ccc;
+        }
+
+        .beds-grid {
+            display: grid;
+            /* uprav na tolik sloupců, kolik se vejde do kontejneru */
+            grid-template-columns: repeat(auto-fill, 26px);
+            gap: 4px;
+        }
+
+        .beds-grid span {
+            width: 26px;
+            height: 40px;
+            border: 1px solid var(--border);
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: border-color .1s, box-shadow .1s;
+        }
+
+        .beds-grid span.occupied {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .beds-grid span.extra {
+            background-color: var(--extra);
+            border-color: var(--extra);
+        }
+
+        .beds-grid span.free {
+            background: transparent;
+        }
+
+        .beds-grid span:hover {
+            box-shadow: inset 0 0 0 2px var(--primary);
+        }
     </style>
 </head>
 
@@ -447,10 +487,10 @@
 
                         <form id="priceCalculatorA" class="  align-items-center">
 
-                          
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                
+
+                            <div class="row">
+                                <div class="col-md-4">
+
                                     <div class="card shadow-sm h-100">
                                         <div class="card-body">
                                             <h5 class="card-title">Parametry pobytu</h5>
@@ -458,7 +498,7 @@
                                             <div class="row mb-3">
                                                 <div class="col-md-7">
 
-                                                    
+
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i
                                                                 class="material-icons me-2">calendar_month</i>Termín</span>
@@ -467,9 +507,10 @@
                                                 </div>
 
                                                 <div class="col-md-5">
-                                                     <div class="input-group">
+                                                    <div class="input-group">
                                                         <span class="input-group-text"> <i
-                                                                class="material-icons me-2">apartment</i> Apartmán</span>
+                                                                class="material-icons me-2">apartment</i>
+                                                            Apartmán</span>
                                                         <select id="apartmentSelect" class="form-select form-select-sm">
                                                             <option value="A" selected>A</option>
                                                             <option value="B">B</option>
@@ -479,9 +520,10 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                     <div class="input-group">
+                                                    <div class="input-group">
                                                         <span class="input-group-text"><i
-                                                                class="material-symbols-outlined me-2">people</i> Osoby</span>
+                                                                class="material-symbols-outlined me-2">people</i>
+                                                            Osoby</span>
                                                         <select id="peopleA" class="form-select form-select-sm">
                                                             <option>1</option>
                                                             <option>2</option>
@@ -490,9 +532,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
-                                                     <div class="input-group">
+                                                    <div class="input-group">
                                                         <span class="input-group-text"><i
-                                                                class="material-symbols-outlined me-2">pets</i> Mazlíčci</span>
+                                                                class="material-symbols-outlined me-2">pets</i>
+                                                            Mazlíčci</span>
                                                         <select id="petsA" class="form-select form-select-sm">
                                                             <option>1</option>
                                                             <option>2</option>
@@ -506,30 +549,32 @@
                                     </div>
 
                                 </div>
-                                    <!-- karta s vizualizací lůžek -->
-                                    <div class="col-md-4">
-                                        <div class="card shadow-sm h-100">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Obsazenost</h5>
-                                                <!-- sem přijde <progress> -->
+                                <!-- karta s vizualizací lůžek -->
+                                <div class="col-md-4">
+                                    <div class="card shadow-sm h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Obsazenost</h5>
+                                            <!-- sem přijde <progress>
                                                 <div id="bedsVisual" class="beds-visual"></div>
-                                                <div class="beds-summary" id="bedsSummary"></div>
-                                                
-                                            </div>
-                                        </div>
-                                    </div>
+                                                <div class="beds-summary" id="bedsSummary"></div> -->
+                                            <div id="bedsGridContainer" class="beds-grid"></div>
+                                            <div id="bedsSummary" class="mt-2"></div>
 
-                                    <!-- karta s výsledkem kalkulace -->
-                                    <div class="col-md-4">
-                                        <div class="card shadow-sm h-100">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Celková cena</h5>
-                                                <div id="totalPrice2" class="fs-3 text-end">0 CZK</div>
-                                                <button id="openPdf1" class="btn btn-primary w-100 mt-3">PDF 1</button>
-                                            </div>
                                         </div>
                                     </div>
- 
+                                </div>
+
+                                <!-- karta s výsledkem kalkulace -->
+                                <div class="col-md-4">
+                                    <div class="card shadow-sm h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Celková cena</h5>
+                                            <div id="totalPrice2" class="fs-3 text-end">0 CZK</div>
+                                            <button id="openPdf1" class="btn btn-primary w-100 mt-3">PDF 1</button>
+                                        </div>
+                                    </div>
+                                </div>
+
                         </form>
 
 
@@ -547,9 +592,9 @@
                                 <div class="card shadow-sm h-100">
                                     <div class="card-body">
                                         <h5 class="card-title">Rozpis pobytu</h5>
-                                                                                <div id="result"></div>
+                                        <div id="result"></div>
 
-                                    </div> 
+                                    </div>
 
                                 </div>
                             </div>
@@ -798,97 +843,86 @@
 
             // A také při načtení stránky:
             renderBeds();
-        } function renderBeds() {
-            const aptVal = document.getElementById('apartmentSelect').value;
-            const cap = aptVal === 'A' ? 11 : 6;
-            const maxExtras = (aptVal === 'A' ? 18 : 8) - cap;
-            const totalMax = cap + maxExtras;
-            const people = +document.getElementById('peopleA').value;
-            const usedBeds = Math.min(people, cap);
-            const usedExtra = Math.max(people - cap, 0);
-            const container = document.getElementById('bedsVisual');
-
-            container.innerHTML = '';  // clear out old table + grid
-
-            // 1) build a tiny table
-            const tbl = document.createElement('table');
-            tbl.className = 'table table-sm text-center mb-0';
-            tbl.innerHTML = `
-    <thead>
-      <tr><th></th>
-        <th>Postelí</th>
-        <th>Přistýlek</th>
-                <th>Celkem</th>
-
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Kapacita</td>
-        <td><strong>${cap}</strong></td>
-        <td><strong>${maxExtras}</strong></td>
-                <td><strong>${totalMax}</strong></td>
-
-      </tr>
-      <tr>
-        <td>Zvoleno</td>
-        <td>${usedBeds}</td>
-        <td> ${usedExtra}</td>
-                <td>${people}</td>
-
-      </tr>
-    </tbody>
-  `;
-            container.appendChild(tbl);
-
-            // 2) build the inline‐flex row of spans
-            const grid = document.createElement('div');
-            grid.className = 'beds-visual mt-3';
-
-            // postele
-            for (let i = 0; i < cap; i++) {
-                const span = document.createElement('span');
-                span.className = 'bed-rect ' + (i < usedBeds ? 'occupied' : 'free');
-                span.title = `${i + 1} osob`;
-                span.setAttribute('data-bs-toggle', 'tooltip');
-                span.addEventListener('click', onBedClick);
-                grid.appendChild(span);
-            }
-            // přistýlky
-            for (let j = 0; j < maxExtras; j++) {
-                const idx = cap + j + 1;
-                const span = document.createElement('span');
-                span.className = 'bed-rect ' + (j < usedExtra ? 'extra' : 'free');
-                span.title = `${idx} osob`;
-                span.setAttribute('data-bs-toggle', 'tooltip');
-                span.addEventListener('click', onBedClick);
-                grid.appendChild(span);
-            }
-
-            container.prepend(grid);
-            initTooltips();
         }
+       function renderBeds() {
+  // 1) Načteme hodnoty
+  const apt = document.getElementById('apartmentSelect').value;
+  const cap = apt === 'A' ? 11 : 6;
+  const maxExtras = (apt === 'A' ? 18 : 8) - cap;
+  const people = +document.getElementById('peopleA').value;
+
+  // 2) Spočítáme, kolik klasických lůžek a přistýlek se skutečně využije
+  const usedBeds  = Math.min(people, cap);
+  const usedExtra = Math.max(people - cap, 0);
+
+  // 3) Volná lůžka *jen* ze standardních lůžek
+  const freeBedsOnly   = cap - usedBeds;
+  const freeExtrasOnly = maxExtras - usedExtra;
+
+  // 4) Procentuální vytížení (postele + přistýlky)
+  const totalUsed = usedBeds + usedExtra;
+  const totalMax  = cap + maxExtras;
+  const utilization = Math.round((totalUsed / totalMax) * 100);
+
+  // 5) Připravíme grid
+  const grid = document.getElementById('bedsGridContainer');
+  grid.innerHTML = '';
+
+  // 5a) Vykreslíme standardní lůžka
+  for (let i = 0; i < cap; i++) {
+    const span = document.createElement('span');
+    span.className = i < usedBeds ? 'occupied' : 'free';
+    span.title = `Lůžko ${i + 1}`;
+    span.setAttribute('data-bs-toggle', 'tooltip');
+    span.addEventListener('click', onBedClick);
+    grid.appendChild(span);
+  }
+
+  // 5b) Vykreslíme přistýlky
+  for (let j = 0; j < maxExtras; j++) {
+    const idx = cap + j + 1;
+    const span = document.createElement('span');
+    span.className = j < usedExtra ? 'extra' : 'free';
+    span.title = `Přistýlka ${idx}`;
+    span.setAttribute('data-bs-toggle', 'tooltip');
+    span.addEventListener('click', onBedClick);
+    grid.appendChild(span);
+  }
+
+  // 6) Inicializujeme tooltipy nad všemi <span>
+  initTooltips();
+
+  // 7) Sestavíme přehledné shrnutí
+  let summary = `Obsazeno: ${totalUsed}/${totalMax} (${utilization}% celkem)`;
+  if (freeBedsOnly > 0) {
+    summary += ` – neobsazených postelí lůžek: ${freeBedsOnly}`;
+  } 
+
+  // 8) Vypíšeme shrnutí
+  document.getElementById('bedsSummary').textContent = summary;
+}
 
 
         function onBedClick(e) {
-            // 1) Hide any open tooltips
+            // 1) zavře tooltipy, pokud je máš
             document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
                 const ti = bootstrap.Tooltip.getInstance(el);
                 if (ti) ti.hide();
             });
 
-            // 2) Find _only_ the bed‐rect spans inside our visual grid
+            // 2) najdeme _všechny_ span v našem novém gridu
             const spans = Array.from(
-                document.querySelectorAll('#bedsVisual .beds-visual .bed-rect')
+                document.querySelectorAll('#bedsGridContainer span')
             );
             const idx = spans.indexOf(e.currentTarget);
 
-            // 3) Set the select to (index + 1)
+            // 3) nastavíme selekt na počet osob = index+1
             document.getElementById('peopleA').value = idx + 1;
 
-            // 4) Recalculate everything
+            // 4) překalkulujeme vše
             recalc();
         }
+
 
 
         function updateBedsSummary(beds, cap, extras, maxExtras) {
@@ -947,7 +981,7 @@
                 ]
             );
             container.appendChild(colA);
-  
+
             const colB = createTable(
                 ["Příplatek", "Cena"],
                 [
@@ -1070,7 +1104,7 @@
                 pplSelect.appendChild(opt);
             }
             updateFreeBeds();
-            
+
         }
 
 
@@ -1420,30 +1454,30 @@
             });
         }
 
-       document.addEventListener('DOMContentLoaded', () => {
-  loadFormFromLocalStorage();
-  const form = document.getElementById('reservationForm');
-  if (form) {
-    form.addEventListener('input', saveFormToLocalStorage);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFormFromLocalStorage();
+            const form = document.getElementById('reservationForm');
+            if (form) {
+                form.addEventListener('input', saveFormToLocalStorage);
 
-    // 1) zachytit SUBMIT formuláře (PDF 1)
-    form.addEventListener('submit', e => onReservationSubmit(e, 1));
-  }
+                // 1) zachytit SUBMIT formuláře (PDF 1)
+                form.addEventListener('submit', e => onReservationSubmit(e, 1));
+            }
 
-  // 2) zachytit klik na "PDF 1" v kartě (id=openPdf1)
-  const btnPdf1 = document.getElementById('openPdf1');
-  if (btnPdf1) {
-    btnPdf1.type = 'button';       // aby to nespouštělo defaultní submit
-    btnPdf1.addEventListener('click', e => onReservationSubmit(e, 1));
-  }
+            // 2) zachytit klik na "PDF 1" v kartě (id=openPdf1)
+            const btnPdf1 = document.getElementById('openPdf1');
+            if (btnPdf1) {
+                btnPdf1.type = 'button';       // aby to nespouštělo defaultní submit
+                btnPdf1.addEventListener('click', e => onReservationSubmit(e, 1));
+            }
 
-  // 3) zachytit klik na "PDF 2" (id=generatePage2)
-  const btnPdf2 = document.getElementById('generatePage2');
-  if (btnPdf2) {
-    btnPdf2.type = 'button';
-    btnPdf2.addEventListener('click', e => onReservationSubmit(e, 2));
-  }
-});
+            // 3) zachytit klik na "PDF 2" (id=generatePage2)
+            const btnPdf2 = document.getElementById('generatePage2');
+            if (btnPdf2) {
+                btnPdf2.type = 'button';
+                btnPdf2.addEventListener('click', e => onReservationSubmit(e, 2));
+            }
+        });
 
     </script>
 </body>
