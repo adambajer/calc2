@@ -308,8 +308,10 @@
         /* společné stylování políček */
         .bed-rect {
             display: inline-block;
-            width: 16px;
-            height: 16px;
+            width: 48px;
+            height: auto;
+            cursor: pointer;
+
             margin-right: 4px;
             border: 1px solid #ccc;
             box-sizing: border-box;
@@ -318,7 +320,7 @@
 
         /* obsazené postele = modré */
         .bed-rect.occupied {
-            background-color: #0d6efd;
+            background-color: #ffe1e1;
             border-color: #0d6efd;
         }
 
@@ -372,7 +374,7 @@
         }
 
         .bed-rect.occupied {
-            background-color: #0d6efd;
+            background-color: #fd0d0d;
             border-color: #0d6efd;
         }
 
@@ -431,43 +433,99 @@
         }
 
         :root {
-            --primary: #0d6efd;
-            --extra: #ffc107;
-            --border: #ccc;
+            --bed-frame: #000000;
+            --bed-blanket: #026abf;
+            --bed-extra: #edb40a;
+            --bed-empty: transparent;
         }
 
         .beds-grid {
-            display: grid;
-            /* uprav na tolik sloupců, kolik se vejde do kontejneru */
-            grid-template-columns: repeat(auto-fill, 26px);
-            gap: 4px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 4px 0;
         }
 
-        .beds-grid span {
-            width: 26px;
-            height: 40px;
-            border: 1px solid var(--border);
-            box-sizing: border-box;
+        /* Postel */
+        .bed-svg {
+            width: 3rem;
+            height: auto;
+            /* výška se řídí viewBox */
             cursor: pointer;
-            transition: border-color .1s, box-shadow .1s;
         }
 
-        .beds-grid span.occupied {
-            background-color: var(--primary);
-            border-color: var(--primary);
+        .bed-svg .frame {
+            stroke: var(--bed-frame, #8d6e63);
         }
 
-        .beds-grid span.extra {
-            background-color: var(--extra);
-            border-color: var(--extra);
+        .bed-svg .mattress {}
+
+        .bed-svg .pillow {
+            stroke: var(--bed-frame, #8d6e63);
+            stroke-width: 0.5;
         }
 
-        .beds-grid span.free {
-            background: transparent;
+        /* Obsazená postel */
+        .bed-svg.occupied .mattress {
+            fill: var(--bed-blanket, #2173b7);
         }
 
-        .beds-grid span:hover {
-            box-shadow: inset 0 0 0 2px var(--primary);
+        /* Obsazená postel */
+        .bed-svg.extraoccupied .mattress {
+            fill: var(--bed-extra, #ffc107);
+        }
+
+        /* Přistýlka */
+        .bed-svg.extra {
+            /* unlinkni velikost, bude 24×8 díky viewBoxu */
+        }
+
+        .bed-svg.extra rect {
+            fill: var(--bed-extra, #ffc107);
+            stroke: none;
+        }
+
+        svg path.frame {
+            fill: rgb(90, 25, 25);
+        }
+
+        svg path.bedExtra {
+            fill: gray;
+        }
+
+        #bedsSummary {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        #bedsSummary .badge {
+            padding: 0.5em 0.75em;
+            font-size: 0.85rem;
+        }
+
+        #totalPeople {
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        #totalApartment {
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        #totalStart,
+        #totalPets {
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .bedExtra {
+            fill: black;
         }
     </style>
 </head>
@@ -558,6 +616,7 @@
                                                 <div id="bedsVisual" class="beds-visual"></div>
                                                 <div class="beds-summary" id="bedsSummary"></div> -->
                                             <div id="bedsGridContainer" class="beds-grid"></div>
+
                                             <div id="bedsSummary" class="mt-2"></div>
 
                                         </div>
@@ -568,9 +627,29 @@
                                 <div class="col-md-4">
                                     <div class="card shadow-sm h-100">
                                         <div class="card-body">
-                                            <h5 class="card-title">Celková cena</h5>
-                                            <div id="totalPrice2" class="fs-3 text-end">0 CZK</div>
-                                            <button id="openPdf1" class="btn btn-primary w-100 mt-3">PDF 1</button>
+                                            <h5 class="card-title">Cena pobytu</h5>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div id="totalPrice2" class="fs-3 text-start">0 CZK</div>
+
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div id="totalApartment" class="fs-6 text-start text-muted">
+                                                        Apartmán: –</div>
+
+                                                    <div id="totalNights" class="fs-6 text-start text-muted">0 nocí
+                                                    </div>
+                                                    <div id="totalPeople" class="fs-6 text-start text-muted">0 osob
+                                                    </div>
+
+                                                    <div id="totalStart" class="fs-6 text-start text-muted">Začátek: –
+                                                    </div>
+                                                    <div id="totalPets" class="fs-6 text-start text-muted">Mazlíčci: –
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -812,8 +891,91 @@
     <script src="https://unpkg.com/@pdf-lib/fontkit@0.0.4/dist/fontkit.umd.js"></script> <!-- Pak pdf-lib -->
     <!-- html2pdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
-    <script>
-        // script.js
+    <script>function createBedSVG(state, title) {
+            const ns = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(ns, "svg");
+
+            // použijeme stejný viewBox jako v tvém SVG
+            svg.setAttribute("viewBox", "0 0 297 210");
+            svg.setAttribute("width", "297");
+            svg.setAttribute("height", "210");
+            svg.classList.add("bed-svg", state);
+            svg.setAttribute("title", title);
+
+            if (state === "emptyextra") {
+                // přistýlka – jen ten „rect3“ path
+                const extra = document.createElementNS(ns, "path");
+                extra.setAttribute("class", "bedExtra");
+                extra.setAttribute("d", "M 11.123606,132.21312 H 285.87636 c 6.16248,0 11.12361,4.46 11.12361,10 v 57.78698 c 0,5.54 -4.96113,10 -11.12361,10 H 11.123606 C 4.9611282,210.0001 0,205.5401 0,200.0001 v -57.78698 c 0,-5.54 4.9611282,-10 11.123606,-10 z");
+                svg.appendChild(extra);
+             
+
+            }
+              if (state === "extraoccupied") {
+                // přistýlka – jen ten „rect3“ path
+                const extra = document.createElementNS(ns, "path");
+                extra.setAttribute("class", "bedExtra");
+                extra.setAttribute("d", "M 11.123606,132.21312 H 285.87636 c 6.16248,0 11.12361,4.46 11.12361,10 v 57.78698 c 0,5.54 -4.96113,10 -11.12361,10 H 11.123606 C 4.9611282,210.0001 0,205.5401 0,200.0001 v -57.78698 c 0,-5.54 4.9611282,-10 11.123606,-10 z");
+                svg.appendChild(extra);
+                // 2) matrace – path „rect2“
+                const mattress = document.createElementNS(ns, "path");
+                mattress.setAttribute("class", "mattress");
+                mattress.setAttribute("d", "m 106.87344,68.524986 h 150.8779 V 123.6493 h -150.8779 z");
+                svg.appendChild(mattress);
+
+                // 3) polštář – path „path2“
+                const pillow = document.createElementNS(ns, "path");
+                pillow.setAttribute("class", "pillow");
+                pillow.setAttribute("d", "M 57.524654 58.717863 A 22.394299 21.48299 0 0 0 35.130155 80.200789 A 22.394299 21.48299 0 0 0 57.524654 101.68423 A 22.394299 21.48299 0 0 0 79.918636 80.200789 A 22.394299 21.48299 0 0 0 57.524654 58.717863 z");
+                svg.appendChild(pillow);
+                // 3) ruky – path „path2“
+                const ruky = document.createElementNS(ns, "path");
+                ruky.setAttribute("class", "ruky");
+                ruky.setAttribute("d", "M 92.256901 68.525016 C 87.091045 68.525016 82.932406 72.118196 82.932406 76.581372 L 82.932406 104.99979 L 47.67616 104.99979 C 42.564603 104.99979 38.449333 109.15894 38.449333 114.3248 C 38.449333 119.49066 42.564603 123.6493 47.67616 123.6493 L 92.256901 123.6493 L 92.355086 123.6493 C 92.544918 123.6493 92.730403 123.63219 92.917326 123.62088 C 93.024891 123.61441 93.134313 123.61391 93.24082 123.60434 C 93.337037 123.59516 93.430758 123.57874 93.526074 123.56662 C 98.085646 123.03357 101.58191 119.68304 101.58191 115.59294 L 101.58191 114.3248 L 101.58191 76.581372 C 101.58191 72.118196 97.422757 68.525016 92.256901 68.525016 z");
+                svg.appendChild(ruky);
+ 
+
+            }
+            if (state === "empty") {
+                 // 1) rám – path „rect1“
+                const frame = document.createElementNS(ns, "path");
+                frame.setAttribute("class", "frame");
+
+                frame.setAttribute("d", "M 15.000118 22.298381 A 15 15 0 0 0 0 37.298499 L 0 210.0001 L 30.000236 210.0001 L 30.000236 162.21284 L 267.00024 162.21284 L 267.00024 210.0001 L 296.99996 210.0001 L 296.99996 68.525016 A 15 15 0 0 0 282.00036 53.524898 A 15 15 0 0 0 267.00024 68.525016 L 267.00024 132.21312 L 30.000236 132.21312 L 30.000236 37.298499 A 15 15 0 0 0 15.000118 22.298381 z");
+                svg.appendChild(frame);
+
+               
+            }
+             if (state === "occupied") {
+                // 1) rám – path „rect1“
+                const frame = document.createElementNS(ns, "path");
+                frame.setAttribute("class", "frame");
+
+                frame.setAttribute("d", "M 15.000118 22.298381 A 15 15 0 0 0 0 37.298499 L 0 210.0001 L 30.000236 210.0001 L 30.000236 162.21284 L 267.00024 162.21284 L 267.00024 210.0001 L 296.99996 210.0001 L 296.99996 68.525016 A 15 15 0 0 0 282.00036 53.524898 A 15 15 0 0 0 267.00024 68.525016 L 267.00024 132.21312 L 30.000236 132.21312 L 30.000236 37.298499 A 15 15 0 0 0 15.000118 22.298381 z");
+                svg.appendChild(frame);
+
+                // 2) matrace – path „rect2“
+                const mattress = document.createElementNS(ns, "path");
+                mattress.setAttribute("class", "mattress");
+                mattress.setAttribute("d", "m 106.87344,68.524986 h 150.8779 V 123.6493 h -150.8779 z");
+                svg.appendChild(mattress);
+
+                // 3) polštář – path „path2“
+                const pillow = document.createElementNS(ns, "path");
+                pillow.setAttribute("class", "pillow");
+                pillow.setAttribute("d", "M 57.524654 58.717863 A 22.394299 21.48299 0 0 0 35.130155 80.200789 A 22.394299 21.48299 0 0 0 57.524654 101.68423 A 22.394299 21.48299 0 0 0 79.918636 80.200789 A 22.394299 21.48299 0 0 0 57.524654 58.717863 z");
+                svg.appendChild(pillow);
+                // 3) ruky – path „path2“
+                const ruky = document.createElementNS(ns, "path");
+                ruky.setAttribute("class", "ruky");
+                ruky.setAttribute("d", "M 92.256901 68.525016 C 87.091045 68.525016 82.932406 72.118196 82.932406 76.581372 L 82.932406 104.99979 L 47.67616 104.99979 C 42.564603 104.99979 38.449333 109.15894 38.449333 114.3248 C 38.449333 119.49066 42.564603 123.6493 47.67616 123.6493 L 92.256901 123.6493 L 92.355086 123.6493 C 92.544918 123.6493 92.730403 123.63219 92.917326 123.62088 C 93.024891 123.61441 93.134313 123.61391 93.24082 123.60434 C 93.337037 123.59516 93.430758 123.57874 93.526074 123.56662 C 98.085646 123.03357 101.58191 119.68304 101.58191 115.59294 L 101.58191 114.3248 L 101.58191 76.581372 C 101.58191 72.118196 97.422757 68.525016 92.256901 68.525016 z");
+                svg.appendChild(ruky);
+
+            }
+
+            return svg;
+        }
+
 
         // ----- Data -----
         const holidays = [
@@ -844,85 +1006,91 @@
             // A také při načtení stránky:
             renderBeds();
         }
-       function renderBeds() {
-  // 1) Načteme hodnoty
-  const apt = document.getElementById('apartmentSelect').value;
-  const cap = apt === 'A' ? 11 : 6;
-  const maxExtras = (apt === 'A' ? 18 : 8) - cap;
-  const people = +document.getElementById('peopleA').value;
+        function renderBeds() {
+            const apt = document.getElementById('apartmentSelect').value;
+            const cap = apt === 'A' ? 11 : 6;
+            const maxExtras = (apt === 'A' ? 18 : 8) - cap;
+            const people = +document.getElementById('peopleA').value;
 
-  // 2) Spočítáme, kolik klasických lůžek a přistýlek se skutečně využije
-  const usedBeds  = Math.min(people, cap);
-  const usedExtra = Math.max(people - cap, 0);
+            const usedBeds = Math.min(people, cap);
+            const usedExtra = Math.max(people - cap, 0);
+            const freeBedsOnly = cap - usedBeds;
+            const freeExtrasOnly = maxExtras - usedExtra;
+            const totalUsed = usedBeds + usedExtra;
+            const totalMax = cap + maxExtras;
+            const utilization = Math.round((totalUsed / totalMax) * 100);
 
-  // 3) Volná lůžka *jen* ze standardních lůžek
-  const freeBedsOnly   = cap - usedBeds;
-  const freeExtrasOnly = maxExtras - usedExtra;
+            const grid = document.getElementById('bedsGridContainer');
+            grid.innerHTML = '';
 
-  // 4) Procentuální vytížení (postele + přistýlky)
-  const totalUsed = usedBeds + usedExtra;
-  const totalMax  = cap + maxExtras;
-  const utilization = Math.round((totalUsed / totalMax) * 100);
-
-  // 5) Připravíme grid
-  const grid = document.getElementById('bedsGridContainer');
-  grid.innerHTML = '';
-
-  // 5a) Vykreslíme standardní lůžka
-  for (let i = 0; i < cap; i++) {
-    const span = document.createElement('span');
-    span.className = i < usedBeds ? 'occupied' : 'free';
-    span.title = `Lůžko ${i + 1}`;
-    span.setAttribute('data-bs-toggle', 'tooltip');
-    span.addEventListener('click', onBedClick);
-    grid.appendChild(span);
-  }
-
-  // 5b) Vykreslíme přistýlky
-  for (let j = 0; j < maxExtras; j++) {
-    const idx = cap + j + 1;
-    const span = document.createElement('span');
-    span.className = j < usedExtra ? 'extra' : 'free';
-    span.title = `Přistýlka ${idx}`;
-    span.setAttribute('data-bs-toggle', 'tooltip');
-    span.addEventListener('click', onBedClick);
-    grid.appendChild(span);
-  }
-
-  // 6) Inicializujeme tooltipy nad všemi <span>
-  initTooltips();
-
-  // 7) Sestavíme přehledné shrnutí
-  let summary = `Obsazeno: ${totalUsed}/${totalMax} (${utilization}% celkem)`;
-  if (freeBedsOnly > 0) {
-    summary += ` – neobsazených postelí lůžek: ${freeBedsOnly}`;
-  } 
-
-  // 8) Vypíšeme shrnutí
-  document.getElementById('bedsSummary').textContent = summary;
-}
+            // 1) Standardní lůžka
+            for (let i = 0; i < cap; i++) {
+                const state = i < usedBeds ? 'occupied' : 'empty';
+                const svg = createBedSVG(state, `Lůžko ${i + 1}`);
+                
+                svg.addEventListener('click', onBedClick);
+                grid.appendChild(svg);
+            }
+            // 2) Přistýlky
+            for (let j = 0; j < maxExtras; j++) {
+                const idx = cap + j + 1;
+                // pokud j < usedExtra ⇒ skutečná (obsazená) extra
+                // jinak ⇒ prázdná extra
+                const state = j < usedExtra ? 'extraoccupied' : 'emptyextra';
+                const svg = createBedSVG(state, `Přistýlka ${idx}`);
+                svg.addEventListener('click', onBedClick);
+                grid.appendChild(svg);
+            }
 
 
+            initTooltips();  // pokud tooltipy používáš
+
+            // 3) Shrnutí
+            const parts = [];
+
+            // Obsazená lůžka
+            parts.push(
+                `<span class="badge bg-primary">Obsazené postel: ${totalUsed}/${totalMax}</span>`
+            );
+
+            // Volná lůžka
+            if (freeBedsOnly > 0) {
+                parts.push(
+                    `<span class="badge bg-secondary">Neobsazené postele: ${freeBedsOnly}</span>`
+                );
+            }
+
+            // Přistýlky
+            if (usedExtra > 0) {
+                parts.push(
+                    `<span class="badge bg-warning text-dark">Přistýlek: ${usedExtra}/${maxExtras}</span>`
+                );
+            }
+
+            // Vložíme HTML
+            document.getElementById('bedsSummary').innerHTML = parts.join('');
+        }
         function onBedClick(e) {
-            // 1) zavře tooltipy, pokud je máš
+            // 1) Zavřeme tooltipy (pokud je používáš)
             document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
                 const ti = bootstrap.Tooltip.getInstance(el);
                 if (ti) ti.hide();
             });
 
-            // 2) najdeme _všechny_ span v našem novém gridu
-            const spans = Array.from(
-                document.querySelectorAll('#bedsGridContainer span')
+            // 2) Najdeme _všechny_ beds (teď SVG s třídou bed-svg)
+            const beds = Array.from(
+                document.querySelectorAll('#bedsGridContainer .bed-svg')
             );
-            const idx = spans.indexOf(e.currentTarget);
 
-            // 3) nastavíme selekt na počet osob = index+1
-            document.getElementById('peopleA').value = idx + 1;
+            // 3) Určíme index toho, na co kliknul(e)
+            const idx = beds.indexOf(e.currentTarget);
 
-            // 4) překalkulujeme vše
-            recalc();
+            // 4) Nastavíme select na počet osob = index+1
+            if (idx !== -1) {
+                document.getElementById('peopleA').value = idx + 1;
+                recalc();
+            }
         }
-
 
 
         function updateBedsSummary(beds, cap, extras, maxExtras) {
@@ -1156,7 +1324,30 @@
             };
 
             let totalPrice = 0;
+            // po tomto řádku:
+            $('#totalPrice2').html(`${totalPrice.toLocaleString()} CZK`);
+            // přidej:
+            $('#totalNights').html(`${diffNights} ${diffNights === 1 ? 'noc' : 'nocí'}`);
+            $('#totalPeople').html(`${people} ${people === 1 ? 'Osob:' : 'osob'}`);
 
+            // …po aktualizaci #totalApartment přidáš:
+
+            // 1) Začátek pobytu
+            $('#totalStart').text(`Od: ${dateFrom.toLocaleDateString('cs-CZ', {
+                day: '2-digit', month: '2-digit', year: 'numeric'
+            })}`);
+
+            // 2) Mazlíčci
+            if (pets > 0) {
+                $('#totalPets').text(`Mazlíčci: ano (${pets})`);
+            } else {
+                $('#totalPets').text(`Mazlíčci: ne`);
+            }
+
+            // načteme vybraný apartmán
+            const apartment = $('#apartmentSelect').val();
+            // a zapíšeme do elementu
+            $('#totalApartment').text(`Apartmán: ${apartment}`);
             // --- hlavička tabulky ---
             let breakdown = `
         <table class="table">
