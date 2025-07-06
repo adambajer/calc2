@@ -344,9 +344,20 @@
             color: #0d6efd;
         }
 
-        .bed-icon.empty {
+        svg path.frame {
+            fill: rgb(0, 0, 0);
+        }
+
+        svg path.bedExtra {
+            fill: black;
+        }svg.occupied path{fill:rgb(13, 110, 253);}
+        svg.extraoccupied path {
+            fill:#ffc107;
+        }
+        svg.empty path{
             /* prázdné lůžko/přistýlka = šedá */
             color: #ccc;
+            fill:gray;
         }
 
         /* 1) extra přistýlka bude žlutá */
@@ -434,8 +445,8 @@
 
         :root {
             --bed-frame: #000000;
-            --bed-blanket: #026abf;
-            --bed-extra: #edb40a;
+            --bed-blanket: #000000;
+            --bed-extra: #000000;
             --bed-empty: transparent;
         }
 
@@ -455,7 +466,7 @@
         }
 
         .bed-svg .frame {
-            stroke: var(--bed-frame, #8d6e63);
+            stroke: var(  #000000);
         }
 
         .bed-svg .mattress {}
@@ -467,12 +478,11 @@
 
         /* Obsazená postel */
         .bed-svg.occupied .mattress {
-            fill: var(--bed-blanket, #2173b7);
-        }
+         }
 
         /* Obsazená postel */
         .bed-svg.extraoccupied .mattress {
-            fill: var(--bed-extra, #ffc107);
+            fill: var( #ffc107);
         }
 
         /* Přistýlka */
@@ -485,13 +495,6 @@
             stroke: none;
         }
 
-        svg path.frame {
-            fill: rgb(90, 25, 25);
-        }
-
-        svg path.bedExtra {
-            fill: gray;
-        }
 
         #bedsSummary {
             margin-top: 1rem;
@@ -527,6 +530,18 @@
         .bedExtra {
             fill: black;
         }
+
+        #summaryContainer div span {
+            width: 40%;
+            display: inline-block;
+            text-align: right;
+
+        }
+
+        #summaryContainer div strong {
+            width: 40%;
+            display: inline-block;
+        }
     </style>
 </head>
 
@@ -551,7 +566,6 @@
 
                                     <div class="card shadow-sm h-100">
                                         <div class="card-body">
-                                            <h5 class="card-title">Parametry pobytu</h5>
 
                                             <div class="row mb-3">
                                                 <div class="col-md-7">
@@ -611,7 +625,6 @@
                                 <div class="col-md-4">
                                     <div class="card shadow-sm h-100">
                                         <div class="card-body">
-                                            <h5 class="card-title">Obsazenost</h5>
                                             <!-- sem přijde <progress>
                                                 <div id="bedsVisual" class="beds-visual"></div>
                                                 <div class="beds-summary" id="bedsSummary"></div> -->
@@ -627,27 +640,39 @@
                                 <div class="col-md-4">
                                     <div class="card shadow-sm h-100">
                                         <div class="card-body">
-                                            <h5 class="card-title">Cena pobytu</h5>
                                             <div class="row">
+
                                                 <div class="col-md-6">
+                                                    <div id="summaryContainer">
+                                                        <div>
+                                                            <span>Apartmán</span>
+                                                            <strong id="totalApartment"></strong>
+                                                        </div>
+                                                        <div>
+                                                            <span>Termín</span>
+                                                            <strong id="totalStart"></strong>
+                                                        </div>
+                                                        <div>
+                                                            <span>Počet nocí</span>
+                                                            <strong id="totalNights"></strong>
+                                                        </div>
+                                                        <div>
+                                                            <span>Počet osob</span>
+                                                            <strong id="totalPeople"></strong>
+                                                        </div>
+                                                        <div>
+                                                            <span>Mazlíčci</span>
+                                                            <strong id="totalPets"></strong>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h5>Cena pobytu</h5>
                                                     <div id="totalPrice2" class="fs-3 text-start">0 CZK</div>
 
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div id="totalApartment" class="fs-6 text-start text-muted">
-                                                        Apartmán: –</div>
-
-                                                    <div id="totalNights" class="fs-6 text-start text-muted">0 nocí
-                                                    </div>
-                                                    <div id="totalPeople" class="fs-6 text-start text-muted">0 osob
-                                                    </div>
-
-                                                    <div id="totalStart" class="fs-6 text-start text-muted">Začátek: –
-                                                    </div>
-                                                    <div id="totalPets" class="fs-6 text-start text-muted">Mazlíčci: –
-                                                    </div>
-                                                </div>
-
                                             </div>
 
                                         </div>
@@ -670,7 +695,6 @@
                             <div class="col-md-12">
                                 <div class="card shadow-sm h-100">
                                     <div class="card-body">
-                                        <h5 class="card-title">Rozpis pobytu</h5>
                                         <div id="result"></div>
 
                                     </div>
@@ -908,10 +932,10 @@
                 extra.setAttribute("class", "bedExtra");
                 extra.setAttribute("d", "M 11.123606,132.21312 H 285.87636 c 6.16248,0 11.12361,4.46 11.12361,10 v 57.78698 c 0,5.54 -4.96113,10 -11.12361,10 H 11.123606 C 4.9611282,210.0001 0,205.5401 0,200.0001 v -57.78698 c 0,-5.54 4.9611282,-10 11.123606,-10 z");
                 svg.appendChild(extra);
-             
+
 
             }
-              if (state === "extraoccupied") {
+            if (state === "extraoccupied") {
                 // přistýlka – jen ten „rect3“ path
                 const extra = document.createElementNS(ns, "path");
                 extra.setAttribute("class", "bedExtra");
@@ -933,20 +957,20 @@
                 ruky.setAttribute("class", "ruky");
                 ruky.setAttribute("d", "M 92.256901 68.525016 C 87.091045 68.525016 82.932406 72.118196 82.932406 76.581372 L 82.932406 104.99979 L 47.67616 104.99979 C 42.564603 104.99979 38.449333 109.15894 38.449333 114.3248 C 38.449333 119.49066 42.564603 123.6493 47.67616 123.6493 L 92.256901 123.6493 L 92.355086 123.6493 C 92.544918 123.6493 92.730403 123.63219 92.917326 123.62088 C 93.024891 123.61441 93.134313 123.61391 93.24082 123.60434 C 93.337037 123.59516 93.430758 123.57874 93.526074 123.56662 C 98.085646 123.03357 101.58191 119.68304 101.58191 115.59294 L 101.58191 114.3248 L 101.58191 76.581372 C 101.58191 72.118196 97.422757 68.525016 92.256901 68.525016 z");
                 svg.appendChild(ruky);
- 
+
 
             }
             if (state === "empty") {
-                 // 1) rám – path „rect1“
+                // 1) rám – path „rect1“
                 const frame = document.createElementNS(ns, "path");
                 frame.setAttribute("class", "frame");
 
                 frame.setAttribute("d", "M 15.000118 22.298381 A 15 15 0 0 0 0 37.298499 L 0 210.0001 L 30.000236 210.0001 L 30.000236 162.21284 L 267.00024 162.21284 L 267.00024 210.0001 L 296.99996 210.0001 L 296.99996 68.525016 A 15 15 0 0 0 282.00036 53.524898 A 15 15 0 0 0 267.00024 68.525016 L 267.00024 132.21312 L 30.000236 132.21312 L 30.000236 37.298499 A 15 15 0 0 0 15.000118 22.298381 z");
                 svg.appendChild(frame);
 
-               
+
             }
-             if (state === "occupied") {
+            if (state === "occupied") {
                 // 1) rám – path „rect1“
                 const frame = document.createElementNS(ns, "path");
                 frame.setAttribute("class", "frame");
@@ -1026,8 +1050,11 @@
             // 1) Standardní lůžka
             for (let i = 0; i < cap; i++) {
                 const state = i < usedBeds ? 'occupied' : 'empty';
-                const svg = createBedSVG(state, `Lůžko ${i + 1}`);
-                
+                const svg = createBedSVG(state, `Postel ${i + 1}`);
+                svg.setAttribute("data-bs-toggle", "tooltip");
+                svg.setAttribute("data-bs-custom-class", "white-tooltip");
+
+
                 svg.addEventListener('click', onBedClick);
                 grid.appendChild(svg);
             }
@@ -1038,6 +1065,8 @@
                 // jinak ⇒ prázdná extra
                 const state = j < usedExtra ? 'extraoccupied' : 'emptyextra';
                 const svg = createBedSVG(state, `Přistýlka ${idx}`);
+                svg.setAttribute("data-bs-toggle", "tooltip");
+                svg.setAttribute("data-bs-custom-class", "white-tooltip");
                 svg.addEventListener('click', onBedClick);
                 grid.appendChild(svg);
             }
@@ -1047,26 +1076,24 @@
 
             // 3) Shrnutí
             const parts = [];
-
+ parts.push(
+                `<span class="badge bg-danger">Kapacita osob: ${totalMax}</span>`
+            );
             // Obsazená lůžka
             parts.push(
-                `<span class="badge bg-primary">Obsazené postel: ${totalUsed}/${totalMax}</span>`
+                `<span class="badge bg-primary">Počet osob: ${totalUsed}</span>`
             );
 
             // Volná lůžka
-            if (freeBedsOnly > 0) {
-                parts.push(
+                 parts.push(
                     `<span class="badge bg-secondary">Neobsazené postele: ${freeBedsOnly}</span>`
                 );
-            }
-
+ 
             // Přistýlky
-            if (usedExtra > 0) {
-                parts.push(
+                 parts.push(
                     `<span class="badge bg-warning text-dark">Přistýlek: ${usedExtra}/${maxExtras}</span>`
                 );
-            }
-
+ 
             // Vložíme HTML
             document.getElementById('bedsSummary').innerHTML = parts.join('');
         }
@@ -1327,19 +1354,19 @@
             // po tomto řádku:
             $('#totalPrice2').html(`${totalPrice.toLocaleString()} CZK`);
             // přidej:
-            $('#totalNights').html(`${diffNights} ${diffNights === 1 ? 'noc' : 'nocí'}`);
-            $('#totalPeople').html(`${people} ${people === 1 ? 'Osob:' : 'osob'}`);
+            $('#totalNights').html(`${diffNights}`);
+            $('#totalPeople').html(`${people}`);
 
             // …po aktualizaci #totalApartment přidáš:
 
             // 1) Začátek pobytu
-            $('#totalStart').text(`Od: ${dateFrom.toLocaleDateString('cs-CZ', {
+            $('#totalStart').text(`${dateFrom.toLocaleDateString('cs-CZ', {
                 day: '2-digit', month: '2-digit', year: 'numeric'
             })}`);
 
             // 2) Mazlíčci
             if (pets > 0) {
-                $('#totalPets').text(`Mazlíčci: ano (${pets})`);
+                $('#totalPets').text(`${pets}`);
             } else {
                 $('#totalPets').text(`Mazlíčci: ne`);
             }
@@ -1347,7 +1374,7 @@
             // načteme vybraný apartmán
             const apartment = $('#apartmentSelect').val();
             // a zapíšeme do elementu
-            $('#totalApartment').text(`Apartmán: ${apartment}`);
+            $('#totalApartment').text(` ${apartment}`);
             // --- hlavička tabulky ---
             let breakdown = `
         <table class="table">
@@ -1356,7 +1383,7 @@
             <th>Ubytovací noc</th> 
             <th>Obsazené postele</th>
           ${showFreeBedsColumn ? '<th>Neobsazené postele</th>' : ''}
-            ${showPetColumn ? '<th>Pes</th>' : ''}
+            ${showPetColumn ? '<th>Mazlíčci</th>' : ''}
             ${diffNights === 1 ? '<th>Příplatek 30 %</th>' : ''}
             <th>Celkem za noc</th>
             </tr>
@@ -1501,7 +1528,7 @@
             breakdown += `
       <tr class="bg-secondary text-white">
         <td colspan="${colspan}">
-          <strong>Celkem</strong>
+          <strong>Cena pobytu</strong>
         </td>
         <td class="totalprice">${totalPrice.toLocaleString()} CZK</td>
       </tr>
