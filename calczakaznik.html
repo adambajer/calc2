@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulace ubytování</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- DateRangePicker CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+  <!-- Google Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <style>
+    body { background: #f5f5f5; font-family: sans-serif; }
+    .card { margin-bottom: 1rem; }
+    .price-icon { vertical-align: middle; font-size: 1.2rem; cursor: pointer; }
+    .white-tooltip .tooltip-inner { background:#fff; color:#000; border:1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <h1 class="mb-4">Kalkulace ubytování</h1>
+    <div class="row g-3">
+      <!-- Vstupy -->
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label">Termín</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="material-icons">calendar_month</i></span>
+                <input type="text" id="daterange" class="form-control" readonly>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Apartmán</label>
+              <select id="apartmentSelect" class="form-select"></select>
+            </div>
+            <div class="row">
+              <div class="col-6 mb-3">
+                <label class="form-label">Osoby</label>
+                <select id="peopleCount" class="form-select"></select>
+              </div>
+              <div class="col-6 mb-3">
+                <label class="form-label">Mazlíčci</label>
+                <select id="petsCount" class="form-select">
+                  <option>0</option><option>1</option><option>2</option><option>3</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Rekapitulace & cena -->
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Rekapitulace</h5>
+            <ul class="list-unstyled mb-3">
+              <li><strong>Apartmán:</strong> <span id="sumApartment">–</span></li>
+              <li><strong>Termín:</strong> <span id="sumTerm">–</span></li>
+              <li><strong>Počet nocí:</strong> <span id="sumNights">–</span></li>
+              <li><strong>Osoby:</strong> <span id="sumPeople">–</span></li>
+              <li><strong>Mazlíčci:</strong> <span id="sumPets">–</span></li>
+            </ul>
+            <h4>Cena pobytu:</h4>
+            <div id="totalPrice" class="fs-2">0 CZK</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Detailní rozpis -->
+    <div id="breakdown"></div>
+  </div>
+
+  <!-- JS knihovny -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1/daterangepicker.min.js"></script>
+
+  <script>
+    // Data svátků
+    const holidays = [
+      { date: '01-01', title: 'Den obnovy státu' },
+      { date: '05-08', title: 'Den vítězství' },
+      { date: '07-05', title: 'Cyril a Metoděj' },
+      { date: '07-06', title: 'Upálení Jana Husa' },
+      { date: '09-28', title: 'Česká státnost' },
+      { date: '10-28', title: 'Vznik ČSR' },
+      { date: '11-17', title: 'Den boje za svobodu' },
+      { date: '04-04', title: 'Velký pátek' },
+      { date: '04-05', title: 'Velikonoční pondělí' },
+      { date: '05-01', title: 'Sv. práce' }
+    ];
+
+    // Nastavení DateRangePicker
+    $('#daterange').daterangepicker({
+      locale: { format: 'DD.MM.YYYY', daysOfWeek: ['Ne','Po','Út','St','Čt','Pá','So'] },
+      minDate: moment().add(1,'days'),
+      startDate: moment().add(1,'days'),
+      endDate: moment().add(3,'days')
+    });
+
+    // Naplnění selectů pro apartmány a lidi
+    function updateApartmentOptions() {
+      const $apt = $('#apartmentSelect');
+      $apt.empty().append('<option value="A">A</option><option value="B">B</option>');
+    }
+    function updatePeopleOptions() {
+      const apt = $('#apartmentSelect').val();
+      const cap = apt === 'A' ? 11 : 6;
+      const maxExtras = apt === 'A' ? 18 - cap : 8 - cap;
+      const maxTotal = cap + maxExtras;
+      const $sel = $('#peopleCount');
+      const prev = +$sel.val() || 1;
+      $sel.empty();
+      for (let i = 1; i <= maxTotal; i++) {
+        $sel.append(`<option>${i}</option>`);
+      }
+      $sel.val(prev <= maxTotal ? prev : maxTotal);
+    }
+
+    // Reakce na změny
+    $('#apartmentSelect').on('change', () => { updatePeopleOptions(); recalc(); });
+    ['change','input'].forEach(ev => $('#peopleCount,#petsCount').on(ev, recalc));
+    $('#daterange').on('apply.daterangepicker', recalc);
+
+    function recalc() {
+      const range = $('#daterange').val().split(' - ');
+      const from = moment(range[0], 'DD.MM.YYYY');
+      const to   = moment(range[1], 'DD.MM.YYYY');
+      const nights = to.diff(from, 'days');
+      const ppl = +$('#peopleCount').val();
+      const pets = +$('#petsCount').val();
+      const apt  = $('#apartmentSelect').val();
+
+      // Validace dat
+      if (!from.isBefore(to)) {
+        alert('Datum odjezdu nesprávné'); return;
+      }
+      if (nights < 1) {
+        alert('Min. počet nocí je 1.'); return;
+      }
+
+      // Ceny
+      const prices = { weekday:550, weekend:650, holiday:650, silvester:650, unusedBed:300, pet:300 };
+      const capacity = apt === 'A' ? 11 : 6;
+
+      // Detekce Silvestra
+      const isSylv = from.isSameOrBefore(moment(from).endOf('year').set({month:11,day:31}))
+                  && to.isSameOrAfter(moment(from).endOf('year').set({month:11,day:31}));
+      let sylvCount = 0;
+      let total = 0;
+
+      // Dynamické sloupce
+      const showFree = ppl < capacity;
+      const showPets = pets > 0;
+      const showSurch = nights === 1;
+
+      // Generování hlavičky
+      let head = '<tr><th>Datum</th><th>Obsazené</th>';
+      if (showFree) head += '<th>Neobsazené</th>';
+      if (showPets) head += '<th>Mazlíčci</th>';
+      if (showSurch) head += '<th>Příplatek</th>';
+      head += '<th>Celkem</th></tr>';
+
+      let detailRows = '';
+      for (let d = moment(from); d.isBefore(to); d.add(1,'days')) {
+        const dow = d.day();
+        // Priorita Silvestra
+        let key;
+        if (isSylv && sylvCount < 4) { key = 'silvester'; sylvCount++; }
+        else if (holidays.find(h => h.date === d.format('MM-DD'))) key = 'holiday';
+        else if ([5,6].includes(dow)) key = 'weekend';
+        else key = 'weekday';
+
+        // Výpočet cen
+        const bedsPrice = prices[key] * ppl;
+        const unocc = Math.max(capacity - ppl, 0);
+        const unoccPrice = unocc * prices.unusedBed;
+        const petCharge = pets * prices.pet;
+        let daySubtotal = bedsPrice + unoccPrice + petCharge;
+        let surcharge = 0;
+        if (showSurch) { surcharge = daySubtotal * 0.3; daySubtotal += surcharge; }
+        total += daySubtotal;
+
+        // Řádek
+        detailRows += `<tr>
+          <td>${d.format('DD.MM.YYYY')}</td>
+          <td>${prices[key]}×${ppl}</td>`;
+        if (showFree) detailRows += `<td>${unocc}×${prices.unusedBed}</td>`;
+        if (showPets) detailRows += `<td>${pets}×${prices.pet}</td>`;
+        if (showSurch) detailRows += `<td>${Math.round(surcharge).toLocaleString()} CZK</td>`;
+        detailRows += `<td>${Math.round(daySubtotal).toLocaleString()} CZK</td>
+        </tr>`;
+      }
+
+      // Vykreslení souhrnu
+      $('#sumApartment').text(apt);
+      $('#sumTerm').text(from.format('DD.MM.YYYY')+' – '+to.format('DD.MM.YYYY'));
+      $('#sumNights').text(nights);
+      $('#sumPeople').text(ppl);
+      $('#sumPets').text(pets);
+      $('#totalPrice').text(Math.round(total).toLocaleString()+' CZK');
+
+      // Vykreslení tabulky
+      $('#breakdown').html(`
+        <table class="table table-sm">
+          <thead>${head}</thead>
+          <tbody>
+            ${detailRows}
+            <tr class="table-secondary">
+              <td colspan="${2 + (showFree?1:0) + (showPets?1:0) + (showSurch?1:0)}"><strong>Celkem</strong></td>
+              <td><strong>${Math.round(total).toLocaleString()} CZK</strong></td>
+            </tr>
+          </tbody>
+        </table>`);
+
+      // Tooltipy
+      $('[data-bs-toggle="tooltip"]').tooltip();
+    }
+
+    // Inicializace
+    updateApartmentOptions();
+    updatePeopleOptions();
+    recalc();
+  </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Výběr termínu s omezením obsazenosti</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Daterangepicker CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <style>
+        /* Základní styl invalid-date */
+        .daterangepicker td.invalid-date {
+            background-color: #ffdddd !important;
+            color: #999 !important;
+            cursor: not-allowed;
+        }
+        /* Debug výstup: barevné řádky */
+        .debug-full { color: #DD9999; font-weight: bold; }
+        .debug-half { color: #BEBEFF; font-weight: bold; }
+        .debug-caption { color: #007bff; font-weight: bold; }
+        #debug-output div { margin: 2px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <label for="daterange" class="form-label">Vyberte termín:</label>
+    <input type="text" id="daterange" class="form-control" readonly />
+    <div id="debug-container" class="mt-3">
+        <strong>Debug – unavailableDates:</strong>
+        <div id="debug-output" style="background:#f8f9fa;padding:10px;border:1px solid #ddd;max-height:200px;overflow:auto;"></div>
+    </div>
+</div>
+
+<main id="calendar-data" style="display:none;"></main>
+
+<!-- Skripty -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script>
+$(function() {
+    var unavailableDates = [], dateTextMap = {}, dateTypeMap = {};
+    var $picker = $('#daterange'), $out = $('#debug-output');
+    var calendarEndpoint = 'http://localhost:5001/calendar';
+
+    initPicker(); loadCalendar();
+
+    function loadCalendar() {
+        fetch(calendarEndpoint)
+            .then(r=>r.ok? r.text(): Promise.reject())
+            .then(html=>{
+                var doc=new DOMParser().parseFromString(html,'text/html');
+                $('#calendar-data').empty().append(doc.querySelectorAll('table.month'));
+                parseCalendar(); initPicker();
+            }).catch(e=>{ console.error(e); $out.text('Nelze načíst data.'); });
+    }
+
+    function parseCalendar() {
+        unavailableDates=[]; dateTextMap={}; dateTypeMap={};
+        $out.empty();
+        $('#calendar-data table.month').each(function() {
+            var cap=$(this).find('.month-name').text().trim();
+            $out.append('<div class="debug-caption">'+cap+'</div>');
+            var parts=cap.split(' '), mi={Leden:1,Únor:2,Březen:3,Duben:4,Květen:5,Červen:6,Červenec:7,Srpen:8,Září:9,Říjen:10,Listopad:11,Prosinec:12}[parts[0]], yr=+parts[1];
+            $(this).find('td').each(function() {
+                var $c=$(this), d=parseInt($c.text().trim(),10);
+                if(isNaN(d) || (!$c.hasClass('day-full') && !$c.hasClass('day-half'))) return;
+                var type=$c.hasClass('day-full')?'full':'half';
+                var date=moment([yr,mi-1,d]).format('YYYY-MM-DD');
+                unavailableDates.push(date);
+                dateTypeMap[date]=type;
+                dateTextMap[date]=$c.attr('title')||'';
+                var badge = type==='full'
+                    ? '<span class="badge bg-danger me-2">Obsazeno</span>'
+                    : '<span class="badge bg-info me-2">Částečně</span>';
+                $out.append('<div>'+badge+date+' («'+dateTextMap[date]+'»)</div>');
+            });
+        });
+    }
+    function initPicker() {
+        $picker.daterangepicker({autoApply:true,locale:{format:'DD.MM.YYYY',daysOfWeek:['Ne','Po','Út','St','Čt','Pá','So'],monthNames:['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'],firstDay:1},isInvalidDate: d=>unavailableDates.includes(d.format('YYYY-MM-DD'))});
+    }
+});
+</script>
+
+</body>
+</html>
