@@ -12,6 +12,18 @@
     .card { margin-bottom: 1rem; border-radius: .5rem; }
     .recap-table td:first-child { font-weight: 500; }
     .form-label i { vertical-align: middle; margin-right: .5rem; color: #6c757d; }
+    /* Zvýraznění víkendových dnů červeně v datepickeru */
+     .daterangepicker td.available.weekend,
+    .daterangepicker td.available.weekend:hover {
+      color: #d9534f;
+      font-weight: bold;
+    }
+    /* Zvýraznění svátků zeleně */
+    .daterangepicker td.available.holiday,
+    .daterangepicker td.available.holiday:hover {
+      color: #5cb85c;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -99,7 +111,21 @@
         },
         minDate: moment().add(1, 'days'),
         startDate: moment().add(1, 'days'),
-        endDate: moment().add(3, 'days')
+        endDate: moment().add(3, 'days'),
+        isCustomDate: function(date) {
+          return holidays.includes(date.format('MM-DD')) ? 'holiday' : ( [5,6].includes(date.day()) ? 'weekend' : '' );
+        }
+      });
+      // Tooltip pro svátky
+      $('#daterange').on('show.daterangepicker', function(ev, picker) {
+        setTimeout(function() {
+          picker.container.find('td.available.holiday').each(function() {
+            var $td = $(this);
+            var date = moment($td.data('title'), 'YYYY-MM-DD');
+            var title = holidays.find(h => h.date === date.format('MM-DD')).title;
+            $td.attr('title', title).tooltip({placement: 'top'});
+          });
+        }, 0);
       });
 
       $('input[name="apartment"]').change(updateCounts);
