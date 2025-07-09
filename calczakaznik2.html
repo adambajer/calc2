@@ -130,7 +130,7 @@
                 </select>
               </div>
               <div class="mt-2 text-muted">
-             <span id="capacityDisplay">11+5</span>
+                <span id="capacityDisplay">11+5</span>
               </div>
             </div>
             <div class="row">
@@ -144,7 +144,7 @@
 
               </div>
               <div class="col-4 mb-3">
-                <label class="form-label">Děti (3–15)</label>
+                <label class="form-label">Děti od 3 let</label>
                 <div class="input-group">
                   <span class="input-group-text"><i class="material-icons">child_care</i></span>
                   <select id="childCount" class="form-select"></select>
@@ -152,6 +152,16 @@
                 </div>
 
               </div>
+              <div class="col-3 mb-3">
+                <label class="form-label">Děti do 2,99 let</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="material-icons">child_friendly</i></span>
+                  <select id="toddlerCount" class="form-select">
+                    <!-- možnosti se budou plnit JS -->
+                  </select>
+                </div>
+              </div>
+
               <div class="col-4 mb-3">
                 <label class="form-label">Mazlíčci</label>
 
@@ -194,10 +204,6 @@
                   <td class="text-end" id="sumNights">–</td>
                 </tr>
                 <tr>
-                  <th scope="row">Osoby celkem</th>
-                  <td class="text-end" id="sumPeople">–</td>
-                </tr>
-                <tr>
                   <th scope="row" class="ps-4">- Dospělí</th>
                   <td class="text-end" id="sumAdults">–</td>
                 </tr>
@@ -205,6 +211,11 @@
                   <th scope="row" class="ps-4">- Děti</th>
                   <td class="text-end" id="sumChildren">–</td>
                 </tr>
+                <tr>
+                  <th scope="row" class="ps-4">- Děti do 2,99</th>
+                  <td class="text-end" id="sumToddlers">–</td>
+                </tr>
+
                 <tr>
                   <th scope="row">Mazlíčci</th>
                   <td class="text-end" id="sumPets">–</td>
@@ -290,6 +301,14 @@
         $('#childCount').empty();
         for (let i = 0; i <= maxTotal; i++) $('#childCount').append(new Option(i, i));
         $('#childCount').val(Math.min(prevChildren, maxTotal - $('#adultCount').val()));
+        // Děti do 2,99 let – max. 10
+        const prevToddlers = +$('#toddlerCount').val() || 0;
+        $('#toddlerCount').empty();
+        for (let i = 0; i <= 10; i++) {
+          $('#toddlerCount').append(new Option(i, i));
+        }
+        $('#toddlerCount').val(Math.min(prevToddlers, 10));
+        $('#toddlerCount').off('change').on('change', recalc);
 
         // Při změně uprav kapacity druhé
         $('#adultCount').off('change').on('change', function () {
@@ -321,6 +340,8 @@
 
         const adults = +$('#adultCount').val();
         const children = +$('#childCount').val();
+                const todders = +$('#toddlerCount').val();
+
         const ppl = adults + children;
         const pets = +$('#petsCount').val();
 
@@ -332,12 +353,12 @@
         const term = $('#daterange').val();
         const start = moment(term.split(' - ')[0], 'DD.MM.YYYY');
         const end = moment(term.split(' - ')[1], 'DD.MM.YYYY');
-          const nights = end.diff(start, 'days');
+        const nights = end.diff(start, 'days');
 
         for (let d = start.clone(); d.isBefore(end); d.add(1, 'days')) {
           const m = d.format('MM-DD'), wd = d.day();
           const rate = ([5, 6].includes(wd) || holidays.includes(m)) ? 650 : 550;
-          total += rate * ppl + pets * 300+emptyBeds*300;
+          total += rate * ppl + pets * 300 + emptyBeds * 300;
         }
 
         // aktualizace rekapitulace
@@ -348,13 +369,14 @@
         );
         $('#sumTerm').text(term);
         $('#sumNights').text(end.diff(start, 'days'));
-        $('#sumPeople').text(ppl);
         $('#sumAdults').text(adults);
         $('#sumChildren').text(children);
+        $('#sumToddlers').text(todders);
+
         $('#sumPets').text(pets);
         if (nights === 1) {
-  total = Math.round(total * 1.3);
-}
+          total = Math.round(total * 1.3);
+        }
         $('#totalPrice').text(total.toLocaleString() + ' CZK');
 
         // pokud není vybrána ani jedna osoba, skryj rekapitulaci
