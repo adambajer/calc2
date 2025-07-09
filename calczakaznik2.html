@@ -302,7 +302,7 @@
   const pets     = +$('#petsCount').val();
 
   // vypočti počet volných lůžek, ale NEZOBRAZUJ je
-  const emptyBeds = maxTotal - ppl;
+  const emptyBeds = cap - ppl;
   // tady můžeš emptyBeds použít dál v logice, třeba validaci, ale UI se nemění
 
   // zbytek stávající logiky:
