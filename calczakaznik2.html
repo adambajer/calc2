@@ -289,8 +289,7 @@
 
         recalc();
       }
-
-     function recalc() {
+function recalc() {
   const apt = $('#apartmentSelect').val();
   const cap   = apt === 'A' ? 11 : apt === 'B' ? 6 : 17;
   const extra = apt === 'A' ? 5  : apt === 'B' ? 2 : 7;
@@ -301,11 +300,10 @@
   const ppl      = adults + children;
   const pets     = +$('#petsCount').val();
 
-  // vypočti počet volných lůžek, ale NEZOBRAZUJ je
-  const emptyBeds = cap - ppl;
-  // tady můžeš emptyBeds použít dál v logice, třeba validaci, ale UI se nemění
+  // vypočti volné postele (interně)
+  const emptyBeds = maxTotal - ppl;
 
-  // zbytek stávající logiky:
+  // cenová logika...
   let total = 0;
   const term  = $('#daterange').val();
   const start = moment(term.split(' - ')[0], 'DD.MM.YYYY');
@@ -313,9 +311,10 @@
   for (let d = start.clone(); d.isBefore(end); d.add(1, 'days')) {
     const m    = d.format('MM-DD'), wd = d.day();
     const rate = ([5,6].includes(wd) || holidays.includes(m)) ? 650 : 550;
-    total += rate * ppl +emptyBeds*300+ pets * 300;
+    total += rate * ppl + pets * 300;
   }
 
+  // aktualizace rekapitulace
   $('#sumApartment').text(
     apt === 'A' ? 'Apartmán A' :
     apt === 'B' ? 'Apartmán B' :
@@ -328,8 +327,10 @@
   $('#sumChildren').text(children);
   $('#sumPets').text(pets);
   $('#totalPrice').text(total.toLocaleString() + ' CZK');
-}
 
+  // pokud není vybrána ani jedna osoba, skryj rekapitulaci
+  $('.col-lg-7').toggle(ppl > 0);
+}
 
       // Spuštění inicializace
       updateCounts();
