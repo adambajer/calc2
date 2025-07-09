@@ -15,12 +15,15 @@
     body { background: #f5f5f5; font-family: sans-serif; }
     .card { margin-bottom: 1rem; }
     .price-icon { vertical-align: middle; font-size: 1.2rem; cursor: pointer; }
-    .white-tooltip .tooltip-inner { background:#fff; color:#000; border:1px solid #ccc; }
+    .white-tooltip .tooltip-inner { background:#fff; color:#000; border:1px solid #ccc; } .daterangepicker td.off {
+      visibility: hidden;
+      /* Skrytí obsahu, zachová strukturu mřížky */
+    }
+
   </style>
 </head>
 <body>
   <div class="container py-4">
-    <h1 class="mb-4">Kalkulace ubytování</h1>
     <div class="row g-3">
       <!-- Vstupy -->
       <div class="col-md-6">
@@ -97,8 +100,10 @@
 
     // Nastavení DateRangePicker
     $('#daterange').daterangepicker({
-      locale: { format: 'DD.MM.YYYY', daysOfWeek: ['Ne','Po','Út','St','Čt','Pá','So'] },
-      minDate: moment().add(1,'days'),
+      locale: { format: 'DD.MM.YYYY',                monthNames: ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'],
+     daysOfWeek: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'], firstDay: 1,
+},
+      
       startDate: moment().add(1,'days'),
       endDate: moment().add(3,'days')
     });
