@@ -130,73 +130,92 @@
                 </select>
               </div>
               <div class="mt-2 text-muted">
-                Kapacita: <span id="capacityDisplay">11+5</span>
+             <span id="capacityDisplay">11+5</span>
               </div>
             </div>
-           <div class="row">
-            <div class="col-4 mb-3">
-              <label class="form-label"><i class="material-icons">people</i>Dospělí</label>
-              <select id="adultCount" class="form-select"></select>
-            </div>
-            <div class="col-4 mb-3">
-              <label class="form-label"><i class="material-icons">child_care</i>Děti (3–15)</label>
-              <select id="childCount" class="form-select"></select>
-            </div>
-            <div class="col-4 mb-3">
-              <label class="form-label"><i class="material-icons">pets</i>Mazlíčci</label>
-              <select id="petsCount" class="form-select">
-                <option>0</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-              </select>
+            <div class="row">
+              <div class="col-4 mb-3">
+                <label class="form-label">Dospělí</label>
+
+                <div class="input-group">
+                  <span class="input-group-text"><i class="material-icons">people</i></span>
+                  <select id="adultCount" class="form-select"></select>
+                </div>
+
+              </div>
+              <div class="col-4 mb-3">
+                <label class="form-label">Děti (3–15)</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="material-icons">child_care</i></span>
+                  <select id="childCount" class="form-select"></select>
+
+                </div>
+
+              </div>
+              <div class="col-4 mb-3">
+                <label class="form-label">Mazlíčci</label>
+
+                <div class="input-group">
+                  <span class="input-group-text"><i class="material-icons">pets</i></span>
+
+                  <select id="petsCount" class="form-select">
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+
+                  </select>
+                </div>
+
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- Rekapitulace -->
-    <div class="col-lg-7">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Cenová nabídka</h5>
-          <table class="table recap-table">
-            <tbody>
-              <tr>
-                <th scope="row">Apartmán</th>
-                <td class="text-end" id="sumApartment">–</td>
-              </tr>
-              <tr>
-                <th scope="row">Termín</th>
-                <td class="text-end" id="sumTerm">–</td>
-              </tr>
-              <tr>
-                <th scope="row">Počet nocí</th>
-                <td class="text-end" id="sumNights">–</td>
-              </tr>
-              <tr>
-                <th scope="row">Osoby celkem</th>
-                <td class="text-end" id="sumPeople">–</td>
-              </tr>
-              <tr>
-                <th scope="row" class="ps-4">- Dospělí</th>
-                <td class="text-end" id="sumAdults">–</td>
-              </tr>
-              <tr>
-                <th scope="row" class="ps-4">- Děti</th>
-                <td class="text-end" id="sumChildren">–</td>
-              </tr>
-              <tr>
-                <th scope="row">Mazlíčci</th>
-                <td class="text-end" id="sumPets">–</td>
-              </tr>
-            </tbody>
-          </table>
-          <h4 class="text-end">Cena pobytu: <span id="totalPrice">0 CZK</span></h4>
+      <!-- Rekapitulace -->
+      <div class="col-lg-7">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Cenová nabídka</h5>
+            <table class="table recap-table">
+              <tbody>
+                <tr>
+                  <th scope="row">Apartmán</th>
+                  <td class="text-end" id="sumApartment">–</td>
+                </tr>
+                <tr>
+                  <th scope="row">Termín</th>
+                  <td class="text-end" id="sumTerm">–</td>
+                </tr>
+                <tr>
+                  <th scope="row">Počet nocí</th>
+                  <td class="text-end" id="sumNights">–</td>
+                </tr>
+                <tr>
+                  <th scope="row">Osoby celkem</th>
+                  <td class="text-end" id="sumPeople">–</td>
+                </tr>
+                <tr>
+                  <th scope="row" class="ps-4">- Dospělí</th>
+                  <td class="text-end" id="sumAdults">–</td>
+                </tr>
+                <tr>
+                  <th scope="row" class="ps-4">- Děti</th>
+                  <td class="text-end" id="sumChildren">–</td>
+                </tr>
+                <tr>
+                  <th scope="row">Mazlíčci</th>
+                  <td class="text-end" id="sumPets">–</td>
+                </tr>
+              </tbody>
+            </table>
+            <h4 class="text-end">Cena pobytu: <span id="totalPrice">0 CZK</span></h4>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 
   <!-- Skripty -->
@@ -243,27 +262,29 @@
       });
 
       // Bind events
-  $('#apartmentSelect').on('change', updateCounts);
+      $('#apartmentSelect').on('change', updateCounts);
       $('#adultCount, #childCount, #petsCount').on('change', recalc);
       $('#daterange').on('apply.daterangepicker', recalc);
 
       // Naplnění počtů a omezení podle kapacity
       function updateCounts() {
-    const apt = $('#apartmentSelect').val();
+        const apt = $('#apartmentSelect').val();
         let cap = apt === 'A' ? 11 : apt === 'B' ? 6 : 17;
         let extra = apt === 'A' ? 5 : apt === 'B' ? 2 : 7;
-        $('#capacityDisplay').text(cap + '+' + extra);
+        const totalCap = cap + extra;
+
+        // místo "11+5" teď "Kapacita osob: 16 (11 postelí a 5 přistýlek)"
+        $('#capacityDisplay').text(
+          `Kapacita osob: ${totalCap} (${cap} postelí a ${extra} přistýlek)`
+        );
         const maxTotal = cap + extra;
 
         // Dospělí
-        const prevAdults = +$('#adultCount').val() || 0;
-  $('#adultCount').empty();
-  for (let i = 1; i <= maxTotal; i++) {
-    $('#adultCount').append(new Option(i, i));
-  }
-  // pokud předchozí <1, nebo >maxTotal, použij 1
-  const newAdults = (prevAdults >= 1 && prevAdults <= maxTotal) ? prevAdults : 1;
-  $('#adultCount').val(newAdults);
+        const prevAdults = +$('#adultCount').val() || 1;
+        $('#adultCount').empty();
+        for (let i = 1; i <= maxTotal; i++) $('#adultCount').append(new Option(i, i));
+        $('#adultCount').val(Math.min(prevAdults, maxTotal));
+
         // Děti
         const prevChildren = +$('#childCount').val() || 0;
         $('#childCount').empty();
@@ -292,48 +313,48 @@
 
         recalc();
       }
-function recalc() {
-  const apt = $('#apartmentSelect').val();
-  const cap   = apt === 'A' ? 11 : apt === 'B' ? 6 : 17;
-  const extra = apt === 'A' ? 5  : apt === 'B' ? 2 : 7;
-  const maxTotal = cap + extra;
+      function recalc() {
+        const apt = $('#apartmentSelect').val();
+        const cap = apt === 'A' ? 11 : apt === 'B' ? 6 : 17;
+        const extra = apt === 'A' ? 5 : apt === 'B' ? 2 : 7;
+        const maxTotal = cap + extra;
 
-  const adults   = +$('#adultCount').val();
-  const children = +$('#childCount').val();
-  const ppl      = adults + children;
-  const pets     = +$('#petsCount').val();
+        const adults = +$('#adultCount').val();
+        const children = +$('#childCount').val();
+        const ppl = adults + children;
+        const pets = +$('#petsCount').val();
 
-  // vypočti volné postele (interně)
-  const emptyBeds = maxTotal - ppl;
+        // vypočti volné postele (interně)
+        const emptyBeds = maxTotal - ppl;
 
-  // cenová logika...
-  let total = 0;
-  const term  = $('#daterange').val();
-  const start = moment(term.split(' - ')[0], 'DD.MM.YYYY');
-  const end   = moment(term.split(' - ')[1], 'DD.MM.YYYY');
-  for (let d = start.clone(); d.isBefore(end); d.add(1, 'days')) {
-    const m    = d.format('MM-DD'), wd = d.day();
-    const rate = ([5,6].includes(wd) || holidays.includes(m)) ? 650 : 550;
-    total += rate * ppl + pets * 300;
-  }
+        // cenová logika...
+        let total = 0;
+        const term = $('#daterange').val();
+        const start = moment(term.split(' - ')[0], 'DD.MM.YYYY');
+        const end = moment(term.split(' - ')[1], 'DD.MM.YYYY');
+        for (let d = start.clone(); d.isBefore(end); d.add(1, 'days')) {
+          const m = d.format('MM-DD'), wd = d.day();
+          const rate = ([5, 6].includes(wd) || holidays.includes(m)) ? 650 : 550;
+          total += rate * ppl + pets * 300;
+        }
 
-  // aktualizace rekapitulace
-  $('#sumApartment').text(
-    apt === 'A' ? 'Apartmán A' :
-    apt === 'B' ? 'Apartmán B' :
-    'Celý objekt'
-  );
-  $('#sumTerm').text(term);
-  $('#sumNights').text(end.diff(start, 'days'));
-  $('#sumPeople').text(ppl);
-  $('#sumAdults').text(adults);
-  $('#sumChildren').text(children);
-  $('#sumPets').text(pets);
-  $('#totalPrice').text(total.toLocaleString() + ' CZK');
+        // aktualizace rekapitulace
+        $('#sumApartment').text(
+          apt === 'A' ? 'Apartmán A' :
+            apt === 'B' ? 'Apartmán B' :
+              'Celý objekt'
+        );
+        $('#sumTerm').text(term);
+        $('#sumNights').text(end.diff(start, 'days'));
+        $('#sumPeople').text(ppl);
+        $('#sumAdults').text(adults);
+        $('#sumChildren').text(children);
+        $('#sumPets').text(pets);
+        $('#totalPrice').text(total.toLocaleString() + ' CZK');
 
-  // pokud není vybrána ani jedna osoba, skryj rekapitulaci
-  $('.col-lg-7').toggle(ppl > 0);
-}
+        // pokud není vybrána ani jedna osoba, skryj rekapitulaci
+        $('.col-lg-7').toggle(ppl > 0);
+      }
 
       // Spuštění inicializace
       updateCounts();
