@@ -257,10 +257,13 @@
 
         // Dospělí
         const prevAdults = +$('#adultCount').val() || 0;
-        $('#adultCount').empty();
-        for (let i = 0; i <= maxTotal; i++) $('#adultCount').append(new Option(i, i));
-        $('#adultCount').val(Math.min(prevAdults, maxTotal));
-
+  $('#adultCount').empty();
+  for (let i = 1; i <= maxTotal; i++) {
+    $('#adultCount').append(new Option(i, i));
+  }
+  // pokud předchozí <1, nebo >maxTotal, použij 1
+  const newAdults = (prevAdults >= 1 && prevAdults <= maxTotal) ? prevAdults : 1;
+  $('#adultCount').val(newAdults);
         // Děti
         const prevChildren = +$('#childCount').val() || 0;
         $('#childCount').empty();
