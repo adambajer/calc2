@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="cs">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,165 +9,280 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    body { background: #f5f5f5; font-family: 'Roboto', sans-serif; }
-    .card { margin-bottom: 1rem; border-radius: .5rem; }
-    .recap-table td:first-child { font-weight: 500; }
-    .form-label i { vertical-align: middle; margin-right: .5rem; color: #6c757d; }
-    /* Zvýraznění víkendových dnů červeně v datepickeru */
-     .daterangepicker td.available.weekend,
-    .daterangepicker td.available.weekend:hover {
-      color: #d9534f;
-      font-weight: bold;
+    /* Barvy a typografie */
+    :root {
+      --primary: #0d6efd;
+      --muted: #adb5bd;
+      --text: #212529;
     }
-    /* Zvýraznění svátků zeleně */
-    .daterangepicker td.available.holiday,
-    .daterangepicker td.available.holiday:hover {
-      color: #5cb85c;
-      font-weight: bold;
+
+    body {
+      background: #e9ecef;
+      color: var(--text);
+      font-family: 'Roboto', sans-serif;
+    }
+
+    h1,
+    .card-title {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Karty a formulář */
+    .card {
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: .5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      color: #495057;
+    }
+
+    .form-label i {
+      margin-right: .5rem;
+    }
+
+    .form-check-input {
+      accent-color: var(--primary);
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 .25rem rgba(133, 67, 3, 0.25);
+    }
+
+    .text-muted {
+      color: #6c757d !important;
+    }
+
+    /* Rekapitulace */
+    .recap-table th,
+    .recap-table td {
+      border-top: none;
+      color: var(--text);
+    }
+
+    .recap-table th {
+      font-weight: 500;
+      color: #343a40;
+    }
+
+    #totalPrice {
+      color: #dc3545;
+      font-weight: 600;
+    }
+
+    /* Datepicker */
+    .daterangepicker td.off {
+      visibility: hidden;
+      /* Skrytí obsahu, zachová strukturu mřížky */
+    }
+
+    .daterangepicker td.available.weekend {}
+
+    .daterangepicker td.available.holiday {}
+
+    /* Pouze vybrané dny (první a poslední) */
+    .daterangepicker td.available.active {
+      background-color: var(--primary) !important;
+      border-color: var(--primary) !important;
+      color: #fff !important;
+    }
+
+    /* Odstranění stylu pro in-range, aby se neobarvoval celý interval */
+    .daterangepicker td.in-range {
+      background: #1a1a1a0f !important;
+      color: var(--text) !important;
     }
   </style>
 </head>
+
 <body>
   <div class="container py-4">
-    <h1 class="mb-4">Kalkulace ubytování</h1>
     <div class="row gy-3">
+      <!-- Formulář výběru -->
       <div class="col-lg-5">
         <div class="card shadow-sm">
           <div class="card-body">
+
             <div class="mb-3">
-              <label class="form-label"><i class="material-icons">calendar_month</i>Termín</label>
-              <input type="text" id="daterange" class="form-control" readonly>
+              <label class="form-label">Datum příjezdu - Datum odjezdu</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="material-icons">calendar_month</i></span>
+                <input type="text" id="daterange" class="form-control" readonly>
+              </div>
             </div>
+            <!-- Původní radio blok nahraďte tímto -->
             <div class="mb-3">
-              <label class="form-label"><i class="material-icons">apartment</i>Apartmán</label><br>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="apartment" id="aptA" value="A" checked>
-                <label class="form-check-label" for="aptA">Apartmán A</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="apartment" id="aptB" value="B">
-                <label class="form-check-label" for="aptB">Apartmán B</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="apartment" id="aptAB" value="AB">
-                <label class="form-check-label" for="aptAB">Oba apartmány</label>
-              </div>
-              <div class="mt-2 text-muted">Kapacita: <span id="capacityDisplay">11+7</span></div>
-            </div>
-            <div class="row">
-              <div class="col-4 mb-3">
-                <label class="form-label"><i class="material-icons">people</i>Dospělí</label>
-                <select id="adultCount" class="form-select"></select>
-              </div>
-              <div class="col-4 mb-3">
-                <label class="form-label"><i class="material-icons">child_care</i>Děti (3–15)</label>
-                <select id="childCount" class="form-select"></select>
-              </div>
-              <div class="col-4 mb-3">
-                <label class="form-label"><i class="material-icons">pets</i>Mazlíčci</label>
-                <select id="petsCount" class="form-select">
-                  <option>0</option><option>1</option><option>2</option><option>3</option>
+              <label class="form-label">Apartmán</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="material-icons">apartment</i></span>
+                <select id="apartmentSelect" class="form-select">
+                  <option value="A">Apartmán A</option>
+                  <option value="B">Apartmán B</option>
+                  <option value="AB">Celý objekt</option>
                 </select>
               </div>
+              <div class="mt-2 text-muted">
+                Kapacita: <span id="capacityDisplay">11+5</span>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-7">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">Rekapitulace</h5>
-            <table class="table recap-table">
-              <tbody>
-                <tr><td>Apartmán</td><td class="text-end" id="sumApartment">–</td></tr>
-                <tr><td>Termín</td><td class="text-end" id="sumTerm">–</td></tr>
-                <tr><td>Počet nocí</td><td class="text-end" id="sumNights">–</td></tr>
-                <tr><td>Osoby celkem</td><td class="text-end" id="sumPeople">–</td></tr>
-                <tr><td> - Dospělí</td><td class="text-end" id="sumAdults">–</td></tr>
-                <tr><td> - Děti</td><td class="text-end" id="sumChildren">–</td></tr>
-                <tr><td>Mazlíčci</td><td class="text-end" id="sumPets">–</td></tr>
-              </tbody>
-            </table>
-            <h4 class="text-end">Cena pobytu: <span id="totalPrice">0 CZK</span></h4>
+           <div class="row">
+            <div class="col-4 mb-3">
+              <label class="form-label"><i class="material-icons">people</i>Dospělí</label>
+              <select id="adultCount" class="form-select"></select>
+            </div>
+            <div class="col-4 mb-3">
+              <label class="form-label"><i class="material-icons">child_care</i>Děti (3–15)</label>
+              <select id="childCount" class="form-select"></select>
+            </div>
+            <div class="col-4 mb-3">
+              <label class="form-label"><i class="material-icons">pets</i>Mazlíčci</label>
+              <select id="petsCount" class="form-select">
+                <option>0</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <!-- Rekapitulace -->
+    <div class="col-lg-7">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Rekapitulace</h5>
+          <table class="table recap-table">
+            <tbody>
+              <tr>
+                <th scope="row">Apartmán</th>
+                <td class="text-end" id="sumApartment">–</td>
+              </tr>
+              <tr>
+                <th scope="row">Termín</th>
+                <td class="text-end" id="sumTerm">–</td>
+              </tr>
+              <tr>
+                <th scope="row">Počet nocí</th>
+                <td class="text-end" id="sumNights">–</td>
+              </tr>
+              <tr>
+                <th scope="row">Osoby celkem</th>
+                <td class="text-end" id="sumPeople">–</td>
+              </tr>
+              <tr>
+                <th scope="row" class="ps-4">- Dospělí</th>
+                <td class="text-end" id="sumAdults">–</td>
+              </tr>
+              <tr>
+                <th scope="row" class="ps-4">- Děti</th>
+                <td class="text-end" id="sumChildren">–</td>
+              </tr>
+              <tr>
+                <th scope="row">Mazlíčci</th>
+                <td class="text-end" id="sumPets">–</td>
+              </tr>
+            </tbody>
+          </table>
+          <h4 class="text-end">Cena pobytu: <span id="totalPrice">0 CZK</span></h4>
+        </div>
+      </div>
+    </div>
   </div>
+  </div>
+
+  <!-- Skripty -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1/daterangepicker.min.js"></script>
   <script>
-    $(function() {
-      const holidays = ['01-01','05-08','07-05','07-06','09-28','10-28','11-17','04-04','04-05','05-01'];
+    $(function () {
+      const holidays = ['01-01', '05-08', '07-05', '07-06', '09-28', '10-28', '11-17', '04-04', '04-05', '05-01'];
+
+      // Daterangepicker
       $('#daterange').daterangepicker({
         locale: {
-          format: 'DD.MM.YYYY',
-          separator: ' - ',
+          format: 'DD.MM.YYYY', separator: ' - ',
           daysOfWeek: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'],
           monthNames: ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'],
-          firstDay: 1,
-          applyLabel: 'Aplikovat',
-          cancelLabel: 'Zrušit'
+          firstDay: 1, applyLabel: 'Aplikovat', cancelLabel: 'Zrušit'
         },
-        minDate: moment().add(1, 'days'),
         startDate: moment().add(1, 'days'),
         endDate: moment().add(3, 'days'),
-        isCustomDate: function(date) {
-          return holidays.includes(date.format('MM-DD')) ? 'holiday' : ( [5,6].includes(date.day()) ? 'weekend' : '' );
+        isCustomDate: function (date) {
+          const wd = date.day();
+          // pouze pátek (5) a sobota (6)
+          if (wd === 6 || wd === 7) return 'weekend';
+          if (holidays.includes(date.format('MM-DD'))) return 'holiday';
+          return '';
         }
       });
+
+      // Aktivní label
+      $('label[for="daterange"]').addClass('active');
+      $('#daterange').on('apply.daterangepicker', function () {
+        $('label[for="daterange"]').addClass('active');
+      });
+
       // Tooltip pro svátky
-      $('#daterange').on('show.daterangepicker', function(ev, picker) {
-        setTimeout(function() {
-          picker.container.find('td.available.holiday').each(function() {
-            var $td = $(this);
-            var date = moment($td.data('title'), 'YYYY-MM-DD');
-            var title = holidays.find(h => h.date === date.format('MM-DD')).title;
-            $td.attr('title', title).tooltip({placement: 'top'});
+      $('#daterange').on('show.daterangepicker', (ev, picker) => {
+        setTimeout(() => {
+          picker.container.find('td.available.holiday').each(function () {
+            const rec = holidays.find(h => h.date === moment($(this).data('title'), 'YYYY-MM-DD').format('MM-DD'));
+            if (rec) $(this).attr('title', rec.title).tooltip({ placement: 'top' });
           });
         }, 0);
       });
 
-      $('input[name="apartment"]').change(updateCounts);
+      // Bind events
+  $('#apartmentSelect').on('change', updateCounts);
+      $('#adultCount, #childCount, #petsCount').on('change', recalc);
       $('#daterange').on('apply.daterangepicker', recalc);
-      $('#petsCount').on('change', recalc);
 
-      function updateCounts(){
-        const apt = $('input[name="apartment"]:checked').val();
+      // Naplnění počtů a omezení podle kapacity
+      function updateCounts() {
+    const apt = $('#apartmentSelect').val();
         let cap = apt === 'A' ? 11 : apt === 'B' ? 6 : 17;
-        let extra = apt === 'A' ? 7 : apt === 'B' ? 2 : 9;
+        let extra = apt === 'A' ? 5 : apt === 'B' ? 2 : 7;
         $('#capacityDisplay').text(cap + '+' + extra);
         const maxTotal = cap + extra;
 
-        // Populate adult select
+        // Dospělí
         const prevAdults = +$('#adultCount').val() || 0;
         $('#adultCount').empty();
-        for(let i = 0; i <= maxTotal; i++) $('#adultCount').append(new Option(i, i));
+        for (let i = 0; i <= maxTotal; i++) $('#adultCount').append(new Option(i, i));
         $('#adultCount').val(Math.min(prevAdults, maxTotal));
 
-        // Populate child select
+        // Děti
         const prevChildren = +$('#childCount').val() || 0;
         $('#childCount').empty();
-        for(let i = 0; i <= maxTotal; i++) $('#childCount').append(new Option(i, i));
+        for (let i = 0; i <= maxTotal; i++) $('#childCount').append(new Option(i, i));
         $('#childCount').val(Math.min(prevChildren, maxTotal - $('#adultCount').val()));
 
-        // Adjust on change to enforce sum constraint
-        $('#adultCount').off('change').on('change', function(){
+        // Při změně uprav kapacity druhé
+        $('#adultCount').off('change').on('change', function () {
           const adults = +this.value;
           const childMax = maxTotal - adults;
           const prevChild = +$('#childCount').val() || 0;
           $('#childCount').empty();
-          for(let i = 0; i <= childMax; i++) $('#childCount').append(new Option(i, i));
+          for (let i = 0; i <= childMax; i++) $('#childCount').append(new Option(i, i));
           $('#childCount').val(Math.min(prevChild, childMax));
           recalc();
         });
-        $('#childCount').off('change').on('change', function(){
+        $('#childCount').off('change').on('change', function () {
           const children = +this.value;
           const adultMax = maxTotal - children;
           const prevAdult = +$('#adultCount').val() || 0;
           $('#adultCount').empty();
-          for(let i = 0; i <= adultMax; i++) $('#adultCount').append(new Option(i, i));
+          for (let i = 0; i <= adultMax; i++) $('#adultCount').append(new Option(i, i));
           $('#adultCount').val(Math.min(prevAdult, adultMax));
           recalc();
         });
@@ -174,35 +290,51 @@
         recalc();
       }
 
-      function recalc(){
-        const apt = $('input[name="apartment"]:checked').val();
-        const term = $('#daterange').val();
-        const nights = moment(term.split(' - ')[1],'DD.MM.YYYY').diff(moment(term.split(' - ')[0],'DD.MM.YYYY'),'days');
-        const adults = +$('#adultCount').val();
-        const children = +$('#childCount').val();
-        const ppl = adults + children;
-        const pets = +$('#petsCount').val();
+     function recalc() {
+  const apt = $('#apartmentSelect').val();
+  const cap   = apt === 'A' ? 11 : apt === 'B' ? 6 : 17;
+  const extra = apt === 'A' ? 5  : apt === 'B' ? 2 : 7;
+  const maxTotal = cap + extra;
 
-        let total = 0;
-        for(let d = moment(term.split(' - ')[0],'DD.MM.YYYY'); d.isBefore(moment(term.split(' - ')[1],'DD.MM.YYYY')); d.add(1,'days')){
-          const m = d.format('MM-DD'), wd = d.day();
-          let rate = (wd === 5 || wd === 6) ? 650 : 550;
-          if(holidays.includes(m)) rate = 650;
-          total += rate * ppl + pets * 300;
-        }
+  const adults   = +$('#adultCount').val();
+  const children = +$('#childCount').val();
+  const ppl      = adults + children;
+  const pets     = +$('#petsCount').val();
 
-        $('#sumApartment').text(apt);
-        $('#sumTerm').text(term);
-        $('#sumNights').text(nights);
-        $('#sumPeople').text(ppl);
-        $('#sumAdults').text(adults);
-        $('#sumChildren').text(children);
-        $('#sumPets').text(pets);
-        $('#totalPrice').text(total.toLocaleString() + ' CZK');
-      }
+  // vypočti počet volných lůžek, ale NEZOBRAZUJ je
+  const emptyBeds = maxTotal - ppl;
+  // tady můžeš emptyBeds použít dál v logice, třeba validaci, ale UI se nemění
 
+  // zbytek stávající logiky:
+  let total = 0;
+  const term  = $('#daterange').val();
+  const start = moment(term.split(' - ')[0], 'DD.MM.YYYY');
+  const end   = moment(term.split(' - ')[1], 'DD.MM.YYYY');
+  for (let d = start.clone(); d.isBefore(end); d.add(1, 'days')) {
+    const m    = d.format('MM-DD'), wd = d.day();
+    const rate = ([5,6].includes(wd) || holidays.includes(m)) ? 650 : 550;
+    total += rate * ppl +emptyBeds*300+ pets * 300;
+  }
+
+  $('#sumApartment').text(
+    apt === 'A' ? 'Apartmán A' :
+    apt === 'B' ? 'Apartmán B' :
+    'Celý objekt'
+  );
+  $('#sumTerm').text(term);
+  $('#sumNights').text(end.diff(start, 'days'));
+  $('#sumPeople').text(ppl);
+  $('#sumAdults').text(adults);
+  $('#sumChildren').text(children);
+  $('#sumPets').text(pets);
+  $('#totalPrice').text(total.toLocaleString() + ' CZK');
+}
+
+
+      // Spuštění inicializace
       updateCounts();
     });
   </script>
 </body>
+
 </html>
