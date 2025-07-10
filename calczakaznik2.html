@@ -436,6 +436,11 @@
   $('#sumChildren').text($('#childCount').val());
   $('#sumToddlers').text($('#toddlerCount').val());
   $('#sumPets').text(pets);
+    // 8) Skryj řádky, kde je hodnota 0
+  $('#sumChildren').closest('tr').toggle(children > 0);
+  $('#sumToddlers').closest('tr').toggle(toddlers > 0);
+  $('#sumPets').closest('tr').toggle(pets > 0);
+  
   $('#totalPrice').text(total.toLocaleString() + ' CZK');
 
   // 8) Skrýt rekapitulaci, když nejsou hosté
