@@ -111,30 +111,37 @@
         <div class="card shadow-sm">
           <div class="card-body">
 
-            <div class="mb-3">
-              <label class="form-label">Datum příjezdu - Datum odjezdu</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="material-icons">calendar_month</i></span>
-                <input type="text" id="daterange" class="form-control" readonly>
+            <div class="mb-3 d-inline">
+              <div class="row">
+                <div class="col-md-6">
+                  <label class="form-label">Datum příjezdu - Datum odjezdu</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="material-icons">calendar_month</i></span>
+                    <input type="text" id="daterange" class="form-control" readonly>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Apartmán                 <span id="capacityDisplay">11+5</span>
+</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="material-icons">apartment</i></span>
+                    <select id="apartmentSelect" class="form-select">
+                      <option value="A">Apartmán A</option>
+                      <option value="B">Apartmán B</option>
+                      <option value="AB">Celý objekt</option>
+                    </select>
+                  </div>
+                </div>
+
+
               </div>
+              <!-- Původní radio blok nahraďte tímto -->
+              <div class="mb-3 mt-3">
+
+              </div> 
             </div>
-            <!-- Původní radio blok nahraďte tímto -->
-            <div class="mb-3">
-              <label class="form-label">Apartmán</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="material-icons">apartment</i></span>
-                <select id="apartmentSelect" class="form-select">
-                  <option value="A">Apartmán A</option>
-                  <option value="B">Apartmán B</option>
-                  <option value="AB">Celý objekt</option>
-                </select>
-              </div>
-              <div class="mt-2 text-muted">
-                <span id="capacityDisplay">11+5</span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-4 mb-3">
+            <div class="row mt-3">
+              <div class="col-3 mb-3">
                 <label class="form-label">Dospělí</label>
 
                 <div class="input-group">
@@ -143,7 +150,7 @@
                 </div>
 
               </div>
-              <div class="col-4 mb-3">
+              <div class="col-3 mb-3">
                 <label class="form-label">Děti od 3 let</label>
                 <div class="input-group">
                   <span class="input-group-text"><i class="material-icons">child_care</i></span>
@@ -162,7 +169,7 @@
                 </div>
               </div>
 
-              <div class="col-4 mb-3">
+              <div class="col-3 mb-3">
                 <label class="form-label">Mazlíčci</label>
 
                 <div class="input-group">
@@ -191,28 +198,30 @@
             <h5 class="card-title">Cenová nabídka</h5>
             <table class="table recap-table">
               <tbody>
+
+                <tr>
+                  <th scope="row">Datum příjezdu - Datum odjezdu</th>
+                  <td class="text-end" id="sumTerm">–</td>
+                </tr>
+                <tr>
+
+                  <th scope="row">Nocí</th>
+                  <td class="text-end" id="sumNights">–</td>
+                </tr>
                 <tr>
                   <th scope="row">Apartmán</th>
                   <td class="text-end" id="sumApartment">–</td>
                 </tr>
                 <tr>
-                  <th scope="row">Termín</th>
-                  <td class="text-end" id="sumTerm">–</td>
-                </tr>
-                <tr>
-                  <th scope="row">Počet nocí</th>
-                  <td class="text-end" id="sumNights">–</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="ps-4">- Dospělí</th>
+                  <th scope="row" class="">Dospělí</th>
                   <td class="text-end" id="sumAdults">–</td>
                 </tr>
                 <tr>
-                  <th scope="row" class="ps-4">- Děti</th>
+                  <th scope="row" class="">Děti od 3 let</th>
                   <td class="text-end" id="sumChildren">–</td>
                 </tr>
                 <tr>
-                  <th scope="row" class="ps-4">- Děti do 2,99</th>
+                  <th scope="row" class="">Děti do 2,99 let</th>
                   <td class="text-end" id="sumToddlers">–</td>
                 </tr>
 
@@ -286,7 +295,7 @@
 
         // místo "11+5" teď "Kapacita osob: 16 (11 postelí a 5 přistýlek)"
         $('#capacityDisplay').text(
-          `Kapacita osob: ${totalCap} (${cap} postelí a ${extra} přistýlek)`
+          `Max osob: ${totalCap} (${cap} + ${extra})`
         );
         const maxTotal = cap + extra;
 
@@ -340,7 +349,7 @@
 
         const adults = +$('#adultCount').val();
         const children = +$('#childCount').val();
-                const todders = +$('#toddlerCount').val();
+        const todders = +$('#toddlerCount').val();
 
         const ppl = adults + children;
         const pets = +$('#petsCount').val();
