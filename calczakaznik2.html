@@ -392,7 +392,13 @@ input[readonly] {
         else                  { baseRate = 7000 + 4200; included = 16; }
 
        
-        $('#childCount, #toddlerCount').val(0); 
+   $('#sumChildren').text(children);
+      $('#sumToddlers').text(toddlers);
+      $('#sumPets').text(pets);
+
+      $('#sumChildren').closest('tr').toggle(children > 0);
+      $('#sumToddlers').closest('tr').toggle(toddlers > 0);
+      $('#sumPets').closest('tr').toggle(pets > 0);
 
         total = chargeN * baseRate;
       } else {
