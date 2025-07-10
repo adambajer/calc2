@@ -89,7 +89,7 @@
     .daterangepicker td.in-range.available.holiday {}
 
     /* Pouze vybrané dny (první a poslední) */
-    .daterangepicker td.in-range.available.active {
+    .daterangepicker td.available.active {
       background-color: var(--primary) !important;
       border-color: var(--primary) !important;
       color: #fff !important;
@@ -117,14 +117,14 @@
 
             <div class="mb-3 d-inline">
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 col-sm-6">
                   <label class="form-label">Datum příjezdu - Datum odjezdu</label>
                   <div class="input-group">
                     <span class="input-group-text"><i class="material-icons">calendar_month</i></span>
                     <input type="text" id="daterange" class="form-control" readonly>
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 col-sm-6">
                   <label class="form-label"><span class="ms-2" id="capacityDisplay">11+5</span>
                   </label>
                   <div class="input-group">
@@ -145,7 +145,7 @@
               </div>
             </div>
             <div class="row mt-3">
-              <div class="col-3 mb-3">
+              <div class="col-md-3 col-sm-6 mb-3">
                 <label class="form-label">Dospělí</label>
 
                 <div class="input-group">
@@ -154,7 +154,7 @@
                 </div>
 
               </div>
-              <div class="col-3 mb-3">
+              <div class="col-md-3 col-sm-6 mb-3">
                 <label class="form-label">Děti od 3 let</label>
                 <div class="input-group">
                   <span class="input-group-text"><i class="material-icons">child_care</i></span>
@@ -163,7 +163,7 @@
                 </div>
 
               </div>
-              <div class="col-3 mb-3">
+              <div class="col-md-3 col-sm-6 mb-3">
                 <label class="form-label">Děti do 2,99 let</label>
                 <div class="input-group">
                   <span class="input-group-text"><i class="material-icons">child_friendly</i></span>
@@ -173,7 +173,7 @@
                 </div>
               </div>
 
-              <div class="col-3 mb-3">
+              <div class="col-md-3 col-sm-6 mb-3">
                 <label class="form-label">Mazlíčci</label>
 
                 <div class="input-group">
@@ -320,7 +320,7 @@
 
         // místo "11+5" teď "Kapacita osob: 16 (11 postelí a 5 přistýlek)"
         $('#capacityDisplay').text(
-          ` Max osob: ${totalCap} (${cap} + ${extra})`
+          `Kapacita osob: ${totalCap} (${cap} + ${extra})`
         );
         const maxTotal = cap + extra;
 
