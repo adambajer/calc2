@@ -380,28 +380,42 @@ input[readonly] {
 
       let total = 0;
 
-      if (sylwester) {
-        // Silvestrovský tarif
-        if (nights < 4) {
-          alert('Minimální délka pobytu pro Silvestr je 4 noci. Spočítáno bude 4 noci.');
-        }
-        const chargeN = Math.max(nights, 4);
-        let baseRate, included;
-        if (apt === 'A')      { baseRate = 7000; included = 10; }
-        else if (apt === 'B') { baseRate = 4200; included = 6;  }
-        else                  { baseRate = 7000 + 4200; included = 16; }
+    if (sylwester) {
+  // Silvestrovský tarif
+  if (nights < 4) {
+    alert('Minimální délka pobytu pro Silvestr je 4 noci. Spočítáno bude 4 noci.');
+  }
+  const chargeN = Math.max(nights, 4);
 
-       
-   $('#sumChildren').text(children);
-      $('#sumToddlers').text(toddlers);
-      $('#sumPets').text(pets);
+  // základní sazba a počet zahrnutých osob
+  let baseRate, included;
+  if (apt === 'A')      { baseRate = 7000; included = 10; }
+  else if (apt === 'B') { baseRate = 4200; included = 6;  }
+  else                  { baseRate = 7000 + 4200; included = 16; }
 
-      $('#sumChildren').closest('tr').toggle(children > 0);
-      $('#sumToddlers').closest('tr').toggle(toddlers > 0);
-      $('#sumPets').closest('tr').toggle(pets > 0);
+  // spočítat skutečný počet hostů (dospělí + děti od 3 + děti do 3)
+  const guests      = adults + children + toddlers;
+  const extraGuests = Math.max(0, guests - included);
+  const extraCharge = extraGuests * 700 * chargeN;
 
-        total = chargeN * baseRate;
-      } else {
+  // vynutit minimální počet osob a zafixovat selects
+  $('#adultCount').val(Math.max(adults, included));
+  
+  // aktualizovat rekapitulaci hostů
+  $('#sumAdults').text(Math.max(adults, included));
+  $('#sumChildren').text(0);
+  $('#sumToddlers').text(0);
+  // pokud chcete, můžete zobrazit extra osoby zvlášť:
+  // $('#sumExtra').text(extraGuests);
+
+  // skrýt nulové řádky
+  $('#sumChildren').closest('tr').toggle(false);
+  $('#sumToddlers').closest('tr').toggle(false);
+  $('#sumPets').closest('tr').toggle(pets > 0);
+
+  // konečná cena = tarif * noci + příplatek za navíc
+  total = chargeN * baseRate + extraCharge;
+} else {
         // Běžná cenová logika
         const cap       = (apt === 'A' ? 11 : apt === 'B' ? 6 : 17);
         const emptyBeds = cap - (adults + children);
