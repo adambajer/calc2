@@ -438,8 +438,8 @@ input[readonly] {
     // --- Naplnění selectů podle kapacity ---
     function updateCounts() {
       const apt   = $('#apartmentSelect').val();
-      const base  = (apt === 'A' ? 11 : apt === 'B' ? 6 : 18);
-      const extra = (apt === 'A' ? 5  : apt === 'B' ? 2 : 8);
+      const base  = (apt === 'A' ? 11 : apt === 'B' ? 6 : 17);
+      const extra = (apt === 'A' ? 5  : apt === 'B' ? 2 : 7);
       const max   = base + extra;
 
       $('#capacityDisplay').text(`Kapacita osob: ${max} (${base} + ${extra})`);
