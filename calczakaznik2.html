@@ -63,7 +63,7 @@
 
     /* Rekapitulace */
     .recap-table th,
-    .recap-table td {
+    .recap-table td.in-range {
       border-top: none;
       color: var(--text);
     }
@@ -104,6 +104,10 @@
 </head>
 
 <body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"></script>
+
   <div class="container py-4">
     <div class="row gy-3">
       <!-- Formulář výběru -->
@@ -122,7 +126,7 @@
                 </div>
                 <div class="col-md-6">
                   <label class="form-label"><span class="ms-2" id="capacityDisplay">11+5</span>
-</label>
+                  </label>
                   <div class="input-group">
                     <span class="input-group-text"><i class="material-icons">apartment</i></span>
                     <select id="apartmentSelect" class="form-select">
@@ -138,7 +142,7 @@
               <!-- Původní radio blok nahraďte tímto -->
               <div class="mb-3 mt-3">
 
-              </div> 
+              </div>
             </div>
             <div class="row mt-3">
               <div class="col-3 mb-3">
@@ -196,9 +200,27 @@
         <div class="card shadow-sm">
           <div class="card-body">
             <h5 class="card-title">Cenová nabídka</h5>
-            <div id="silvesterNotice" class="alert alert-warning text-center" style="display:none;">
-  🎉 Speciální silvestrovský tarif! 🎉
-</div>
+            <p id="silvesterNotice">
+              <a class="btn btn-warning" data-bs-toggle="collapse" href="#silvesterDetails2" role="button"
+                aria-expanded="true" aria-controls="silvesterDetails2">
+                🎉 Silvestrovský tarif – více info
+              </a>
+            </p>
+            <div class="collapse" id="silvesterDetails2">
+              <div class="card card-body">
+                <strong>Minimální délka pobytu</strong>
+                <em>4 noci</em><br>
+
+                <strong>Apartmán A</strong>
+                <em>7 000 CZK/noc</em>10 osob<br>
+                <em>každá další osoba +700 CZK/noc</em><br>
+
+                <strong>Apartmán B</strong>
+                <em>4 200 CZK/noc</em>6 osob<br>
+                <em>každá další osoba +700 CZK/noc</em>
+              </div>
+            </div>
+
             <table class="table recap-table">
               <tbody>
 
@@ -343,109 +365,109 @@
         });
 
         recalc();
-      }function recalc() {
-  // 0) Pro běžné termíny odblokuj počet hostů
-  $('#adultCount, #childCount, #toddlerCount').prop('disabled', false);
+      } function recalc() {
+        // 0) Pro běžné termíny odblokuj počet hostů
+        $('#adultCount, #childCount, #toddlerCount').prop('disabled', false);
 
-  const apt      = $('#apartmentSelect').val();           // 'A', 'B' nebo 'AB'
-  const adults   = +$('#adultCount').val();
-  const children = +$('#childCount').val();
-  const toddlers = +$('#toddlerCount').val();
-  const pets     = +$('#petsCount').val();
+        const apt = $('#apartmentSelect').val();           // 'A', 'B' nebo 'AB'
+        const adults = +$('#adultCount').val();
+        const children = +$('#childCount').val();
+        const toddlers = +$('#toddlerCount').val();
+        const pets = +$('#petsCount').val();
 
-  const term   = $('#daterange').val();
-  const start  = moment(term.split(' - ')[0], 'DD.MM.YYYY');
-  const end    = moment(term.split(' - ')[1], 'DD.MM.YYYY');
-  const nights = end.diff(start, 'days');
+        const term = $('#daterange').val();
+        const start = moment(term.split(' - ')[0], 'DD.MM.YYYY');
+        const end = moment(term.split(' - ')[1], 'DD.MM.YYYY');
+        const nights = end.diff(start, 'days');
 
-  // 1) Korektní detekce Silvestra (31.12.)
-  const dec31ThisYear = moment({ year: start.year(), month: 11, day: 31 });
-  const dec31NextYear = moment({ year: start.year() + 1, month: 11, day: 31 });
-  const includesSilvester =
-    (start.isSameOrBefore(dec31ThisYear) && end.isAfter(dec31ThisYear)) ||
-    (start.isSameOrBefore(dec31NextYear) && end.isAfter(dec31NextYear));
+        // 1) Korektní detekce Silvestra (31.12.)
+        const dec31ThisYear = moment({ year: start.year(), month: 11, day: 31 });
+        const dec31NextYear = moment({ year: start.year() + 1, month: 11, day: 31 });
+        const includesSilvester =
+          (start.isSameOrBefore(dec31ThisYear) && end.isAfter(dec31ThisYear)) ||
+          (start.isSameOrBefore(dec31NextYear) && end.isAfter(dec31NextYear));
 
-  let total = 0;
+        let total = 0;
 
-  if (includesSilvester) {
-    // --- Silvestrovská logika ---
-    // 2) minimální délka pobytu 4 noci
-    if (nights < 4) {
-      alert('Minimální délka pobytu pro Silvestr je 4 noci. Cena bude spočítána pro 4 noci.');
-    }
-    const chargeNights = Math.max(nights, 4);
+        if (includesSilvester) {
+          // --- Silvestrovská logika ---
+          // 2) minimální délka pobytu 4 noci
+          if (nights < 4) {
+            alert('Minimální délka pobytu pro Silvestr je 4 noci. Cena bude spočítána pro 4 noci.');
+          }
+          const chargeNights = Math.max(nights, 4);
 
-    // 3) tarif a minimální počet osob podle apartmánu
-    let baseRate, includedPeople;
-    if (apt === 'A') {
-      baseRate       = 7000;
-      includedPeople = 10;
-    } else if (apt === 'B') {
-      baseRate       = 4200;
-      includedPeople = 6;
-    } else {
-      baseRate       = 7000 + 4200;
-      includedPeople = 10 + 6;
-    }
+          // 3) tarif a minimální počet osob podle apartmánu
+          let baseRate, includedPeople;
+          if (apt === 'A') {
+            baseRate = 7000;
+            includedPeople = 10;
+          } else if (apt === 'B') {
+            baseRate = 4200;
+            includedPeople = 6;
+          } else {
+            baseRate = 7000 + 4200;
+            includedPeople = 10 + 6;
+          }
 
-    // 4) vynucení minimálního počtu hostů
-    const minPeople = includedPeople;
-    $('#adultCount').val(minPeople);
-    $('#childCount').val(0);
-    $('#toddlerCount').val(0);
-    $('#adultCount, #childCount, #toddlerCount').prop('disabled', true);
+          // 4) vynucení minimálního počtu hostů
+          const minPeople = includedPeople;
+          $('#adultCount').val(minPeople);
+          $('#childCount').val(0);
+          $('#toddlerCount').val(0);
+          $('#adultCount, #childCount, #toddlerCount').prop('disabled', true);
 
-    // 5) příplatek za hosty nad limit
-    const extraPeople = Math.max(0, minPeople - includedPeople);
-    const extraCharge = extraPeople * 700;
+          // 5) příplatek za hosty nad limit
+          const extraPeople = Math.max(0, minPeople - includedPeople);
+          const extraCharge = extraPeople * 700;
 
-    total = chargeNights * (baseRate + extraCharge);
+          total = chargeNights * (baseRate + extraCharge);
 
-  } else {
-    // --- běžná cenová logika ---
-    const cap = apt === 'A' ? 11 : apt === 'B' ? 6 : 17;
-    const emptyBeds = cap - (adults + children);
+        } else {
+          // --- běžná cenová logika ---
+          const cap = apt === 'A' ? 11 : apt === 'B' ? 6 : 17;
+          const emptyBeds = cap - (adults + children);
 
-    for (let d = start.clone(); d.isBefore(end); d.add(1, 'days')) {
-      const m  = d.format('MM-DD'),
-            wd = d.day(),
-            rate = ([5,6].includes(wd) || holidays.includes(m)) ? 650 : 550;
-      total += rate * (adults + children + toddlers)
-             + pets * 300
-             + emptyBeds * 300;
-    }
+          for (let d = start.clone(); d.isBefore(end); d.add(1, 'days')) {
+            const m = d.format('MM-DD'),
+              wd = d.day(),
+              rate = ([5, 6].includes(wd) || holidays.includes(m)) ? 650 : 550;
+            total += rate * (adults + children + toddlers)
+              + pets * 300
+              + emptyBeds * 300;
+          }
 
-    // 30% příplatek za jednu noc
-    if (nights === 1) {
-      total = Math.round(total * 1.3);
-    }
-  }
+          // 30% příplatek za jednu noc
+          if (nights === 1) {
+            total = Math.round(total * 1.3);
+          }
+        }
 
-  // 6) Ukaž / skryj upozornění o Silvestru
-  $('#silvesterNotice').toggle(includesSilvester);
+        // 6) Ukaž / skryj upozornění o Silvestru
+        $('#silvesterNotice').toggle(includesSilvester);
 
-  // 7) Aktualizace rekapitulace
-  $('#sumTerm').text(term);
-  $('#sumNights').text(nights);
-  $('#sumApartment').text(
-    apt === 'A' ? 'Apartmán A' :
-    apt === 'B' ? 'Apartmán B' :
-                   'Celý objekt'
-  );
-  $('#sumAdults').text($('#adultCount').val());
-  $('#sumChildren').text($('#childCount').val());
-  $('#sumToddlers').text($('#toddlerCount').val());
-  $('#sumPets').text(pets);
-    // 8) Skryj řádky, kde je hodnota 0
-  $('#sumChildren').closest('tr').toggle(children > 0);
-  $('#sumToddlers').closest('tr').toggle(toddlers > 0);
-  $('#sumPets').closest('tr').toggle(pets > 0);
+        // 7) Aktualizace rekapitulace
+        $('#sumTerm').text(term);
+        $('#sumNights').text(nights);
+        $('#sumApartment').text(
+          apt === 'A' ? 'Apartmán A' :
+            apt === 'B' ? 'Apartmán B' :
+              'Celý objekt'
+        );
+        $('#sumAdults').text($('#adultCount').val());
+        $('#sumChildren').text($('#childCount').val());
+        $('#sumToddlers').text($('#toddlerCount').val());
+        $('#sumPets').text(pets);
+        // 8) Skryj řádky, kde je hodnota 0
+        $('#sumChildren').closest('tr').toggle(children > 0);
+        $('#sumToddlers').closest('tr').toggle(toddlers > 0);
+        $('#sumPets').closest('tr').toggle(pets > 0);
 
-  $('#totalPrice').text(total.toLocaleString() + ' CZK');
+        $('#totalPrice').text(total.toLocaleString() + ' CZK');
 
-  // 8) Skrýt rekapitulaci, když nejsou hosté
-  $('.col-lg-5').toggle((+$('#adultCount').val() + +$('#childCount').val() + +$('#toddlerCount').val()) > 0);
-}
+        // 8) Skrýt rekapitulaci, když nejsou hosté
+        $('.col-lg-5').toggle((+$('#adultCount').val() + +$('#childCount').val() + +$('#toddlerCount').val()) > 0);
+      }
 
 
 

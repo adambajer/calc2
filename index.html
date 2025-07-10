@@ -350,14 +350,20 @@
 
         svg path.bedExtra {
             fill: black;
-        }svg.occupied path{fill:rgb(13, 110, 253);}
-        svg.extraoccupied path {
-            fill:#ffc107;
         }
-        svg.empty path{
+
+        svg.occupied path {
+            fill: rgb(13, 110, 253);
+        }
+
+        svg.extraoccupied path {
+            fill: #ffc107;
+        }
+
+        svg.empty path {
             /* prázdné lůžko/přistýlka = šedá */
             color: #ccc;
-            fill:gray;
+            fill: gray;
         }
 
         /* 1) extra přistýlka bude žlutá */
@@ -466,7 +472,7 @@
         }
 
         .bed-svg .frame {
-            stroke: var(  #000000);
+            stroke: var(#000000);
         }
 
         .bed-svg .mattress {}
@@ -477,12 +483,11 @@
         }
 
         /* Obsazená postel */
-        .bed-svg.occupied .mattress {
-         }
+        .bed-svg.occupied .mattress {}
 
         /* Obsazená postel */
         .bed-svg.extraoccupied .mattress {
-            fill: var( #ffc107);
+            fill: var(#ffc107);
         }
 
         /* Přistýlka */
@@ -609,7 +614,7 @@
                                                                 class="material-symbols-outlined me-2">pets</i>
                                                             Mazlíčci</span>
                                                         <select id="petsA" class="form-select form-select-sm">
-                                                                                                                        <option>0</option>
+                                                            <option>0</option>
 
                                                             <option>1</option>
                                                             <option>2</option>
@@ -719,8 +724,8 @@
             <div class="row">
                 <div class="col">
                     <button type="submit" class="btn btn-dark mx-auto"><span class="material-symbols-outlined">
-picture_as_pdf
-</span> PDF 1</button>
+                            picture_as_pdf
+                        </span> PDF 1</button>
                     <div class="page page-1" id="page-1">
 
 
@@ -869,9 +874,10 @@ picture_as_pdf
 
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-dark mx-auto" id="generatePage2"><span class="material-symbols-outlined">
-picture_as_pdf
-</span> PDF 2</button>
+                    <button type="button" class="btn btn-dark mx-auto" id="generatePage2"><span
+                            class="material-symbols-outlined">
+                            picture_as_pdf
+                        </span> PDF 2</button>
 
                     <div class="page page-2" id="page-2">
 
@@ -921,7 +927,34 @@ picture_as_pdf
     <script src="https://unpkg.com/@pdf-lib/fontkit@0.0.4/dist/fontkit.umd.js"></script> <!-- Pak pdf-lib -->
     <!-- html2pdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
-    <script>function createBedSVG(state, title) {
+    <script>
+
+        // --- Konfigurace apartmánů na jednom místě ---
+        const APARTMENTS = {
+            A: {
+                capacity: 11,   // počet pevně daných lůžek
+                extra: 5,    // počet přistýlek
+                silvesterRate: 7000, // základní sazba/noc
+                silvesterMin: 4,    // min. nocí
+                silvesterPeople: 10    // max. osob bez příplatku
+            },
+            B: {
+                capacity: 6,
+                extra: 2,
+                silvesterRate: 4200,
+                silvesterMin: 4,
+                silvesterPeople: 6
+            },
+            AB: {
+                capacity: 17,   // A+B pohromadě
+                extra: 7,
+                silvesterRate: 7000 + 4200,
+                silvesterMin: 4,
+                silvesterPeople: 10 + 6
+            }
+        };
+
+        function createBedSVG(state, title) {
             const ns = "http://www.w3.org/2000/svg";
             const svg = document.createElementNS(ns, "svg");
 
@@ -1039,7 +1072,7 @@ picture_as_pdf
         function renderBeds() {
             const apt = document.getElementById('apartmentSelect').value;
             const cap = apt === 'A' ? 11 : 6;
-            const maxExtras = (apt === 'A' ? 18 : 8) - cap;
+            const maxExtras = (apt === 'A' ? 16 : 8) - cap;
             const people = +document.getElementById('peopleA').value;
 
             const usedBeds = Math.min(people, cap);
@@ -1081,25 +1114,22 @@ picture_as_pdf
             initTooltips();  // pokud tooltipy používáš
 
             // 3) Shrnutí
-            const parts = [];
- parts.push(
-                `<span class="badge bg-danger">Kapacita osob: ${totalMax}</span>`
-            );
+            const parts = []; 
             // Obsazená lůžka
             parts.push(
-                `<span class="badge bg-primary">Počet osob: ${totalUsed}</span>`
+                `<span class="badge bg-primary">Kapacita: ${totalUsed} / ${totalMax}</span>`
             );
 
             // Volná lůžka
-                 parts.push(
-                    `<span class="badge bg-secondary">Neobsazené postele: ${freeBedsOnly}</span>`
-                );
- 
+            parts.push(
+                `<span class="badge bg-secondary">Neobsazené postele: ${freeBedsOnly}</span>`
+            );
+
             // Přistýlky
-                 parts.push(
-                    `<span class="badge bg-warning text-dark">Přistýlek: ${usedExtra}/${maxExtras}</span>`
-                );
- 
+            parts.push(
+                `<span class="badge bg-warning text-dark">Přistýlek: ${usedExtra}/${maxExtras}</span>`
+            );
+
             // Vložíme HTML
             document.getElementById('bedsSummary').innerHTML = parts.join('');
         }
@@ -1276,7 +1306,7 @@ picture_as_pdf
             updateFreeBeds();
         } function updateFreeBeds() {
             const aptVal = document.getElementById('apartmentSelect').value;
-            const maxBeds = aptVal === 'A' ? 18 : 8;
+            const maxBeds = aptVal === 'A' ? 16 : 8;
             const cap = aptVal === 'A' ? 11 : 6;
             const used = +document.getElementById('peopleA').value;
             const filledBeds = Math.min(used, cap);
@@ -1292,7 +1322,7 @@ picture_as_pdf
 
         function onApartmentChange() {
             const aptVal = document.getElementById('apartmentSelect').value;
-            const max = aptVal === 'A' ? 18 : 8;
+            const max = aptVal === 'A' ? 16 : 8;
             const cap = aptVal === 'A' ? 11 : 6;
             // v onApartmentChange() místo textContent pro capacityDisplay:
             const capDisp = document.getElementById('capacityDisplay');
