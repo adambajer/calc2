@@ -107,6 +107,35 @@ input[readonly] {
 .daterangepicker.show-input #daterange {
   caret-color: transparent;
 }
+/* Lehčí stín */
+.card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Více vertikálního prostoru */
+.row.gy-4 { /* již definováno Bootstrapem, jen uprav odstupy */
+  --bs-gutter-y: 1.5rem;
+}
+
+/* Akcentní linka u titulků */
+.card-title {
+  font-size: 1.25rem;
+  border-left: 3px solid var(--primary);
+  padding-left: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Přechodový hover efekt v tabulce */
+.recap-table tbody tr:hover {
+  background-color: rgba(0,0,0,0.03);
+  transition: background-color 0.2s ease;
+}
+
+/* Accordion místo collapse */
+.btn-warning {
+  background-color: #fd7e14;
+  border-color: #fd7e14;
+}
 
   </style>
 </head>
@@ -125,13 +154,13 @@ input[readonly] {
 
             <div class="mb-3 d-inline">
               <div class="row">
-                <div class="col-md-6 col-sm-6">
-                  <label class="form-label">Datum příjezdu - Datum odjezdu</label>
-                  <div class="input-group">
-                    <span class="input-group-text"><i class="material-icons">calendar_month</i></span>
-                    <input type="text" id="daterange" class="form-control" readonly>
+                  <div class="col-md-6 col-sm-6">
+                    <label class="form-label">Datum příjezdu - Datum odjezdu</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="material-icons">calendar_month</i></span>
+                      <input type="text" id="daterange" class="form-control" readonly>
+                    </div>
                   </div>
-                </div>
                 <div class="col-md-6 col-sm-6">
                   <label class="form-label"><span class="ms-2" id="capacityDisplay">11+5</span>
                   </label>
@@ -208,15 +237,18 @@ input[readonly] {
         <div class="card shadow-sm">
           <div class="card-body">
             <h5 class="card-title">Cenová nabídka</h5>
-            <p id="silvesterNotice">
-              <a class="btn btn-warning" data-bs-toggle="collapse" href="#silvesterDetails2" role="button"
-                aria-expanded="true" aria-controls="silvesterDetails2">
-                🎉 Silvestrovský tarif – více info
-              </a>
-            </p>
-            <div class="collapse" id="silvesterDetails2">
-              <div class="card card-body">
-                <strong>Minimální délka pobytu</strong>
+          <div class="accordion" id="priceAccordion">
+  <div class="accordion-item " id="silvesterNotice">
+    <h2 class="accordion-header" id="headingSyl">
+      <button class="accordion-button collapsed sylwester" type="button" data-bs-toggle="collapse"
+        data-bs-target="#collapseSyl" aria-expanded="false" aria-controls="collapseSyl">
+        🎉 Silvestrovský tarif – více info
+      </button>
+    </h2>
+    <div id="collapseSyl" class="accordion-collapse collapse" aria-labelledby="headingSyl"
+      data-bs-parent="#priceAccordion">
+      <div class="accordion-body">
+        <strong>Minimální délka pobytu</strong>
                 4 noci <br>
 
                 <strong>Apartmán A</strong>
@@ -228,8 +260,12 @@ input[readonly] {
                 4 200 CZK/noc<br>
                 až 6 osob<br>
                 každá další osoba +700 CZK/noc 
-              </div>
-            </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+        
 
             <table class="table recap-table">
               <tbody>
