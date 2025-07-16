@@ -2,483 +2,524 @@
 <html lang="cs">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kalendář obsazenosti</title>
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-  <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-  
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <style>
-    /* ===== Globální styly ===== */
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #f8f9fa;
-    }
-    h1 {
-      font-weight: 500;
-      margin-bottom: 1rem;
-    }
-    .card {
-      border-radius: 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kalendář obsazenosti</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-    /* ===== Kalender ===== */
-    .calendar-table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-    .calendar-table caption {
-      caption-side: top;
-      text-align: center;
-      font-weight: normal;
-      margin-bottom: .5rem;
-    }
-    .calendar-table th {
-      font-size: .7rem;
-      border-bottom: 1px solid #000;
-      background: #f1f1f1;
-    }
-    .calendar-table th,
-    .calendar-table td {
-      border: 1px solid #fff;
-      box-sizing: border-box;
-      width: 14.2857%;
-      text-align: center;
-      height: 1.7rem;
-      position: relative;
-      font-size: .7rem;
-    }
-    .calendar-table td i {
-      position: absolute;
-      opacity: 0;
-      font-size: 1rem;
-      vertical-align: middle;
-      line-height: 1;
-    }
-    .calendar-table td.day-full:hover i {
-      top: 0;
-      left: 0;
-      padding: .3rem;
-      display: block;
-      opacity: 1;
-      height: auto;
-    }
-    .day-free {
-      background-color: #8f8 !important;
-      color: #222;
-      cursor: pointer;
-    }
-    .day-full {
-      background-color: #DD9999 !important;
-      color: #222;
-    }
-    .day-half {
-      background-color: #BEBEFF !important;
-      color: #222;
-    }
-    .day-free.range-start,
-    .day-free.range-end {
-      background-color: #000 !important;
-      color: #fff;
-    }
-    .day-free.range-selected {
-      background-color: #000 !important;
-      color: #fff;
-    }
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* ===== Globální styly ===== */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+        }
 
-    /* ===== Modal a formulář ===== */
-    .modal-body .form-label {
-      display: flex;
-      align-items: center;
-      font-weight: 500;
-      color: #495057;
-    }
-    .modal-body .form-label i {
-      margin-right: .5rem;
-    }
-    .modal-body .form-select {
-     }
-    .modal-body .d-flex.align-items-center {
-      margin-bottom: 1rem;
-    }
-    .modal-body .d-flex.align-items-center:last-child {
-      margin-bottom: 0;
-    }
-.day-free   { background-color: #8f8 !important; color: #222; cursor: pointer; }
-    .day-full   { background-color: #DD9999 !important; color: #222; }
-    .day-half   { background-color: #BEBEFF !important; color: #222; }
-    /* gradient variants for arrivals/departures */
-    .day-full.z { background: linear-gradient(135deg, #8f8 0%, #8f8 49%, #DD9999 50%, #DD9999 100%) !important; }
-    .day-full.k { background: linear-gradient(135deg, #DD9999 0%, #DD9999 50%, #8f8 51%, #8f8 100%) !important; }
-    .day-half.z { background: linear-gradient(135deg, #8f8 0%, #8f8 49%, #BEBEFF 50%, #BEBEFF 100%) !important; }
-    .day-half.zo { background: linear-gradient(135deg, #DD9999 0%, #DD9999 49%, #BEBEFF 50%, #BEBEFF 100%) !important; }
-    .day-half.k { background: linear-gradient(135deg, #BEBEFF 0%, #BEBEFF 50%, #8f8 51%, #8f8 100%) !important; }
-    .day-half.ko { background: linear-gradient(135deg, #BEBEFF 0%, #BEBEFF 50%, #DD9999 51%, #DD9999 100%) !important; }
+        h1 {
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            border-radius: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        /* ===== Kalender ===== */
+        .calendar-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .calendar-table caption {
+            caption-side: top;
+            text-align: center;
+            font-weight: normal;
+            margin-bottom: .5rem;
+        }
+
+        .calendar-table th {
+            font-size: .7rem;
+            border-bottom: 1px solid #000;
+            background: #f1f1f1;
+        }
+
+        .calendar-table th,
+        .calendar-table td {
+            border: 1px solid #fff;
+            box-sizing: border-box;
+            width: 14.2857%;
+            text-align: center;
+            height: 1.7rem;
+            position: relative;
+            font-size: .7rem;
+        }
+
+        .calendar-table td i {
+            position: absolute;
+            opacity: 0;
+            font-size: 1rem;
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        .calendar-table td.day-full:hover i {
+            top: 0;
+            left: 0;
+            padding: .3rem;
+            display: block;
+            opacity: 1;
+            height: auto;
+        }
+
+        .day-free {
+            background-color: #8f8 !important;
+            color: #222;
+            cursor: pointer;
+        }
+
+        .day-full {
+            background-color: #DD9999 !important;
+            color: #222;
+        }
+
+        .day-half {
+            background-color: #BEBEFF !important;
+            color: #222;
+        }
+
+        .day-free.range-start,
+        .day-free.range-end {
+            background-color: #000 !important;
+            color: #fff;
+        }
+
+        .day-free.range-selected {
+            background-color: #000 !important;
+            color: #fff;
+        }
+
+        /* ===== Modal a formulář ===== */
+        .modal-body .form-label {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .modal-body .form-label i {
+            margin-right: .5rem;
+        }
+
+        .modal-body .form-select {}
+
+        .modal-body .d-flex.align-items-center {
+            margin-bottom: 1rem;
+        }
+
+        .modal-body .d-flex.align-items-center:last-child {
+            margin-bottom: 0;
+        }
+
+        .day-free {
+            background-color: #8f8 !important;
+            color: #222;
+            cursor: pointer;
+        }
+
+        .day-full {
+            background-color: #DD9999 !important;
+            color: #222;
+        }
+
+        .day-half {
+            background-color: #BEBEFF !important;
+            color: #222;
+        }
+
+        /* gradient variants for arrivals/departures */
+        .day-full.z {
+            background: linear-gradient(135deg, #8f8 0%, #8f8 49%, #DD9999 50%, #DD9999 100%) !important;
+        }
+
+        .day-full.k {
+            background: linear-gradient(135deg, #DD9999 0%, #DD9999 50%, #8f8 51%, #8f8 100%) !important;
+        }
+
+        .day-half.z {
+            background: linear-gradient(135deg, #8f8 0%, #8f8 49%, #BEBEFF 50%, #BEBEFF 100%) !important;
+        }
+
+        .day-half.zo {
+            background: linear-gradient(135deg, #DD9999 0%, #DD9999 49%, #BEBEFF 50%, #BEBEFF 100%) !important;
+        }
+
+        .day-half.k {
+            background: linear-gradient(135deg, #BEBEFF 0%, #BEBEFF 50%, #8f8 51%, #8f8 100%) !important;
+        }
+
+        .day-half.ko {
+            background: linear-gradient(135deg, #BEBEFF 0%, #BEBEFF 50%, #DD9999 51%, #DD9999 100%) !important;
+        }
 
 
 
-    /* ===== Shrnutí ===== */
-    #selectionSummary .alert {
-      transition: opacity .3s ease;
-    }
-  </style>
+        /* ===== Shrnutí ===== */
+        #selectionSummary .alert {
+            transition: opacity .3s ease;
+        }
+    </style>
 </head>
 
 <body>
-  <div class="container py-4">
-    <div class="d-flex align-items-center mb-4">
-       <h1 class="m-0">Kalendář obsazenosti - Selský Dvůr</h1> 
-    </div>
-    <div id="selectionSummary" class="mb-3 d-none"></div>
-    <div id="calendars" class="row">Načítám…</div>
-  </div>
-<!-- Modal pro výběr termínu, apartmánu a počtů -->
-<div class="modal fade" id="personModal" tabindex="-1" aria-labelledby="personModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-<h5 class="modal-title" id="personModalLabel">Zvolené termíny: <span id="modalTerm">–</span></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <!-- ↓ ZDE JE NOVÝ BODY, KTERÝ KOPÍRUJE TVŮJ PŮVODNÍ FORMULÁŘ ↓ -->
-      <div class="modal-body">
-        <div class="mb-3">
-          <div class="row">
-             
-            <div class="col">
-              <label class="form-label">
-                <span class="ms-2" id="modalCapacityDisplay">Apartmán</span>
-              </label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="material-icons">apartment</i></span>
-                <select id="modalApartmentSelect" class="form-select">
-                  <option value="A">Apartmán A</option>
-                  <option value="B">Apartmán B</option>
-                  <option value="AB">Celý objekt</option>
-                </select>
-              </div>
-            </div>
-          </div>
+    <div class="container py-4">
+        <div class="d-flex align-items-center mb-4">
+            <h1 class="m-0">Kalendář obsazenosti - Selský Dvůr</h1>
         </div>
-
-        <div class="row mt-3 gx-2 gy-3">
-          <div class="col-md-3 col-sm-6">
-            <label class="form-label">Dospělí</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="material-icons">people</i></span>
-              <select id="personAdults" class="form-select"></select>
-            </div>
-          </div>
-          <div class="col-md-3 col-sm-6">
-            <label class="form-label">Děti od 3 let</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="material-icons">child_care</i></span>
-              <select id="personKidsBig" class="form-select"></select>
-            </div>
-          </div>
-          <div class="col-md-3 col-sm-6">
-            <label class="form-label">Děti do 2,99 let</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="material-icons">child_friendly</i></span>
-              <select id="personKidsSmall" class="form-select"></select>
-            </div>
-          </div>
-          <div class="col-md-3 col-sm-6">
-            <label class="form-label">Mazlíčci</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="material-icons">pets</i></span>
-              <select id="personPets" class="form-select"></select>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- ↑ KONEC NOVÉHO BODY ↑ -->
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
-<button type="button" class="btn btn-primary" id="applySelection">
-    Vypočítej cenovou nabídku
-  </button>      </div>
+        <div id="selectionSummary" class="mb-3 d-none"></div>
+        <div id="calendars" class="row">Načítám…</div>
     </div>
-  </div>
-</div>
+    <!-- Modal pro výběr termínu, apartmánu a počtů -->
+    <div class="modal fade" id="personModal" tabindex="-1" aria-labelledby="personModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="personModalLabel">Zvolené termíny: <span id="modalTerm">–</span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- ↓ ZDE JE NOVÝ BODY, KTERÝ KOPÍRUJE TVŮJ PŮVODNÍ FORMULÁŘ ↓ -->
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <div class="row">
+
+                            <div class="col">
+                                <label class="form-label">
+                                    <span class="ms-2" id="modalCapacityDisplay">Apartmán</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="material-icons">apartment</i></span>
+                                    <select id="modalApartmentSelect" class="form-select">
+                                        <option value="A">Apartmán A</option>
+                                        <option value="B">Apartmán B</option>
+                                        <option value="AB">Celý objekt</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3 gx-2 gy-3">
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label">Dospělí</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="material-icons">people</i></span>
+                                <select id="personAdults" class="form-select"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label">Děti od 3 let</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="material-icons">child_care</i></span>
+                                <select id="personKidsBig" class="form-select"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label">Děti do 2,99 let</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="material-icons">child_friendly</i></span>
+                                <select id="personKidsSmall" class="form-select"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label">Mazlíčci</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="material-icons">pets</i></span>
+                                <select id="personPets" class="form-select"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div id="modalOffer" class="mt-3">
+                        <h6 class="fw-semibold">Cenová nabídka</h6>
+                        <p><small id="offerNights">Nocí: –</small></p>
+                        <p><small id="offerPrice">Cena: – CZK</small></p>
+                    </div>
+
+                </div>
+                <!-- ↑ KONEC NOVÉHO BODY ↑ -->
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // --- Stav výběru ---
-    let selectionStart = null,
-        selectionEnd   = null,
-        startCell      = null;
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --- Stav výběru ---
+        let selectionStart = null,
+            selectionEnd = null,
+            startCell = null;
 
-    // --- Načtení a vykreslení kalendáře ---
-    fetch('http://127.0.0.1:5001/calendar')
-      .then(r => r.json())
-      .then(data => {
-        document.getElementById('calendars').innerHTML = '';
-        renderAllCalendars(data);
-        attachSelectionHandlers();
-      })
-      .catch(() => {
-        document.getElementById('calendars').innerHTML = '<div class="alert alert-danger">Chyba při načítání kalendáře.</div>';
-      });
-
-    function renderAllCalendars(data) {
-      const months = {};
-      for (const iso in data) {
-        const d = new Date(iso),
-              key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-        (months[key] = months[key]||[]).push({ date: d, info: data[iso], iso });
-      }
-      Object.keys(months).sort().forEach(key => {
-        const [yr, mo] = key.split('-').map(Number),
-              col = document.createElement('div');
-        col.className = 'col-md-2';
-        col.append(renderMonthCard(yr, mo, months[key]));
-        document.getElementById('calendars').append(col);
-      });
-    }
-
-    function renderMonthCard(year, month, entries) {
-      const card = document.createElement('div');
-      card.className = 'card month-card shadow-sm my-2 p-0';
-      const bd = document.createElement('div');
-      bd.className = 'card-body p-0';
-      const title = document.createElement('h5');
-      title.className = 'card-title mb-0 border-bottom p-2';
-      title.textContent = new Intl.DateTimeFormat('cs-CZ',{month:'long'}).format(new Date(year,month-1));
-      bd.append(title);
-
-      const tbl = document.createElement('table');
-      tbl.className = 'calendar-table';
-      const thead = document.createElement('thead'),
-            trh = document.createElement('tr');
-      ['Po','Út','St','Čt','Pá','So','Ne'].forEach(dow => {
-        const th = document.createElement('th');
-        th.className = 'bg-light';
-        th.textContent = dow;
-        trh.append(th);
-      });
-      thead.append(trh);
-      tbl.append(thead);
-
-      const tbody = document.createElement('tbody'),
-            lookup = {};
-      entries.forEach(e => lookup[e.date.getDate()] = { info: e.info, iso: e.iso });
-
-      const firstDow = (new Date(year,month-1,1).getDay()+6)%7;
-      let tr = document.createElement('tr');
-      for (let i=0; i<firstDow; i++) {
-        const td = document.createElement('td');
-        td.className = 'day-shdw';
-        tr.append(td);
-      }
-      const daysInMonth = new Date(year,month,0).getDate();
-      for (let d=1; d<=daysInMonth; d++) {
-        if ((firstDow + d -1)%7===0 && d!==1) {
-          tbody.append(tr);
-          tr = document.createElement('tr');
-        }
-        const td = document.createElement('td'),
-              ent = lookup[d];
-        if (ent) {
-          td.className = ent.info.classes.join(' ');
-          td.dataset.date = ent.iso;
-          const ic = document.createElement('i');
-          if (ent.info.classes.includes('day-full')) ic.className='bi bi-x-circle-fill text-danger';
-          else if (ent.info.classes.includes('day-half')) ic.className='bi bi-dot-circle-fill text-warning';
-          td.append(ic);
-          const sp = document.createElement('span');
-          sp.textContent = d;
-          td.append(sp);
-        } else {
-          td.className = 'day-shdw';
-          td.textContent = d;
-        }
-        tr.append(td);
-      }
-      while (tr.children.length < 7) {
-        const td = document.createElement('td');
-        td.className = 'day-shdw';
-        tr.append(td);
-      }
-      tbody.append(tr);
-      tbl.append(tbody);
-      bd.append(tbl);
-      card.append(bd);
-      return card;
-    }
-
-    // --- Výběr intervalu a otevření modalu ---
-    function attachSelectionHandlers() {
-      document.querySelectorAll('td.day-free').forEach(td => {
-        td.addEventListener('click', () => {
-          const date = td.dataset.date;
-          if (!selectionStart || (selectionStart && selectionEnd)) {
-            clearSelection();
-            selectionStart = date;
-            startCell = td;
-            td.classList.add('range-start');
-          } else {
-            // kontrola, zda všechny mezi jsou volné
-            const ok = date >= selectionStart && Array.from(document.querySelectorAll('td')).every(c => {
-              const d = c.dataset.date;
-              return !(d>=selectionStart && d<=date) || c.classList.contains('day-free');
+        // --- Načtení a vykreslení kalendáře ---
+        fetch('http://127.0.0.1:5001/calendar')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('calendars').innerHTML = '';
+                renderAllCalendars(data);
+                attachSelectionHandlers();
+            })
+            .catch(() => {
+                document.getElementById('calendars').innerHTML = '<div class="alert alert-danger">Chyba při načítání kalendáře.</div>';
             });
-            if (ok) {
-              selectionEnd = date;
-              td.classList.add('range-end');
-              highlightRange();
-              new bootstrap.Modal(document.getElementById('personModal')).show();
-            } else {
-              alert('Vyberte prosím období, ve kterém jsou všechny dny volné.');
-              clearSelection();
+
+        function renderAllCalendars(data) {
+            const months = {};
+            for (const iso in data) {
+                const d = new Date(iso),
+                    key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                (months[key] = months[key] || []).push({ date: d, info: data[iso], iso });
             }
-          }
-        });
-      });
-    }
+            Object.keys(months).sort().forEach(key => {
+                const [yr, mo] = key.split('-').map(Number),
+                    col = document.createElement('div');
+                col.className = 'col-md-2';
+                col.append(renderMonthCard(yr, mo, months[key]));
+                document.getElementById('calendars').append(col);
+            });
+        }
 
-    function highlightRange() {
-      document.querySelectorAll('td.day-free').forEach(td => {
-        const d = td.dataset.date;
-        if (d>=selectionStart && d<=selectionEnd) td.classList.add('range-selected');
-      });
-    }
+        function renderMonthCard(year, month, entries) {
+            const card = document.createElement('div');
+            card.className = 'card month-card shadow-sm my-2 p-0';
+            const bd = document.createElement('div');
+            bd.className = 'card-body p-0';
+            const title = document.createElement('h5');
+            title.className = 'card-title mb-0 border-bottom p-2';
+            title.textContent = new Intl.DateTimeFormat('cs-CZ', { month: 'long' }).format(new Date(year, month - 1));
+            bd.append(title);
 
-    function clearSelection() {
-      selectionStart = selectionEnd = null;
-      if (startCell) startCell.classList.remove('range-start');
-      document.querySelectorAll('.range-end, .range-selected').forEach(el => {
-        el.classList.remove('range-end','range-selected');
-      });
-      document.getElementById('selectionSummary').classList.add('d-none');
-    }
+            const tbl = document.createElement('table');
+            tbl.className = 'calendar-table';
+            const thead = document.createElement('thead'),
+                trh = document.createElement('tr');
+            ['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'].forEach(dow => {
+                const th = document.createElement('th');
+                th.className = 'bg-light';
+                th.textContent = dow;
+                trh.append(th);
+            });
+            thead.append(trh);
+            tbl.append(thead);
 
-    // --- Modal – naplnění selects a potvrzení ---
-    const modalEl         = document.getElementById('personModal'),
-          aptSelect       = document.getElementById('modalApartmentSelect'),
-          adultsSelect    = document.getElementById('personAdults'),
-          kidsBigSelect   = document.getElementById('personKidsBig'),
-          kidsSmallSelect = document.getElementById('personKidsSmall'),
-          petsSelect      = document.getElementById('personPets'),
-          applyBtn        = document.getElementById('applySelection');
+            const tbody = document.createElement('tbody'),
+                lookup = {};
+            entries.forEach(e => lookup[e.date.getDate()] = { info: e.info, iso: e.iso });
 
-    function fillOptions(el,min,max,zeroStart) {
-      el.innerHTML = '';
-      const start = zeroStart ? 0 : min;
-      for (let i=start; i<=max; i++) {
-        const o = document.createElement('option');
-        o.value = o.text = i;
-        el.append(o);
-      }
-    }
-// helper pro formát dd.mm.yyyy
-function fmtDate(iso) {
-  return new Intl.DateTimeFormat('cs-CZ', {
-    day:   '2-digit',
-    month: '2-digit',
-    year:  'numeric'
-  }).format(new Date(iso));
-}
+            const firstDow = (new Date(year, month - 1, 1).getDay() + 6) % 7;
+            let tr = document.createElement('tr');
+            for (let i = 0; i < firstDow; i++) {
+                const td = document.createElement('td');
+                td.className = 'day-shdw';
+                tr.append(td);
+            }
+            const daysInMonth = new Date(year, month, 0).getDate();
+            for (let d = 1; d <= daysInMonth; d++) {
+                if ((firstDow + d - 1) % 7 === 0 && d !== 1) {
+                    tbody.append(tr);
+                    tr = document.createElement('tr');
+                }
+                const td = document.createElement('td'),
+                    ent = lookup[d];
+                if (ent) {
+                    td.className = ent.info.classes.join(' ');
+                    td.dataset.date = ent.iso;
+                    const ic = document.createElement('i');
+                    if (ent.info.classes.includes('day-full')) ic.className = 'bi bi-x-circle-fill text-danger';
+                    else if (ent.info.classes.includes('day-half')) ic.className = 'bi bi-dot-circle-fill text-warning';
+                    td.append(ic);
+                    const sp = document.createElement('span');
+                    sp.textContent = d;
+                    td.append(sp);
+                } else {
+                    td.className = 'day-shdw';
+                    td.textContent = d;
+                }
+                tr.append(td);
+            }
+            while (tr.children.length < 7) {
+                const td = document.createElement('td');
+                td.className = 'day-shdw';
+                tr.append(td);
+            }
+            tbody.append(tr);
+            tbl.append(tbody);
+            bd.append(tbl);
+            card.append(bd);
+            return card;
+        }
 
-    function updateCounts() {
-      let base, extra;
-      switch (aptSelect.value) {
-        case 'A': base=11; extra=5; break;
-        case 'B': base=6;  extra=2; break;
-        default:  base=17; extra=7; break;
-      }
-      const mx = base + extra;
-      fillOptions(adultsSelect,   1, mx,   false);
-      fillOptions(kidsBigSelect,  0, mx,   true);
-      fillOptions(kidsSmallSelect,0, 10,   true);
-      fillOptions(petsSelect,     0, 5,    true);
+        // --- Výběr intervalu a otevření modalu ---
+        function attachSelectionHandlers() {
+            document.querySelectorAll('td.day-free').forEach(td => {
+                td.addEventListener('click', () => {
+                    const date = td.dataset.date;
+                    if (!selectionStart || (selectionStart && selectionEnd)) {
+                        clearSelection();
+                        selectionStart = date;
+                        startCell = td;
+                        td.classList.add('range-start');
+                    } else {
+                        // kontrola, zda všechny mezi jsou volné
+                        const ok = date >= selectionStart && Array.from(document.querySelectorAll('td')).every(c => {
+                            const d = c.dataset.date;
+                            return !(d >= selectionStart && d <= date) || c.classList.contains('day-free');
+                        });
+                        if (ok) {
+                            selectionEnd = date;
+                            td.classList.add('range-end');
+                            highlightRange();
+                            new bootstrap.Modal(document.getElementById('personModal')).show();
+                        } else {
+                            alert('Vyberte prosím období, ve kterém jsou všechny dny volné.');
+                            clearSelection();
+                        }
+                    }
+                });
+            });
+        }
 
-      const labelSpan = document.getElementById('modalTerm');
-  labelSpan.textContent = `${fmtDate(selectionStart)} – ${fmtDate(selectionEnd)}`;
+        function highlightRange() {
+            document.querySelectorAll('td.day-free').forEach(td => {
+                const d = td.dataset.date;
+                if (d >= selectionStart && d <= selectionEnd) td.classList.add('range-selected');
+            });
+        }
 
-    }
+        function clearSelection() {
+            selectionStart = selectionEnd = null;
+            if (startCell) startCell.classList.remove('range-start');
+            document.querySelectorAll('.range-end, .range-selected').forEach(el => {
+                el.classList.remove('range-end', 'range-selected');
+            });
+            document.getElementById('selectionSummary').classList.add('d-none');
+        }
 
-    modalEl.addEventListener('show.bs.modal', updateCounts);
-    aptSelect.addEventListener('change',     updateCounts);
+        // --- Modal – naplnění selects a potvrzení ---
+        const modalEl = document.getElementById('personModal'),
+            aptSelect = document.getElementById('modalApartmentSelect'),
+            adultsSelect = document.getElementById('personAdults'),
+            kidsBigSelect = document.getElementById('personKidsBig'),
+            kidsSmallSelect = document.getElementById('personKidsSmall'),
+            petsSelect = document.getElementById('personPets');
 
-    applyBtn.addEventListener('click', () => {
-      const counts = {
-        apt       : aptSelect.value,
-        adults    : +adultsSelect.value,
-        kidsBig   : +kidsBigSelect.value,
-        kidsSmall : +kidsSmallSelect.value,
-        pets      : +petsSelect.value
-      };
-      bootstrap.Modal.getInstance(modalEl).hide();
-      showSummary(counts);
-    });
-// 1) Definice calculatePrice (vložit nad showSummary)
+        function fillOptions(el, min, max, zeroStart) {
+            el.innerHTML = '';
+            const start = zeroStart ? 0 : min;
+            for (let i = start; i <= max; i++) {
+                const o = document.createElement('option');
+                o.value = o.text = i;
+                el.append(o);
+            }
+        }
+        // helper pro formát dd.mm.yyyy
+        function fmtDate(iso) {
+            return new Intl.DateTimeFormat('cs-CZ', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }).format(new Date(iso));
+        }
 
-function calculatePrice(startIso, endIso, counts) {
-  const { apt, adults, kidsBig, kidsSmall, pets } = counts;
-  const start = new Date(startIso), end = new Date(endIso);
-  const nights = Math.round((end - start) / (1000*60*60*24));
-  // pole svátků
-  const holidays = ['01-01','05-08','07-05','07-06','09-28','10-28','11-17','04-04','04-05','05-01'];
+        function updateCounts() {
+            let base, extra;
+            switch (aptSelect.value) {
+                case 'A': base = 11; extra = 5; break;
+                case 'B': base = 6; extra = 2; break;
+                default: base = 17; extra = 7; break;
+            }
+            const mx = base + extra;
+            fillOptions(adultsSelect, 1, mx, false);
+            fillOptions(kidsBigSelect, 0, mx, true);
+            fillOptions(kidsSmallSelect, 0, 10, true);
+            fillOptions(petsSelect, 0, 5, true);
 
-  // detekce Silvestra
-  const dec31This = new Date(start.getFullYear(),11,31);
-  const dec31Next = new Date(start.getFullYear()+1,11,31);
-  const syl = (start <= dec31This && end > dec31This)
-           || (start <= dec31Next && end > dec31Next);
+            const labelSpan = document.getElementById('modalTerm');
+            labelSpan.textContent = `${fmtDate(selectionStart)} – ${fmtDate(selectionEnd)}`;
 
-  let total = 0;
-  if (syl) {
-    const chargeN = Math.max(nights,4);
-    let baseRate, included;
-    if (apt==='A')      { baseRate=7000; included=10; }
-    else if (apt==='B') { baseRate=4200; included=6; }
-    else                { baseRate=7000+4200; included=16; }
-    const guests = adults+kidsBig+kidsSmall;
-    const extra  = Math.max(0, guests - included);
-    total = chargeN*baseRate + extra*700*chargeN;
-  } else {
-    const cap = (apt==='A'?11:apt==='B'?6:17);
-    const emptyBeds = cap - (adults + kidsBig + kidsSmall);
-    for (let d=new Date(start); d<end; d.setDate(d.getDate()+1)) {
-      const mm = ('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
-      const wd = d.getDay(); // 0–6
-      const rate = ([5,6].includes(wd) || holidays.includes(mm)) ? 650 : 550;
-      total += rate*(adults + kidsBig + kidsSmall) + pets*300 + emptyBeds*300;
-    }
-    if (nights===1) total = Math.round(total*1.3);
-  }
+        }
 
-  return { nights, total };
-}
+        modalEl.addEventListener('show.bs.modal', updateCounts);
+        aptSelect.addEventListener('change', updateCounts);
 
-   // 2) Upravené showSummary (místo té vaší původní)
-function showSummary(counts) {
-  // formátování data dd.mm.rrrr
-  const fmt = iso => new Intl.DateTimeFormat('cs-CZ', {
-    day:   '2-digit',
-    month: '2-digit',
-    year:  'numeric'
-  }).format(new Date(iso));
+     
+        // 1) Definice calculatePrice (vložit nad showSummary)
 
-  // spočítáme počet nocí a cenu
-  const { nights, total } = calculatePrice(selectionStart, selectionEnd, counts);
+        function calculatePrice(startIso, endIso, counts) {
+            const { apt, adults, kidsBig, kidsSmall, pets } = counts;
+            const start = new Date(startIso), end = new Date(endIso);
+            const nights = Math.round((end - start) / (1000 * 60 * 60 * 24));
+            // pole svátků
+            const holidays = ['01-01', '05-08', '07-05', '07-06', '09-28', '10-28', '11-17', '04-04', '04-05', '05-01'];
 
-  // pojmenování apartmánu
-  const names = { A: 'Apartmán A', B: 'Apartmán B', AB: 'Celý objekt' };
+            // detekce Silvestra
+            const dec31This = new Date(start.getFullYear(), 11, 31);
+            const dec31Next = new Date(start.getFullYear() + 1, 11, 31);
+            const syl = (start <= dec31This && end > dec31This)
+                || (start <= dec31Next && end > dec31Next);
 
-  // vygenerujeme HTML
-  document.getElementById('selectionSummary').innerHTML = `
+            let total = 0;
+            if (syl) {
+                const chargeN = Math.max(nights, 4);
+                let baseRate, included;
+                if (apt === 'A') { baseRate = 7000; included = 10; }
+                else if (apt === 'B') { baseRate = 4200; included = 6; }
+                else { baseRate = 7000 + 4200; included = 16; }
+                const guests = adults + kidsBig + kidsSmall;
+                const extra = Math.max(0, guests - included);
+                total = chargeN * baseRate + extra * 700 * chargeN;
+            } else {
+                const cap = (apt === 'A' ? 11 : apt === 'B' ? 6 : 17);
+                const emptyBeds = cap - (adults + kidsBig + kidsSmall);
+                for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+                    const mm = ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+                    const wd = d.getDay(); // 0–6
+                    const rate = ([5, 6].includes(wd) || holidays.includes(mm)) ? 650 : 550;
+                    total += rate * (adults + kidsBig + kidsSmall) + pets * 300 + emptyBeds * 300;
+                }
+                if (nights === 1) total = Math.round(total * 1.3);
+            }
+
+            return { nights, total };
+        }
+
+        // 2) Upravené showSummary (místo té vaší původní)
+        function showSummary(counts) {
+            // formátování data dd.mm.rrrr
+            const fmt = iso => new Intl.DateTimeFormat('cs-CZ', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }).format(new Date(iso));
+
+            // spočítáme počet nocí a cenu
+            const { nights, total } = calculatePrice(selectionStart, selectionEnd, counts);
+
+            // pojmenování apartmánu
+            const names = { A: 'Apartmán A', B: 'Apartmán B', AB: 'Celý objekt' };
+
+            // vygenerujeme HTML
+            document.getElementById('selectionSummary').innerHTML = `
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Cenová nabídka</h5>
@@ -520,149 +561,173 @@ function showSummary(counts) {
         </table>
       </div>
     </div>`;
-  // zobrazíme ten box
-  const summary = document.getElementById('selectionSummary');
-  summary.classList.remove('d-none');
+            // zobrazíme ten box
+            const summary = document.getElementById('selectionSummary');
+            summary.classList.remove('d-none');
 
-  // tlačítka pro zrušení / změnu
-  summary.querySelector('.card-body').insertAdjacentHTML('beforeend', `
+            // tlačítka pro zrušení / změnu
+            summary.querySelector('.card-body').insertAdjacentHTML('beforeend', `
     <div class="mt-3 text-end">
       <button id="cancelSelection" class="btn btn-sm btn-outline-danger me-2">Zrušit</button>
       <button id="changeTerm" class="btn btn-sm btn-outline-secondary">Zvolit jiný</button>
     </div>
   `);
-  summary.querySelector('#cancelSelection').onclick = clearSelection;
-  summary.querySelector('#changeTerm').onclick     = clearSelection;
+            summary.querySelector('#cancelSelection').onclick = clearSelection;
+            summary.querySelector('#changeTerm').onclick = clearSelection;
+        }
+// po definici calculatePrice(...)
+function updateModalOffer() {
+  if (!selectionStart || !selectionEnd) return;
+  const counts = {
+    apt:       aptSelect.value,
+    adults:    +adultsSelect.value,
+    kidsBig:   +kidsBigSelect.value,
+    kidsSmall: +kidsSmallSelect.value,
+    pets:      +petsSelect.value
+  };
+  const { nights, total } = calculatePrice(selectionStart, selectionEnd, counts);
+  document.getElementById('offerNights').textContent = `Nocí: ${nights}`;
+  document.getElementById('offerPrice').textContent = `Cena: ${total.toLocaleString()} CZK`;
 }
 
+// zavěšeno na změny
+[aptSelect, adultsSelect, kidsBigSelect, kidsSmallSelect, petsSelect]
+  .forEach(el => el.addEventListener('change', updateModalOffer));
 
-      $(function () {
-    const holidays = ['01-01','05-08','07-05','07-06','09-28','10-28','11-17','04-04','04-05','05-01'];
+// při otevření modalu (po nastavení termínu) taky jednou zavolej
+modalEl.addEventListener('show.bs.modal', () => {
+  updateCounts();
+  updateModalOffer();
+});
 
-    // --- Přepočet ceny a rekapitulace ---
-    function recalc() {
-      // povolíme selects
-      $('#adultCount, #childCount, #toddlerCount').prop('disabled', false);
 
-      // načteme vstupy
-      const apt      = $('#apartmentSelect').val();
-      const adults   = +$('#adultCount').val();
-      const children = +$('#childCount').val();
-      const toddlers = +$('#toddlerCount').val();
-      const pets     = +$('#petsCount').val();
+        $(function () {
+            const holidays = ['01-01', '05-08', '07-05', '07-06', '09-28', '10-28', '11-17', '04-04', '04-05', '05-01'];
 
-      // datumy z textového pole
-      const term = $('#daterange').val();
-      const [from, to] = term.split(' - ');
-      const start = moment(from, 'DD.MM.YYYY');
-      const end   = moment(to,   'DD.MM.YYYY');
-      const nights = end.diff(start, 'days');
+            // --- Přepočet ceny a rekapitulace ---
+            function recalc() {
+                // povolíme selects
+                $('#adultCount, #childCount, #toddlerCount').prop('disabled', false);
 
-      // detekce Silvestra
-      const dec31This = moment({ year: start.year(),   month:11, day:31 });
-      const dec31Next = moment({ year: start.year()+1, month:11, day:31 });
-      const sylwester = (start.isSameOrBefore(dec31This) && end.isAfter(dec31This))
-                     || (start.isSameOrBefore(dec31Next) && end.isAfter(dec31Next));
+                // načteme vstupy
+                const apt = $('#apartmentSelect').val();
+                const adults = +$('#adultCount').val();
+                const children = +$('#childCount').val();
+                const toddlers = +$('#toddlerCount').val();
+                const pets = +$('#petsCount').val();
 
-      let total = 0;
+                // datumy z textového pole
+                const term = $('#daterange').val();
+                const [from, to] = term.split(' - ');
+                const start = moment(from, 'DD.MM.YYYY');
+                const end = moment(to, 'DD.MM.YYYY');
+                const nights = end.diff(start, 'days');
 
-      if (sylwester) {
-        // Silvestrovský tarif
-        const chargeN = Math.max(nights, 4);
-        let baseRate, included;
-        if (apt === 'A')      { baseRate = 7000; included = 10; }
-        else if (apt === 'B') { baseRate = 4200; included = 6;  }
-        else                  { baseRate = 7000 + 4200; included = 16; }
+                // detekce Silvestra
+                const dec31This = moment({ year: start.year(), month: 11, day: 31 });
+                const dec31Next = moment({ year: start.year() + 1, month: 11, day: 31 });
+                const sylwester = (start.isSameOrBefore(dec31This) && end.isAfter(dec31This))
+                    || (start.isSameOrBefore(dec31Next) && end.isAfter(dec31Next));
 
-        const guests      = adults + children + toddlers;
-        const extraGuests = Math.max(0, guests - included);
-        total = chargeN * baseRate + extraGuests * 700 * chargeN;
+                let total = 0;
 
-        // v nutném případě vynutíme minimální obsazení
-        $('#adultCount').val(Math.max(adults, included));
-      } else {
-        // Běžná cenová logika
-        const cap       = (apt === 'A' ? 11 : apt === 'B' ? 6 : 17);
-        const emptyBeds = cap - (adults + children);
-        for (let d = start.clone(); d.isBefore(end); d.add(1, 'days')) {
-          const mm = d.format('MM-DD'),
-                wd = d.day();
-          const rate = ([5,6].includes(wd) || holidays.includes(mm)) ? 650 : 550;
-          total += rate * (adults + children + toddlers)
-                 + pets * 300
-                 + emptyBeds * 300;
-        }
-        // příplatek za jedinou noc
-        if (nights === 1) total = Math.round(total * 1.3);
-      }
+                if (sylwester) {
+                    // Silvestrovský tarif
+                    const chargeN = Math.max(nights, 4);
+                    let baseRate, included;
+                    if (apt === 'A') { baseRate = 7000; included = 10; }
+                    else if (apt === 'B') { baseRate = 4200; included = 6; }
+                    else { baseRate = 7000 + 4200; included = 16; }
 
-      // aktualizace UI
-      $('#silvesterNotice').toggle(sylwester);
-      $('#sumTerm'     ).text(term);
-      $('#sumNights'   ).text(nights);
-      $('#sumApartment').text(
-        apt==='A'?'Apartmán A':apt==='B'?'Apartmán B':'Celý objekt'
-      );
-      $('#sumAdults'   ).text(adults);
-      $('#sumChildren' ).text(children);
-      $('#sumToddlers' ).text(toddlers);
-      $('#sumPets'     ).text(pets);
+                    const guests = adults + children + toddlers;
+                    const extraGuests = Math.max(0, guests - included);
+                    total = chargeN * baseRate + extraGuests * 700 * chargeN;
 
-      // skrytí řádků bez položek
-      $('#sumChildren').closest('tr').toggle(children > 0);
-      $('#sumToddlers').closest('tr').toggle(toddlers > 0);
-      $('#sumPets').closest('tr').toggle(pets > 0);
+                    // v nutném případě vynutíme minimální obsazení
+                    $('#adultCount').val(Math.max(adults, included));
+                } else {
+                    // Běžná cenová logika
+                    const cap = (apt === 'A' ? 11 : apt === 'B' ? 6 : 17);
+                    const emptyBeds = cap - (adults + children);
+                    for (let d = start.clone(); d.isBefore(end); d.add(1, 'days')) {
+                        const mm = d.format('MM-DD'),
+                            wd = d.day();
+                        const rate = ([5, 6].includes(wd) || holidays.includes(mm)) ? 650 : 550;
+                        total += rate * (adults + children + toddlers)
+                            + pets * 300
+                            + emptyBeds * 300;
+                    }
+                    // příplatek za jedinou noc
+                    if (nights === 1) total = Math.round(total * 1.3);
+                }
 
-      $('#totalPrice').text(total.toLocaleString() + ' CZK');
-      $('.col-lg-5').toggle((adults + children + toddlers) > 0);
+                // aktualizace UI
+                $('#silvesterNotice').toggle(sylwester);
+                $('#sumTerm').text(term);
+                $('#sumNights').text(nights);
+                $('#sumApartment').text(
+                    apt === 'A' ? 'Apartmán A' : apt === 'B' ? 'Apartmán B' : 'Celý objekt'
+                );
+                $('#sumAdults').text(adults);
+                $('#sumChildren').text(children);
+                $('#sumToddlers').text(toddlers);
+                $('#sumPets').text(pets);
 
-      saveState();
-    }
+                // skrytí řádků bez položek
+                $('#sumChildren').closest('tr').toggle(children > 0);
+                $('#sumToddlers').closest('tr').toggle(toddlers > 0);
+                $('#sumPets').closest('tr').toggle(pets > 0);
 
-    // --- Naplnění selectů podle kapacity ---
-    function updateCounts() {
-      const apt   = $('#apartmentSelect').val();
-      const base  = (apt === 'A' ? 11 : apt === 'B' ? 6 : 17);
-      const extra = (apt === 'A' ? 5  : apt === 'B' ? 2 : 7);
-      const max   = base + extra;
+                $('#totalPrice').text(total.toLocaleString() + ' CZK');
+                $('.col-lg-5').toggle((adults + children + toddlers) > 0);
 
-      $('#capacityDisplay').text(`Kapacita osob: ${max} (${base} + ${extra})`);
+                saveState();
+            }
 
-      // dospělí 1–max
-      $('#adultCount').empty();
-      for (let i = 1; i <= max; i++) {
-        $('#adultCount').append(new Option(i, i));
-      }
-      // děti od 3 let 0–max
-      $('#childCount').empty();
-      for (let i = 0; i <= max; i++) {
-        $('#childCount').append(new Option(i, i));
-      }
-      // děti do 3 let 0–10
-      $('#toddlerCount').empty();
-      for (let i = 0; i <= 10; i++) {
-        $('#toddlerCount').append(new Option(i, i));
-      }
-      // mazlíčci 0–5
-      $('#petsCount').empty();
-      for (let i = 0; i <= 5; i++) {
-        $('#petsCount').append(new Option(i, i));
-      }
+            // --- Naplnění selectů podle kapacity ---
+            function updateCounts() {
+                const apt = $('#apartmentSelect').val();
+                const base = (apt === 'A' ? 11 : apt === 'B' ? 6 : 17);
+                const extra = (apt === 'A' ? 5 : apt === 'B' ? 2 : 7);
+                const max = base + extra;
 
-      recalc();
-    }
+                $('#capacityDisplay').text(`Kapacita osob: ${max} (${base} + ${extra})`);
 
-    // --- Hooky ---
-    $('#apartmentSelect').on('change', updateCounts);
-    $('#adultCount, #childCount, #toddlerCount, #petsCount')
-      .on('change', recalc);
-    $('#daterange').on('apply.daterangepicker', recalc);
+                // dospělí 1–max
+                $('#adultCount').empty();
+                for (let i = 1; i <= max; i++) {
+                    $('#adultCount').append(new Option(i, i));
+                }
+                // děti od 3 let 0–max
+                $('#childCount').empty();
+                for (let i = 0; i <= max; i++) {
+                    $('#childCount').append(new Option(i, i));
+                }
+                // děti do 3 let 0–10
+                $('#toddlerCount').empty();
+                for (let i = 0; i <= 10; i++) {
+                    $('#toddlerCount').append(new Option(i, i));
+                }
+                // mazlíčci 0–5
+                $('#petsCount').empty();
+                for (let i = 0; i <= 5; i++) {
+                    $('#petsCount').append(new Option(i, i));
+                }
 
-    // --- Uložení/stáhnutí stavu (ponecháno) ---
-    loadState();
-    updateCounts();
-  });
-  </script>
+                recalc();
+            }
+
+            // --- Hooky ---
+            $('#apartmentSelect').on('change', updateCounts);
+            $('#adultCount, #childCount, #toddlerCount, #petsCount')
+                .on('change', recalc);
+            $('#daterange').on('apply.daterangepicker', recalc);
+
+            // --- Uložení/stáhnutí stavu (ponecháno) ---
+            loadState();
+            updateCounts();
+        });
+    </script>
 </body>
 
 </html>
