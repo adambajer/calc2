@@ -178,7 +178,7 @@
 
 
       <div class="card-body">
-        <h5 class="card-title">Kalkulátor pobytu</h5>
+ 
         <div class="row gy-3">
 
 
@@ -186,7 +186,7 @@
             <div class="mb-3 d-inline">
               <div class="row">
                 <div class="col-md-6 col-sm-6">
-                  <label class="form-label">Datum příjezdu - Datum odjezdu</label>
+                  <label class="form-label">Termín</label>
                   <div class="input-group">
                     <span class="input-group-text"><i class="material-icons">calendar_month</i></span>
                     <input type="text" id="daterange" class="form-control" readonly>
@@ -217,7 +217,7 @@
           <div class="col-md-6">
             <div class="row  ">
               <div class="col-md-3 col-sm-6 mb-3">
-                <label class="form-label">Dospělích</label>
+                <label class="form-label">Dospělí</label>
 
                 <div class="input-group">
                   <span class="input-group-text"><i class="material-icons">people</i></span>
@@ -226,7 +226,7 @@
 
               </div>
               <div class="col-md-3 col-sm-6 mb-3">
-                <label class="form-label">Dětí</label>
+                <label class="form-label">Děti</label>
                 <div class="input-group">
                   <span class="input-group-text"><i class="material-icons">child_care</i></span>
                   <select id="childCount" class="form-select"></select>
@@ -235,7 +235,7 @@
 
               </div>
               <div class="col-md-3 col-sm-6 mb-3">
-                <label class="form-label">Dětí (do 3 let)</label>
+                <label class="form-label">Děti do 3 let</label>
                 <div class="input-group">
                   <span class="input-group-text"><i class="material-icons">child_friendly</i></span>
                   <select id="toddlerCount" class="form-select">
@@ -269,7 +269,7 @@
     </div>
     <div class="row">
       <!-- Rekapitulace -->
-      <div class="col-md-6">
+      <div class="col-md-8">
         <div class="card shadow-sm">
           <div class="card-body">
 
@@ -321,15 +321,15 @@
                   <td class="text-start" id="sumApartment">–</td>
                 </tr>
                 <tr>
-                  <th scope="row" class="">Dospělích</th>
+                  <th scope="row" class="">Dospělí</th>
                   <td class="text-start" id="sumAdults">–</td>
                 </tr>
                 <tr>
-                  <th scope="row" class="">Dětí</th>
+                  <th scope="row" class="">Děti</th>
                   <td class="text-start" id="sumChildren">–</td>
                 </tr>
                 <tr>
-                  <th scope="row" class="">Dětí (do 3 let)</th>
+                  <th scope="row" class="">Děti do 3 let</th>
                   <td class="text-start" id="sumToddlers">–</td>
                 </tr>
 
@@ -352,7 +352,7 @@
 
 
       </div>
-       <div class="col-md-6">
+       <div class="col-md-4">
 
             <!-- Nová karta pro zájemce -->
             <div class="card shadow-sm ">
@@ -562,7 +562,7 @@
         const extra = (apt === 'A' ? 5 : apt === 'B' ? 2 : 7);
         const max = base + extra;
 
-        $('#capacityDisplay').text(`Kapacita osob: ${max} (${base} + ${extra})`);
+        $('#capacityDisplay').text(` ${max} (${base} + ${extra})`);
 
         const prevA = +$('#adultCount').val() || 1;
         $('#adultCount').empty();
