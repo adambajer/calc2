@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalendář apartmánů</title>
+  <style>
+    :root {
+      --cell-gap: 0.25rem;
+      --cell-width: 1fr;
+      --row-height: 2.5rem;
+      --day-circle-size: 1.2rem;
+      --day-circle-font: 0.65rem;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background: #f4f4f4;
+    }
+    #container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+      gap: 1rem;
+      justify-items: center;
+    }
+    .month-wrapper {
+      background: #fff;
+      border: 1px solid #ccc;
+        box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 18rem;
+    }
+    .month-title {
+         text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #333;
+    background: #eaeaea;
+    padding: 0.5rem;
+    text-align: left;
+    text-decoration: blink;
+    text-transform: uppercase;
+    }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, var(--cell-width));
+      grid-auto-rows: var(--row-height);
+       width: 100%;
+    }
+    .weekday {
+      font-size: 0.75rem;
+      text-align: center;
+      color: #777;
+    }
+    .day {
+      position: relative;
+      background: transparent;
+      border: 1px solid white;
+      overflow: hidden;
+    }
+    .day.empty {
+      background: transparent;
+      border: none;
+    }
+    /* dvě poloviny s 1px mezerou */
+    .day .half {
+      position: absolute;
+      left: 0; right: 0;
+      height: calc(50% - 0.5px);
+      z-index: 0;
+    }
+    .day .half.top    { top: 0; }
+    .day .half.bottom { bottom: 0; }
+
+    /* barvy podle stavu */
+    .half.free      { background-color: #8f8 ; }
+    .half.occupied  { background-color: #ff7885; }
+    .half.arrival   { background: linear-gradient(to right, #8f8  50%, #ff7885 50%); }
+    .half.departure { background: linear-gradient(to right, #ff7885 50%, #8f8  50%); }
+
+    /* číslo dne uprostřed v bílém kruhu */
+    .day-number {
+      position: absolute;
+      top: 50%; left: 50%; 
+      transform: translate(-50%, -50%);
+      width: var(--day-circle-size);
+      height: var(--day-circle-size);
+       border-radius: 50%;
+      display: flex;font-size: 1.5rem;
+      align-items: center;
+      justify-content: center;text-shadow: 0 0 3px #ffffff;
+      color: #000000; 
+      z-index: 1;
+    }
+    .half.bottom.occupied {
+    background-color: #9e9eff;}
+    .half.bottom.arrival {
+    background: linear-gradient(to right, #8f8 50%, #9e9eff 50%);
+}
+    .half.bottom.departure {
+    background: linear-gradient(to right,#9e9eff  50%,  #8f8 50%);
+}
+  </style>
+</head>
+<body>
+  <h1>Kalendář apartmánů</h1>
+  <div id="container"></div>
+  <script>
+    async function loadCalendar() {
+      const res = await fetch('http://127.0.0.1:5001/calendar2');
+      const data = await res.json();
+      const container = document.getElementById('container');
+      container.innerHTML = '';
+
+      const colors = {
+        free:     '#4caf50',
+        occupied: '#f44336',
+        arrival:  '#4caf50',
+        departure:'#f44336'
+      };
+
+      let currentMonth = '';
+      let wrapper, cal;
+
+      Object.keys(data).sort().forEach(date => {
+        const dt = new Date(date);
+        const monthKey = dt.toLocaleString('cs-CZ', { month: 'long', year: 'numeric' });
+        const dayNum = dt.getDate();
+
+        // nový měsíc + titulek
+        if (monthKey !== currentMonth) {
+          currentMonth = monthKey;
+          wrapper = document.createElement('div');
+          wrapper.className = 'month-wrapper';
+          const title = document.createElement('div');
+          title.className = 'month-title';
+          title.textContent = currentMonth;
+          wrapper.appendChild(title);
+
+          cal = document.createElement('div');
+          cal.className = 'calendar';
+          ['Po','Út','St','Čt','Pá','So','Ne'].forEach(h => {
+            const hd = document.createElement('div');
+            hd.className = 'weekday';
+            hd.textContent = h;
+            cal.appendChild(hd);
+          });
+
+          // prázdné buňky před prvním dnem
+          const firstDow = new Date(dt.getFullYear(), dt.getMonth(), 1).getDay();
+          const offset = (firstDow + 6) % 7;
+          for (let i = 0; i < offset; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'day empty';
+            cal.appendChild(empty);
+          }
+          wrapper.appendChild(cal);
+          container.appendChild(wrapper);
+        }
+
+        // samotná buňka dne
+        const cell = document.createElement('div');
+        cell.className = 'day';
+
+        // A nahoře
+        const stA = data[date].A.state;
+        const halfA = document.createElement('div');
+        halfA.className = `half top ${stA}`;
+        // tooltip = původní text badge
+        halfA.title = `A: ${stA}`;
+        cell.appendChild(halfA);
+
+        // B dole
+        const stB = data[date].B.state;
+        const halfB = document.createElement('div');
+        halfB.className = `half bottom ${stB}`;
+        halfB.title = `B: ${stB}`;
+        cell.appendChild(halfB);
+
+        // číslo dne
+        const num = document.createElement('div');
+        num.className = 'day-number';
+        num.textContent = String(dayNum).padStart(2, '0');
+        cell.appendChild(num);
+
+        cal.appendChild(cell);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadCalendar);
+  </script>
+</body>
+</html>
